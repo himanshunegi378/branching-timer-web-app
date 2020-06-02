@@ -9,37 +9,58 @@ function TimerInput(props) {
     const [copyTimer, setCopyTimer] = useState({})
     const [childTimer, setChildTimer] = useState()
 
-    const [showNextTimer, setShowNextTimer] = useState(false);
-    const [showChildTimer, setShowChildTimer] = useState(false);
+    const [showNextTimer, setShowNextTimer] = useState(true);
+    const [showChildTimer, setShowChildTimer] = useState(true);
     const target = useRef(null);
 
     useEffect(() => {
 
-        console.log('id')
         let findTimer = countdownTimer.findTimer(props.id)
         if (findTimer) {
-            let nextTimer = findTimer.next
-            if (nextTimer) {
-                setNextTimer(<TimerInput id={nextTimer.id} />)
+            // let nextTimer = findTimer.next
+            // if (nextTimer) {
+            //     setNextTimer(<TimerInput id={nextTimer.id} />)
 
-            }
+            // }
             setOriginalTimer(Object.assign({}, findTimer))
+        }
+        else {
+            console.log('nothing found')
         }
     }, [props.id])
 
     useEffect(() => {
-        console.log('original')
 
         setCopyTimer(Object.assign({}, orignalTimer)
         )
     }, [orignalTimer])
 
     const addNextTimer = () => {
-        saveTimer()
-        if (!nextTimer) {
-            let newTimer = countdownTimer.insertTimerToRight(props.id)
-            setNextTimer(<TimerInput id={newTimer.id} />)
+        // saveTimer()
+        // if (!nextTimer) {
+        //     let newTimer = countdownTimer.insertTimerToRight(props.id)
+        //     setNextTimer(<TimerInput id={newTimer.id} />)
+        // }
+        if (nextTimer) {
+
         }
+        else {
+            let findTimer = countdownTimer.findTimer(props.id)
+            let nextTimer = findTimer.next
+            if (nextTimer) {
+                console.log('if',nextTimer)
+                setNextTimer(<TimerInput id={nextTimer.id} />)
+            } else {
+                let nextTimer = countdownTimer.insertTimerToRight(props.id)
+                console.log('else',nextTimer)
+                setNextTimer(<TimerInput id={nextTimer.id} />)
+            }
+
+
+        }
+
+
+
     }
 
     const saveTimer = () => {
@@ -51,14 +72,19 @@ function TimerInput(props) {
 
 
     const addChildTimer = () => {
-        saveTimer()
-        let childTimer = orignalTimer.child
+        // saveTimer()
+
+        let findTimer = countdownTimer.findTimer(props.id)
+
+        let childTimer = findTimer.child
         if (childTimer) {
             setChildTimer(<TimerInput id={childTimer.id} />)
         } else {
             let childTimer = countdownTimer.insertTimerBelow(props.id)
             setChildTimer(<TimerInput id={childTimer.id} />)
         }
+        // console.log(countdownTimer.findTimer('himanshu'))
+
     }
 
     const handleChange = (event) => {
@@ -69,8 +95,8 @@ function TimerInput(props) {
 
 
     return <>
-        {console.log('render')}
         <div className=''>
+
             <div>
                 <input ref={target}
                     onClick={() => {
@@ -81,7 +107,7 @@ function TimerInput(props) {
                 {nextTimer !== undefined ? null : <Overlay target={target.current} show={showNextTimer} placement="right">
                     {(props) => (
                         <Tooltip id="overlay-example" {...props}>
-                            <Button onClick={() => addNextTimer()}>
+                            <Button size="sm" onClick={() => addNextTimer()}>
                                 +
                         </Button>
                         </Tooltip>
@@ -90,7 +116,7 @@ function TimerInput(props) {
                 {childTimer !== undefined ? null : <Overlay target={target.current} show={showChildTimer} placement="bottom">
                     {(props) => (
                         <Tooltip id="overlay-example" {...props}>
-                            <Button onClick={() => addChildTimer()}>
+                            <Button size="sm" onClick={() => addChildTimer()}>
                                 +
                         </Button>
                         </Tooltip>
