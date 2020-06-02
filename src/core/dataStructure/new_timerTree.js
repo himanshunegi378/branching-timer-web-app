@@ -12,6 +12,7 @@ class CountdownTimer {
     }
 
     insertTimerToRight = (id, opts) => {
+        console.log('right')
 
         let timer = this.findTimer(id)
         let newTimer = new Timer({ id: uuidv1(), ...opts })
@@ -30,10 +31,22 @@ class CountdownTimer {
     }
 
     insertTimerBelow = (id, opts) => {
+        console.log('below')
+        let timer = this.findTimer(id)
+        if (timer.child) {
+            return timer.child
+        }
+        else {
+            let newTimer = new Timer({ id: uuidv1(), ...opts })
 
+            timer.child = newTimer
+            newTimer.parent = timer
+            return newTimer
+
+        }
     }
 
-    updateTimer = (targetId,  opts ) => {
+    updateTimer = (targetId, opts) => {
         let targetTimer = this.findTimer(targetId)
         if (targetTimer) {
             targetTimer.update(opts)
