@@ -191,4 +191,4 @@ class CountdownTimer {
 let obj = new CountdownTimer()
 obj.createTimerTree({ id: 'himanshu', time: 5 })
 
-module.exports = obj
+export default obj
