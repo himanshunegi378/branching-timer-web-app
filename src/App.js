@@ -10,20 +10,30 @@ function App() {
 
   const getNextTimer = () => {
     let nextTimer = countdownTimer.getNextNode(currentTimer)
-    if(nextTimer){
+    if (nextTimer) {
+      countdownTimer.updateTimer(nextTimer.id,{message:'sdfsdf'})
       setcurrentTimer(nextTimer)
     }
-    else{
-      setcurrentTimer({time:'no next Timer found'})
+    else {
+      setcurrentTimer({ time: 'no next Timer found' })
     }
   }
-  
+
+  const startTimer = () => {
+    countdownTimer.updateTimer('himanshu', {active: true })
+  }
+
+
   return (
     <div className="App">
-    <div>
-     <p> current: <span>{currentTimer.time}</span></p>
-      <Button onClick={()=>{getNextTimer()}}>Next Timer</Button>
-    </div>
+      <div>
+        <p> current: <span>{currentTimer.time}</span></p>
+        <Button onClick={() => { getNextTimer() }}>Next Timer</Button>
+      </div>
+      <hr />
+      <div>
+        <Button onClick={() => { startTimer() }}>Start Timer</Button>
+      </div>
       <div className='d-flex flex-row p-5'>
         <TimerInput id='himanshu' />
       </div>

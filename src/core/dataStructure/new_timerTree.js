@@ -15,7 +15,7 @@ class CountdownTimer {
         try {
             let timer = this.findTimer(id)
             //remove random funcrion later in both insert func
-            let newTimer = new Timer({ id: uuidv1(),time:Math.floor(Math.random() * Math.floor(1000)), ...opts })
+            let newTimer = new Timer({ id: uuidv1(), ...opts })
             if (timer.next) {
                 let nexTimer = timer.next
                 timer.next = newTimer
@@ -41,7 +41,7 @@ class CountdownTimer {
             return timer.child
         }
         else {
-            let newTimer = new Timer({ id: uuidv1(),time:Math.floor(Math.random() * Math.floor(1000)), ...opts })
+            let newTimer = new Timer({ id: uuidv1(), ...opts })
 
             timer.child = newTimer
             newTimer.parent = timer
@@ -171,34 +171,15 @@ class CountdownTimer {
 
 
 
-    startTimer = () => {
-        let iscountdownFinished = true
-
-        let refreshId = setInterval(() => {
-            if (iscountdownFinished) {
-                let timer = this.nextTimer()
-                if (timer === undefined) {
-                    // notifier.notify({
-                    //     title: 'Timer',
-                    //     message: 'All Countdown ended',
-                    //     appID: 'Countdown timer'
-                    // });
-                    clearInterval(refreshId)
-                    return
-                }
-                iscountdownFinished = false;
-                countdownClock(timer.time, () => {
-                    this.showWholeTimer()
-                    // notifier.notify({
-                    //     title: 'Timer',
-                    //     message: timer.message,
-                    //     appID: 'Countdown timer'
-                    // });
-                    iscountdownFinished = true
-                })
-            }
-
-        }, 1000);
+    startTimer = (timer, cb) => {
+        countdownClock(timer.time, () => {
+            // notifier.notify({
+            //     title: 'Timer',
+            //     message: timer.message,
+            //     appID: 'Countdown timer'
+            // });
+            cb()
+        })
     }
 
 
@@ -208,6 +189,6 @@ class CountdownTimer {
 }
 
 let obj = new CountdownTimer()
-obj.createTimerTree({ id: 'himanshu', time: 500 })
+obj.createTimerTree({ id: 'himanshu', time: 5 })
 
 module.exports = obj
