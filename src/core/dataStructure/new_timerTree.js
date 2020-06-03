@@ -1,6 +1,6 @@
 const Timer = require('./timer')
 const { v1: uuidv1 } = require('uuid');
-
+const countdownClock = require('../countDownClock')
 class CountdownTimer {
     constructor() {
         this.HEAD = {}
@@ -14,7 +14,8 @@ class CountdownTimer {
     insertTimerToRight = (id, opts) => {
         try {
             let timer = this.findTimer(id)
-            let newTimer = new Timer({ id: uuidv1(), ...opts })
+            //remove random funcrion later in both insert func
+            let newTimer = new Timer({ id: uuidv1(),time:Math.floor(Math.random() * Math.floor(1000)), ...opts })
             if (timer.next) {
                 let nexTimer = timer.next
                 timer.next = newTimer
@@ -33,39 +34,6 @@ class CountdownTimer {
 
     }
 
-    generateTimerJson = () => {
-        let t = {}
-
-        let currentHead = Object.assign({}, this.HEAD)
-
-        while (true) {
-            //does currentHead match with targetId
-            if (false) {
-                return currentHead
-            }
-            else {
-                //does node have child
-                if (currentHead.child) {
-                    currentHead = currentHead.child
-                } else {
-                    //does node have next
-                    if (currentHead.next) {
-                        currentHead = currentHead.next
-                    }
-                    else {
-                        if (currentHead.parent) {
-                            currentHead = currentHead.parent
-                        }
-                        else {
-                            return undefined
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-
     insertTimerBelow = (id, opts) => {
         console.log('below')
         let timer = this.findTimer(id)
@@ -73,19 +41,12 @@ class CountdownTimer {
             return timer.child
         }
         else {
-            let newTimer = new Timer({ id: uuidv1(), ...opts })
+            let newTimer = new Timer({ id: uuidv1(),time:Math.floor(Math.random() * Math.floor(1000)), ...opts })
 
             timer.child = newTimer
             newTimer.parent = timer
             return newTimer
 
-        }
-    }
-
-    updateTimer = (targetId, opts) => {
-        let targetTimer = this.findTimer(targetId)
-        if (targetTimer) {
-            targetTimer.update(opts)
         }
     }
 
@@ -137,6 +98,110 @@ class CountdownTimer {
             }
         }
     }
+
+    updateTimer = (targetId, opts) => {
+        let targetTimer = this.findTimer(targetId)
+        if (targetTimer) {
+            targetTimer.update(opts)
+        }
+    }
+
+    getNextNode = (currentTimer) => {
+        if (currentTimer.child) {
+            let childTimer = this.getLeafNode(currentTimer.child)
+            return childTimer
+        }
+        else {
+            if (currentTimer.next) {
+                let nextTimer = currentTimer.next
+                if (nextTimer.child) {
+                    let childTimer = this.getLeafNode(nextTimer.child)
+                    return childTimer
+                }
+                else {
+                    return nextTimer
+                }
+            }
+            else {
+                let nextToParentTimer = this.getParentNode(currentTimer)
+                if (nextToParentTimer) {
+                    if (nextToParentTimer.child) {
+                        let childTimer = this.getLeafNode(currentTimer.child)
+                        return childTimer
+                    }
+                    else {
+                        return nextToParentTimer
+                    }
+                }
+                else {
+                    return undefined
+                }
+            }
+        }
+    }
+
+    getLeafNode = (node) => {
+        if (node.child) {
+            let childNode = this.getLeafNode(node.child)
+            return childNode
+        } else {
+            return node
+        }
+    }
+
+    getParentNode = (node) => {
+        if (node.parent) {
+            let parentNode = node.parent
+            if (parentNode.next) {
+                return parentNode.next
+            }
+            parentNode = this.getParentNode(parentNode)
+            return parentNode
+        }
+        else {
+            if (node.previous) {
+                let parentNode = this.getParentNode(node.previous)
+                return parentNode
+            }
+            else {
+                return undefined
+            }
+        }
+    }
+
+
+
+    startTimer = () => {
+        let iscountdownFinished = true
+
+        let refreshId = setInterval(() => {
+            if (iscountdownFinished) {
+                let timer = this.nextTimer()
+                if (timer === undefined) {
+                    // notifier.notify({
+                    //     title: 'Timer',
+                    //     message: 'All Countdown ended',
+                    //     appID: 'Countdown timer'
+                    // });
+                    clearInterval(refreshId)
+                    return
+                }
+                iscountdownFinished = false;
+                countdownClock(timer.time, () => {
+                    this.showWholeTimer()
+                    // notifier.notify({
+                    //     title: 'Timer',
+                    //     message: timer.message,
+                    //     appID: 'Countdown timer'
+                    // });
+                    iscountdownFinished = true
+                })
+            }
+
+        }, 1000);
+    }
+
+
 
 
 
