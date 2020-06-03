@@ -1,7 +1,7 @@
 {
   "name": "countdown_webapp",
   "version": "0.1.0",
-  "homepage": "http://himanshunegi378.github.io/branching-timer-web-app",
+  "homepage": "https://himanshunegi378.github.io/branching-timer-web-app",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
