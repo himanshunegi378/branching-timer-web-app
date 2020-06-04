@@ -140,7 +140,7 @@ function TimerInput(props) {
                 <Modal.Title>Modal heading</Modal.Title>
             </Modal.Header>
             <Modal.Body>All Timer finished</Modal.Body>
-        
+
         </Modal>
         <div className={classNames({ 'alert-primary': originalTimer.active })}>
             {originalTimer.message}
