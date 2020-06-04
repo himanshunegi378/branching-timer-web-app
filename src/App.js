@@ -22,11 +22,11 @@ function App() {
   const startTimer = () => {
     if (countdownTimer.HEAD.child) {
       let timer = countdownTimer.getNextNode(countdownTimer.HEAD)
-      countdownTimer.updateTimer(timer.id, { active: true })
+      countdownTimer.updateTimer(timer.id, { state: 'active' })
 
     }
     else {
-      countdownTimer.updateTimer(countdownTimer.HEAD.id, { active: true })
+      countdownTimer.updateTimer(countdownTimer.HEAD.id, { state: 'active' })
 
     }
   }

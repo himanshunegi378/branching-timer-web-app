@@ -1,10 +1,12 @@
+let timerState = { dormant: 'dormant', active: 'active', completed: 'completed', paused: 'paused' }
+
 export default class Timer {
     constructor(options) {
         this.id = options.id
         this.message = options.message || 'No message'
         this.time = options.time || 0  //in minutes
-        this.completed = true
-        this.active = false
+
+        this.state = timerState.dormant
 
         this.parent = undefined
         this.child = undefined
@@ -22,7 +24,7 @@ export default class Timer {
         this.time = options.time || this.time  //in minutes
         this.completed = options.completed !== undefined ? options.completed : this.completed
         this.callback = this.callback || options.cb
-        this.active = options.active !== undefined ? options.active : this.active
+        this.state = options.state || this.state
         if (this.callback) {
             this.callback(this)
         }

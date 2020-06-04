@@ -51,7 +51,7 @@ function TimerInput(props) {
         setTime(originalTimer.time)
 
         console.log(originalTimer)
-        if (originalTimer.active) {
+        if (originalTimer.state === 'active') {
             countdownTimer.startTimer(originalTimer, onTimerFinished, onTick)
         }
 
@@ -69,11 +69,11 @@ function TimerInput(props) {
         console.log('timer ended')
 
         let findTimer = countdownTimer.findTimer(originalTimer.id)
-        countdownTimer.updateTimer(findTimer.id, { active: false })
+        countdownTimer.updateTimer(findTimer.id, { state: 'completed' })
 
         let nextTimer = countdownTimer.getNextNode(countdownTimer.findTimer(originalTimer.id))
         if (nextTimer) {
-            countdownTimer.updateTimer(nextTimer.id, { active: true })
+            countdownTimer.updateTimer(nextTimer.id, { state: 'active' })
 
         } else {
             setShow(true)
@@ -149,16 +149,16 @@ function TimerInput(props) {
             <Modal.Body>All Timer finished</Modal.Body>
 
         </Modal>
-        <div className={classNames({ 'alert-primary': originalTimer.active })}>
-            {originalTimer.message}
-            <div   >
-                <div className='input-group'>
+        <div className={classNames({})}>
+            <div className={classNames({'text-center':true, 'alert-danger': originalTimer.state ==='active','alert-secondary':originalTimer.state ==='completed' ,'alert-info':originalTimer.state ==='dormant'})}>{originalTimer.message}</div>
+            <div>
+                <div className='input-group '>
                     <input className='form-control'
                         onClick={() => {
                             setShowNextTimer(!showNextTimer)
                             setShowChildTimer(!showChildTimer)
                         }}
-                        type='number' value={time} onChange={handleChange} />
+                        style={{width:'4em'}} type='number' value={time} onChange={handleChange} />
                     <div className='input-group-append'><span className="input-group-text" id="basic-addon2">{minsLeft}:{secsLeft}</span></div>
                 </div>
 
@@ -167,27 +167,23 @@ function TimerInput(props) {
             </div>
             {nextTimer !== undefined ? null : <Overlay target={target.current} show={showNextTimer} placement="right">
                 {(props) => (
-                    <Tooltip id="overlay-example" {...props}>
-                        <Button size="sm" onClick={() => addNextTimer()}>
+                    <Button size="sm" {...props} onClick={() => addNextTimer()}>
                             +
                         </Button>
-                    </Tooltip>
+                   
                 )}
             </Overlay>}
             {childTimer !== undefined ? null : <Overlay target={target.current} show={showChildTimer} placement="bottom">
-                {(props) => (
-                    <Tooltip id="overlay-example" {...props}>
-                        <Button size="sm" onClick={() => addChildTimer()}>
+                {(props) => ( 
+                    <Button {...props} size="sm" onClick={() => addChildTimer()}>
                             +
                         </Button>
-                    </Tooltip>
+                 
                 )}
             </Overlay>}
             {childTimer ? <Overlay target={target.current} show={showChildTimer} placement="bottom">
                 {(props) => (
-                    <Tooltip id="overlay-example" {...props}>
-                        {childTimer}
-                    </Tooltip>
+                    <span {...props}>{childTimer}</span>
                 )}
             </Overlay> : null}
 
@@ -197,9 +193,8 @@ function TimerInput(props) {
 
         {nextTimer ? <Overlay target={target.current} show={showNextTimer} placement="right">
             {(props) => (
-                <Tooltip id="overlay-example" {...props}>
-                    {nextTimer}
-                </Tooltip>
+                <span {...props}>{nextTimer}</span>
+                
             )}
         </Overlay> : null}
     </div>;
