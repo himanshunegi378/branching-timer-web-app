@@ -149,7 +149,7 @@ function TimerInput(props) {
             <Modal.Body>All Timer finished</Modal.Body>
 
         </Modal>
-        <div className={classNames({})}>
+        <div className='m-2'>
             <div className={classNames({'text-center':true, 'alert-danger': originalTimer.state ==='active','alert-secondary':originalTimer.state ==='completed' ,'alert-info':originalTimer.state ==='dormant'})}>{originalTimer.message}</div>
             <div>
                 <div className='input-group '>
