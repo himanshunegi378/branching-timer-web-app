@@ -6,7 +6,7 @@ let isActive = false;
 const timer = (time, cb) => {
 
     const currentDate = new Date()
-    const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes(), currentDate.getSeconds() + time)
+    const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes() + time, currentDate.getSeconds())
 
     // Event dispatched right after the countdown starts
     const onStart = ({ days, hours, minutes, seconds }) => { /* Do whatever you want... */ }
@@ -42,9 +42,9 @@ const timer = (time, cb) => {
     const countdown = new LsCountdown(options)
 
     // starts to countdown
-   
-        countdown.start()
-  
+
+    countdown.start()
+
 
 
 }
