@@ -20,9 +20,9 @@ class Timer {
     update(options) {
         this.message = options.message || this.message
         this.time = options.time || this.time  //in minutes
-        this.completed = options.completed !== undefined? options.completed : this.completed
+        this.completed = options.completed !== undefined ? options.completed : this.completed
         this.callback = this.callback || options.cb
-        this.active =  options.active !== undefined? options.active : this.active
+        this.active = options.active !== undefined ? options.active : this.active
         if (this.callback) {
             this.callback(this)
         }
@@ -42,4 +42,4 @@ class Timer {
 }
 
 
-module.exports = Timer
+export default Timer
