@@ -1,4 +1,4 @@
-const Timer = require('./timer')
+import  Timer  from "./timer";
 const { v1: uuidv1 } = require('uuid');
 const countdownClock = require('../countDownClock')
 class CountdownTimer {
