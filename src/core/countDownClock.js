@@ -3,16 +3,17 @@ const { LsCountdown, LsCountdownOptions, LsCountdownSufixes } = require('ls-coun
 // Target date to be the reference for the countdown
 let isActive = false;
 
-const timer = (time, cb) => {
+const timer = (time, cb,tick) => {
 
     const currentDate = new Date()
-    const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes() + time, currentDate.getSeconds())
+    const targetDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), currentDate.getHours(), currentDate.getMinutes() , currentDate.getSeconds()+ time)
 
     // Event dispatched right after the countdown starts
     const onStart = ({ days, hours, minutes, seconds }) => { /* Do whatever you want... */ }
 
     // Event dispatched ever 1 second
     const onTick = ({ days, hours, minutes, seconds }) => {
+        tick({ days, hours, minutes, seconds });
         // process.stdout.write("\r\x1b[K")
         // process.stdout.write(minutes)
         // process.stdout.write(":")

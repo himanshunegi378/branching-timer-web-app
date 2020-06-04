@@ -171,7 +171,7 @@ class CountdownTimer {
 
 
 
-    startTimer = (timer, cb) => {
+    startTimer = (timer, cb,onTick) => {
         countdownClock(timer.time, () => {
             // notifier.notify({
             //     title: 'Timer',
@@ -179,7 +179,7 @@ class CountdownTimer {
             //     appID: 'Countdown timer'
             // });
             cb()
-        })
+        },onTick)
     }
 
 

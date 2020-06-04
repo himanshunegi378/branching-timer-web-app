@@ -11,6 +11,8 @@ function TimerInput(props) {
     const [nextTimer, setNextTimer] = useState()
     const [originalTimer, setOriginalTimer] = useState({})
     const [childTimer, setChildTimer] = useState()
+    const [minsLeft, setMinsLeft] = useState('00')
+    const [secsLeft, setSecsLeft] = useState('00')
     const [time, setTime] = useState(0)
     const [showNextTimer, setShowNextTimer] = useState(true);
     const [showChildTimer, setShowChildTimer] = useState(true);
@@ -50,10 +52,15 @@ function TimerInput(props) {
 
         console.log(originalTimer)
         if (originalTimer.active) {
-            countdownTimer.startTimer(originalTimer, onTimerFinished)
+            countdownTimer.startTimer(originalTimer, onTimerFinished, onTick)
         }
 
     }, [originalTimer])
+
+    const onTick = ({ days, hours, minutes, seconds }) => {
+        setMinsLeft(minutes)
+        setSecsLeft(seconds)
+    }
 
     const onTimerFinished = () => {
         var sound = new Howl({
@@ -134,7 +141,7 @@ function TimerInput(props) {
 
     }
 
-    return <>
+    return <div ref={target}>
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>Modal heading</Modal.Title>
@@ -144,35 +151,38 @@ function TimerInput(props) {
         </Modal>
         <div className={classNames({ 'alert-primary': originalTimer.active })}>
             {originalTimer.message}
-            <div>
-                <input ref={target}
-                    onClick={() => {
-                        setShowNextTimer(!showNextTimer)
-                        setShowChildTimer(!showChildTimer)
-                    }}
-                    type='number' value={time} onChange={handleChange} />
-                {nextTimer !== undefined ? null : <Overlay target={target.current} show={showNextTimer} placement="right">
-                    {(props) => (
-                        <Tooltip id="overlay-example" {...props}>
-                            <Button size="sm" onClick={() => addNextTimer()}>
-                                +
-                        </Button>
-                        </Tooltip>
-                    )}
-                </Overlay>}
-                {childTimer !== undefined ? null : <Overlay target={target.current} show={showChildTimer} placement="bottom">
-                    {(props) => (
-                        <Tooltip id="overlay-example" {...props}>
-                            <Button size="sm" onClick={() => addChildTimer()}>
-                                +
-                        </Button>
-                        </Tooltip>
-                    )}
-                </Overlay>}
+            <div   >
+                <div className='input-group'>
+                    <input className='form-control'
+                        onClick={() => {
+                            setShowNextTimer(!showNextTimer)
+                            setShowChildTimer(!showChildTimer)
+                        }}
+                        type='number' value={time} onChange={handleChange} />
+                    <div className='input-group-append'><span className="input-group-text" id="basic-addon2">{minsLeft}:{secsLeft}</span></div>
+                </div>
+
 
 
             </div>
-
+            {nextTimer !== undefined ? null : <Overlay target={target.current} show={showNextTimer} placement="right">
+                {(props) => (
+                    <Tooltip id="overlay-example" {...props}>
+                        <Button size="sm" onClick={() => addNextTimer()}>
+                            +
+                        </Button>
+                    </Tooltip>
+                )}
+            </Overlay>}
+            {childTimer !== undefined ? null : <Overlay target={target.current} show={showChildTimer} placement="bottom">
+                {(props) => (
+                    <Tooltip id="overlay-example" {...props}>
+                        <Button size="sm" onClick={() => addChildTimer()}>
+                            +
+                        </Button>
+                    </Tooltip>
+                )}
+            </Overlay>}
             {childTimer ? <Overlay target={target.current} show={showChildTimer} placement="bottom">
                 {(props) => (
                     <Tooltip id="overlay-example" {...props}>
@@ -192,7 +202,7 @@ function TimerInput(props) {
                 </Tooltip>
             )}
         </Overlay> : null}
-    </>;
+    </div>;
 }
 
 

@@ -11,7 +11,7 @@ function App() {
   const getNextTimer = () => {
     let nextTimer = countdownTimer.getNextNode(currentTimer)
     if (nextTimer) {
-      countdownTimer.updateTimer(nextTimer.id,{message:'sdfsdf'})
+      countdownTimer.updateTimer(nextTimer.id, { message: 'sdfsdf' })
       setcurrentTimer(nextTimer)
     }
     else {
@@ -20,7 +20,15 @@ function App() {
   }
 
   const startTimer = () => {
-    countdownTimer.updateTimer('himanshu', {active: true })
+    if (countdownTimer.HEAD.child) {
+      let timer = countdownTimer.getNextNode(countdownTimer.HEAD)
+      countdownTimer.updateTimer(timer.id, { active: true })
+
+    }
+    else {
+      countdownTimer.updateTimer(countdownTimer.HEAD.id, { active: true })
+
+    }
   }
 
 
