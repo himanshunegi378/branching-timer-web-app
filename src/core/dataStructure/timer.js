@@ -1,4 +1,4 @@
-class Timer {
+export default class Timer {
     constructor(options) {
         this.id = options.id
         this.message = options.message || 'No message'
@@ -42,4 +42,4 @@ class Timer {
 }
 
 
-export default Timer
+module.exports = Timer
