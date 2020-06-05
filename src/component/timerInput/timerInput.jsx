@@ -98,10 +98,10 @@ function TimerInput(props) {
             let findTimer = countdownTimer.findTimer(props.id)
             let nextTimer = findTimer.next
             if (nextTimer) {
-                setNextTimer(<TimerInput id={nextTimer.id} />)
+                setNextTimer(<TimerInput id={nextTimer.id} row={props.row} col={props.col + 1} />)
             } else {
                 let nextTimer = countdownTimer.insertTimerToRight(props.id, { time: 5 })
-                setNextTimer(<TimerInput id={nextTimer.id} />)
+                setNextTimer(<TimerInput id={nextTimer.id} row={props.row} col={props.col + 1} />)
             }
 
 
@@ -123,10 +123,10 @@ function TimerInput(props) {
 
         let childTimer = findTimer.child
         if (childTimer) {
-            setChildTimer(<TimerInput id={childTimer.id} />)
+            setChildTimer(<TimerInput id={childTimer.id} row={props.row + 1} col={props.col} />)
         } else {
             let childTimer = countdownTimer.insertTimerBelow(props.id, { time: 5 })
-            setChildTimer(<TimerInput id={childTimer.id} />)
+            setChildTimer(<TimerInput id={childTimer.id} row={props.row + 1} col={props.col} />)
         }
         // console.log(countdownTimer.findTimer('himanshu'))
 
@@ -141,7 +141,7 @@ function TimerInput(props) {
 
     }
 
-    return <div ref={target}>
+    return < >
         <Modal show={show} onHide={handleClose}>
             <Modal.Header closeButton>
                 <Modal.Title>Modal heading</Modal.Title>
@@ -149,55 +149,32 @@ function TimerInput(props) {
             <Modal.Body>All Timer finished</Modal.Body>
 
         </Modal>
-        <div className='m-2'>
-            <div className={classNames({'text-center':true, 'alert-danger': originalTimer.state ==='active','alert-secondary':originalTimer.state ==='completed' ,'alert-info':originalTimer.state ==='dormant'})}>{originalTimer.message}</div>
-            <div>
-                <div className='input-group '>
-                    <input className='form-control'
-                        onClick={() => {
-                            setShowNextTimer(!showNextTimer)
-                            setShowChildTimer(!showChildTimer)
-                        }}
-                        style={{width:'4em'}} type='number' value={time} onChange={handleChange} />
-                    <div className='input-group-append'><span className="input-group-text" id="basic-addon2">{minsLeft}:{secsLeft}</span></div>
+        <div ref={target} className='m-2' style={{ gridRow: `${props.row}`, gridColumn: `${props.col}` }}>
+            <div >
+                <div className={classNames({ 'text-center': true, 'alert-danger': originalTimer.state === 'active', 'alert-secondary': originalTimer.state === 'completed', 'alert-info': originalTimer.state === 'dormant' })}>{originalTimer.message}</div>
+                <div>
+                    <div className='input-group '>
+                        <input className='form-control'
+                            onClick={() => {
+                                setShowNextTimer(!showNextTimer)
+                                setShowChildTimer(!showChildTimer)
+                            }}
+                            style={{ width: '4em' }} type='number' value={time} onChange={handleChange} />
+                        <div className='input-group-append'><span className="input-group-text" id="basic-addon2">{minsLeft}:{secsLeft}</span></div>
+                    </div>
                 </div>
-
-
-
             </div>
-            {nextTimer !== undefined ? null : <Overlay target={target.current} show={showNextTimer} placement="right">
-                {(props) => (
-                    <Button size="sm" {...props} onClick={() => addNextTimer()}>
-                            +
-                        </Button>
-                   
-                )}
-            </Overlay>}
-            {childTimer !== undefined ? null : <Overlay target={target.current} show={showChildTimer} placement="bottom">
-                {(props) => ( 
-                    <Button {...props} size="sm" onClick={() => addChildTimer()}>
-                            +
-                        </Button>
-                 
-                )}
-            </Overlay>}
-            {childTimer ? <Overlay target={target.current} show={showChildTimer} placement="bottom">
-                {(props) => (
-                    <span {...props}>{childTimer}</span>
-                )}
-            </Overlay> : null}
+
+
 
         </div>
-
-        {/* <UserInput ref={target} onClick={() => setShow(!show)} /> */}
-
-        {nextTimer ? <Overlay target={target.current} show={showNextTimer} placement="right">
-            {(props) => (
-                <span {...props}>{nextTimer}</span>
-                
-            )}
-        </Overlay> : null}
-    </div>;
+        {childTimer ? childTimer : <Button style={{width: '25%', marginLeft: 'auto', marginRight: 'auto', gridRow: `${props.row + 1}`, gridColumn: `${props.col}` }} size="sm" onClick={() => addChildTimer()}>
+            +
+            </Button>}
+        {nextTimer ? nextTimer : <Button style={{ width: '25%', height: '50%', marginTop: 'auto', marginBottom: 'auto', gridRow: `${props.row}`, gridColumn: `${props.col + 1}` }} size="sm" onClick={() => addNextTimer()}>
+            +
+        </Button>}
+    </>;
 }
 
 
