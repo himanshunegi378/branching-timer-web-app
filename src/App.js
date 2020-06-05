@@ -7,27 +7,30 @@ import countdownTimer from "./core/dataStructure/new_timerTree";
 
 function App() {
   const [grid, setGrid] = useState([])
+  const [currentTimer, setcurrentTimer] = useState(countdownTimer.HEAD)
 
-  useEffect(() => {
-    // let t = { left: 0, top: 0 }
-    // let root = document.getElementsByClassName('App')[0]
-    // for (let i = 0; i < 10; i++) {
-    //   for (let j = 0; j < 10; j++) {
-    //     let newDiv = document.createElement('div')
-    //     newDiv.setAttribute('class', 'block')
-    //     newDiv.style.left = `${t.left}px`
-    //     newDiv.style.top = `${t.top}px`
-    //     t.left = t.left + 50
-    //     newDiv.style.backgroundColor = getRandomColor()
-    //     root.appendChild(newDiv)
+  const getNextTimer = () => {
+    let nextTimer = countdownTimer.getNextNode(currentTimer)
+    if (nextTimer) {
+      countdownTimer.updateTimer(nextTimer.id, { message: 'sdfsdf' })
+      setcurrentTimer(nextTimer)
+    }
+    else {
+      setcurrentTimer({ time: 'no next Timer found' })
+    }
+  }
 
+  const startTimer = () => {
+    if (countdownTimer.HEAD.child) {
+      let timer = countdownTimer.getNextNode(countdownTimer.HEAD)
+      countdownTimer.updateTimer(timer.id, { state: 'active' })
 
-    //   }
-    //   t.left = 0
-    //   t.top +=50
-    // }
+    }
+    else {
+      countdownTimer.updateTimer(countdownTimer.HEAD.id, { state: 'active' })
 
-  }, [])
+    }
+  }
 
   function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -40,6 +43,14 @@ function App() {
 
   return (
     <div className="App">
+     <div>
+        <p> current: <span>{currentTimer.time}</span></p>
+        <Button onClick={() => { getNextTimer() }}>Next Timer</Button>
+      </div>
+      <hr />
+      <div>
+        <Button onClick={() => { startTimer() }}>Start Timer</Button>
+      </div>
       <svg id='mySVG'>
 
       </svg>
