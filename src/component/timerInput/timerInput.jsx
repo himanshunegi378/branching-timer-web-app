@@ -168,10 +168,10 @@ function TimerInput(props) {
 
 
         </div>
-        {childTimer ? childTimer : <Button style={{width: '25%', marginLeft: 'auto', marginRight: 'auto', gridRow: `${props.row + 1}`, gridColumn: `${props.col}` }} size="sm" onClick={() => addChildTimer()}>
+        {childTimer ? childTimer : <Button style={{width: '2em', height: '2em', marginLeft: 'auto', marginRight: 'auto', gridRow: `${props.row + 1}`, gridColumn: `${props.col}` }} size="sm" onClick={() => addChildTimer()}>
             +
             </Button>}
-        {nextTimer ? nextTimer : <Button style={{ width: '25%', height: '50%', marginTop: 'auto', marginBottom: 'auto', gridRow: `${props.row}`, gridColumn: `${props.col + 1}` }} size="sm" onClick={() => addNextTimer()}>
+        {nextTimer ? nextTimer : <Button style={{ width: '2em', height: '2em', marginTop: 'auto', marginBottom: 'auto', gridRow: `${props.row}`, gridColumn: `${props.col + 1}` }} size="sm" onClick={() => addNextTimer()}>
             +
         </Button>}
     </>;
