@@ -28,6 +28,45 @@ function TimerInput(props) {
 
         let findTimer = countdownTimer.findTimer(props.id)
         if (findTimer) {
+            if (findTimer.parent) {
+                let parentid = findTimer.parent.id
+                let from = document.getElementById(parentid).getBoundingClientRect()
+                let to = document.getElementById(props.id).getBoundingClientRect()
+                let line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+
+                line.setAttribute('stroke-width', "1px")
+                line.setAttribute('stroke', "#000000")
+                let x1 = (from.width / 2) + from.x
+                let y1 = (from.height) + from.y
+                let x2 = (to.width / 2) + to.x
+                let y2 = to.y
+                line.setAttribute('stroke-width', "1px")
+                line.setAttribute('stroke', "#000000")
+                line.setAttribute('x1', `${x1}`)
+                line.setAttribute('y1', `${y1}`)
+                line.setAttribute('x2', `${x2}`)
+                line.setAttribute('y2', `${y2}`)
+                document.getElementById('mySVG').appendChild(line)
+            } else {
+                if (findTimer.previous) {
+                    let previousid = findTimer.previous.id
+                    let from = document.getElementById(previousid).getBoundingClientRect()
+                    let to = document.getElementById(props.id).getBoundingClientRect()
+                    let line = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+                    let x1 = from.width + from.x
+                    let y1 = (from.height / 2) + from.y
+                    let x2 = to.x
+                    let y2 = y1
+                    line.setAttribute('stroke-width', "1px")
+                    line.setAttribute('stroke', "#000000")
+                    line.setAttribute('x1', `${x1}`)
+                    line.setAttribute('y1', `${y1}`)
+                    line.setAttribute('x2', `${x2}`)
+                    line.setAttribute('y2', `${y2}`)
+                    document.getElementById('mySVG').appendChild(line)
+
+                }
+            }
             let nextTimer = findTimer.next
             if (nextTimer) {
                 setNextTimer(<TimerInput id={nextTimer.id} />)
@@ -152,7 +191,7 @@ function TimerInput(props) {
         <div ref={target} className='m-2' style={{ gridRow: `${props.row}`, gridColumn: `${props.col}` }}>
             <div >
                 <div className={classNames({ 'text-center': true, 'alert-danger': originalTimer.state === 'active', 'alert-secondary': originalTimer.state === 'completed', 'alert-info': originalTimer.state === 'dormant' })}>{originalTimer.message}</div>
-                <div>
+                <div id={props.id}>
                     <div className='input-group '>
                         <input className='form-control'
                             onClick={() => {
@@ -168,7 +207,7 @@ function TimerInput(props) {
 
 
         </div>
-        {childTimer ? childTimer : <Button style={{width: '2em', height: '2em', marginLeft: 'auto', marginRight: 'auto', gridRow: `${props.row + 1}`, gridColumn: `${props.col}` }} size="sm" onClick={() => addChildTimer()}>
+        {childTimer ? childTimer : <Button style={{ width: '2em', height: '2em', marginLeft: 'auto', marginRight: 'auto', gridRow: `${props.row + 1}`, gridColumn: `${props.col}` }} size="sm" onClick={() => addChildTimer()}>
             +
             </Button>}
         {nextTimer ? nextTimer : <Button style={{ width: '2em', height: '2em', marginTop: 'auto', marginBottom: 'auto', gridRow: `${props.row}`, gridColumn: `${props.col + 1}` }} size="sm" onClick={() => addNextTimer()}>
