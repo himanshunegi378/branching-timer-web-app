@@ -173,10 +173,8 @@ function TimerInput(props) {
 
     const handleChange = (event) => {
         console.log(event.target.value)
-        console.log(originalTimer)
         // setOriginalTimer({ time: parseInt(event.target.value), ...originalTimer })
         setTime(event.target.value)
-        console.log(originalTimer)
 
     }
 
@@ -189,7 +187,7 @@ function TimerInput(props) {
 
         </Modal>
         <div ref={target} className='m-2' style={{ gridRow: `${props.row}`, gridColumn: `${props.col}` }}>
-            <div >
+            <div style={{width:'100%'}} >
                 <div className={classNames({ 'text-center': true, 'alert-danger': originalTimer.state === 'active', 'alert-secondary': originalTimer.state === 'completed', 'alert-info': originalTimer.state === 'dormant' })}>{originalTimer.message}</div>
                 <div id={props.id}>
                     <div className='input-group '>
@@ -198,7 +196,7 @@ function TimerInput(props) {
                                 setShowNextTimer(!showNextTimer)
                                 setShowChildTimer(!showChildTimer)
                             }}
-                            style={{ width: '4em' }} type='number' value={time} onChange={handleChange} />
+                            style={{  }} type='time' value={time} onChange={handleChange} />
                         <div className='input-group-append'><span className="input-group-text" id="basic-addon2">{minsLeft}:{secsLeft}</span></div>
                     </div>
                 </div>

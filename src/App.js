@@ -54,7 +54,7 @@ function App() {
       <svg id='mySVG'>
 
       </svg>
-      <div className='timer' style={{ display: 'grid', 'grid-auto-columns': '170px' }}>
+      <div className='timer' style={{ display: 'grid', 'grid-auto-columns': '190px' }}>
         <TimerInput id='himanshu' row={1} col={1} />
       </div>
     </div>
