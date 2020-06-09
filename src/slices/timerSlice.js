@@ -1,6 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
 import countdownTimer from "../core/dataStructure/new_timerTree";
 
+const TimerCard = {
+    message: '',
+    timerList: [],
+    loop: false
+}
+
+const Timer = {
+    id: '',
+    message: '',
+    mins: 0,
+    secs: 0,
+    status: '',
+}
+
+
+
 export const timerslice = createSlice({
     name: 'timer',
     initialState: {
@@ -49,10 +65,18 @@ export const timerslice = createSlice({
         createTimerCard: (state, action) => {
             let nexTimer = countdownTimer.insertTimerToRight(action.payload.id)
             let { id, message } = nexTimer
-            state.timerCards[id] = { message, timerList: [] }
+            let newCard = { ...TimerCard }
+            newCard.message = message
+            state.timerCards[id] = newCard
             state.timerCardsSequence.push(id)
 
         },
+        toggleCardLoop: (state, action) => {
+            let cardId = action.payload.id
+            let TimerCard = state.timerCards[cardId]
+            TimerCard.loop = !TimerCard.loop
+        }
+        ,
         //plays the next timer in the active card
         playTimer: (state, action) => {
             try {
@@ -99,7 +123,7 @@ export const timerslice = createSlice({
                 state.timers[newTimerToPlayId].status = 'active'
                 state.activeTimer.id = newTimerToPlayId
             } else {
-                if (state.loopCard) {
+                if (activeTimerCard.loop) {
                     let newtimerToPlayIndex = 0
                     let newTimerToPlayId = timersInCard[newtimerToPlayIndex]
                     state.activeTimerCard.currentTimerIndex = newtimerToPlayIndex
@@ -119,5 +143,5 @@ export const timerslice = createSlice({
 })
 export const selectTimerCards = state => state.timerCards;
 
-export const { updateTimer, createNextTimer, createChildTimer, createTimer, createTimerCard, saveTimer, playTimer, timerFinished, playCard } = timerslice.actions;
+export const { updateTimer, createNextTimer, createChildTimer, createTimer, createTimerCard,toggleCardLoop, saveTimer, playTimer, timerFinished, playCard } = timerslice.actions;
 export default timerslice.reducer;
