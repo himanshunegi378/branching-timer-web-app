@@ -1,4 +1,4 @@
-import  Timer  from "./timer";
+import Timer from "./timer";
 const { v1: uuidv1 } = require('uuid');
 const countdownClock = require('../countDownClock')
 class CountdownTimer {
@@ -103,6 +103,7 @@ class CountdownTimer {
         let targetTimer = this.findTimer(targetId)
         if (targetTimer) {
             targetTimer.update(opts)
+            return targetTimer
         }
     }
 
@@ -171,7 +172,7 @@ class CountdownTimer {
 
 
 
-    startTimer = (timer, cb,onTick) => {
+    startTimer = (timer, cb, onTick) => {
         countdownClock(timer.time, () => {
             // notifier.notify({
             //     title: 'Timer',
@@ -179,7 +180,7 @@ class CountdownTimer {
             //     appID: 'Countdown timer'
             // });
             cb()
-        },onTick)
+        }, onTick)
     }
 
 

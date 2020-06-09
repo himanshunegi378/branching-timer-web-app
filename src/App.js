@@ -2,9 +2,14 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { TimerInput } from './component/timerInput';
+import Timer from './component/timer/timer';
+import TimerCollectionCardGrid from './component/timerCollectionCardGrid/timerCollectionCardGrid';
 import { Button } from 'react-bootstrap';
 import countdownTimer from "./core/dataStructure/new_timerTree";
-
+import { useSelector, useDispatch } from 'react-redux';
+import { createNextTimer } from './slices/timerSlice';
+import { createTimerCard, playTimer } from "./slices/timerSlice";
+import CountDownTimer from './component/countDownTimer/countDownTimer';
 function App() {
   const [grid, setGrid] = useState([])
   const [currentTimer, setcurrentTimer] = useState(countdownTimer.HEAD)
@@ -41,22 +46,23 @@ function App() {
     return color;
   }
 
-  return (
-    <div className="App">
-     <div>
-        <p> current: <span>{currentTimer.time}</span></p>
-        <Button onClick={() => { getNextTimer() }}>Next Timer</Button>
-      </div>
-      <hr />
-      <div>
-        <Button onClick={() => { startTimer() }}>Start Timer</Button>
-      </div>
-      <svg id='mySVG'>
+  const dispatch = useDispatch();
 
-      </svg>
-      <div className='timer' style={{ display: 'grid', 'grid-auto-columns': '190px' }}>
-        <TimerInput id='himanshu' row={1} col={1} />
+
+  return (
+    <div className="App container">
+      {/* <svg id='mySVG'>
+      </svg> */}
+      <Button onClick={() => { dispatch(createTimerCard({ id: 'himanshu' })) }}>Add Timer Card</Button>
+      <Button onClick={() => { dispatch(playTimer()) }}>Play</Button>
+      <div className='overflow-scroll'>
+        <TimerCollectionCardGrid />
       </div>
+      <CountDownTimer/>
+
+      {/* <div className='timer' style={{ display: 'grid', 'grid-auto-columns': '170px' }}>
+        <TimerInput id='himanshu' row={1} col={1} />
+      </div> */}
     </div>
   );
 }

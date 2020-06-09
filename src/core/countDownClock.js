@@ -3,7 +3,7 @@ const { LsCountdown, LsCountdownOptions, LsCountdownSufixes } = require('ls-coun
 // Target date to be the reference for the countdown
 let isActive = false;
 
-const timer = (time, cb, tick) => {
+const timer = (cb, tick,time) => {
 
     const currentDate = new Date()
     const targetDate = new Date(
@@ -11,8 +11,8 @@ const timer = (time, cb, tick) => {
         currentDate.getMonth(),
         currentDate.getDate(),
         currentDate.getHours(),
-        currentDate.getMinutes() + time,
-        currentDate.getSeconds()
+        currentDate.getMinutes()+(time.mins ||0),
+        currentDate.getSeconds() + (time.secs ||0)
     )
 
     // Event dispatched right after the countdown starts
@@ -25,17 +25,15 @@ const timer = (time, cb, tick) => {
         // process.stdout.write(minutes)
         // process.stdout.write(":")
         // process.stdout.write(seconds)
-        console.log(minutes, seconds)
+        // console.log(minutes, seconds)
         if (days === '00' & hours === '00' & minutes === '00' & seconds === '00') {
-            console.log('time up')
+            // console.log('time up')
             countdown.stop()
         }
     }
 
     // Event dispatched right after the countdown stops
     const onStop = ({ days, hours, minutes, seconds }) => {
-        console.log('stooped')
-        console.log(cb)
         cb()
     }
 
