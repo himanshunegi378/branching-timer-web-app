@@ -13,7 +13,7 @@ function TimerCollectionCard(props) {
         <Card className='m-1' style={{ width: '25%', minWidth: '250px' }}>
             <Card.Body>
                 <Card.Title>{timerCollectionDetail.message}</Card.Title>
-                <Button className='w-100' style={{height:'2rem'}} onClick={() => { dispatch(playCard({ cardId: props.id,loop:false })) }}>Play card</Button>
+                <Button className='w-100' style={{height:'2rem'}} onClick={() => { dispatch(playCard({ cardId: props.id,loop:true })) }}>Play card</Button>
                 <TimerList id={props.id} />
                 <Button size='sm' onClick={() => { dispatch(createTimer({ id: props.id })) }}>Add Timer</Button>
             </Card.Body>
