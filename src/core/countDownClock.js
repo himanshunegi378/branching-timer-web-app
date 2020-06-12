@@ -46,10 +46,10 @@ const timer = (cb, tick,time) => {
 
     // Create a new countdown class
     const countdown = new LsCountdown(options)
-
+    return countdown
     // starts to countdown
 
-    countdown.start()
+    // countdown.start()
 
 
 

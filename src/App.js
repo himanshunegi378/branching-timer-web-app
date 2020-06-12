@@ -10,6 +10,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { createNextTimer } from './slices/timerSlice';
 import { createTimerCard, playTimer } from "./slices/timerSlice";
 import CountDownTimer from './component/countDownTimer/countDownTimer';
+import AlarmSound from './component/alarmSound/alarmSound';
+import Notification from './component/notification/notification';
+
 function App() {
   const [grid, setGrid] = useState([])
   const [currentTimer, setcurrentTimer] = useState(countdownTimer.HEAD)
@@ -51,14 +54,17 @@ function App() {
 
   return (
     <div className="App container">
+    
       {/* <svg id='mySVG'>
       </svg> */}
+      <AlarmSound/>
       <Button onClick={() => { dispatch(createTimerCard({ id: 'himanshu' })) }}>Add Timer Card</Button>
       <Button onClick={() => { dispatch(playTimer()) }}>Play</Button>
       <div className='overflow-scroll'>
         <TimerCollectionCardGrid />
       </div>
       <CountDownTimer/>
+      <Notification/>
 
       {/* <div className='timer' style={{ display: 'grid', 'grid-auto-columns': '170px' }}>
         <TimerInput id='himanshu' row={1} col={1} />

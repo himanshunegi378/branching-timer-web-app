@@ -17,6 +17,7 @@
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "react-scripts": "3.4.1",
+    "react-web-notification": "^0.8.0",
     "treantjs": "^1.0.0",
     "uuid": "^8.1.0"
   },

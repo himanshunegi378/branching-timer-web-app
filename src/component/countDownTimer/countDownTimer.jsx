@@ -4,34 +4,49 @@ import store from "../../store/store";
 import countDownClock from "../../core/countDownClock";
 import { Howl } from 'howler';
 import alarmSound from './alarm.mp3'
+import Notification from 'react-web-notification';
 
 
 import { saveTimer, timerFinished } from '../../slices/timerSlice';
 function CountDownTimer() {
     const activeTimerId = useSelector(state => state.timer.activeTimer.id)
+    const timerState = useSelector(state => state.timer.timerState)
     const [currentTimerId, setCurrentTimerId] = useState('')
+    const [countDownClod, setCountDownClod] = useState({})
     const dispatch = useDispatch()
 
     const onTick = ({ days, hours, minutes, seconds }) => {
     }
 
     const onStop = () => {
-        var sound = new Howl({
-            src: [alarmSound]
-        });
-        let id = sound.play();
-        setTimeout(() => {
-            sound.stop(id)
-        }, 3000);
-        dispatch(timerFinished({ id: activeTimerId }))
+        timerCompleted(activeTimerId)
     }
+
+    const timerCompleted = (timerId) => {
+        if (timerId === activeTimerId) {
+        
+            dispatch(timerFinished({ id: timerId }))
+        }
+    }
+
+
     useEffect(() => {
-        if (activeTimerId !== currentTimerId && activeTimerId) {
+        if (activeTimerId) {
             let activeTimer = store.getState().timer.timers[activeTimerId]
-            countDownClock(onStop, onTick, { mins: activeTimer.mins, secs: activeTimer.secs })
+            setCurrentTimerId(activeTimerId)
+            let countdownclock = countDownClock(onStop, onTick, { mins: activeTimer.mins, secs: activeTimer.secs })
+            countdownclock.start()
+            setCountDownClod(countdownclock)
             console.log(' play timer', activeTimerId, activeTimer)
         }
     }, [activeTimerId])
+
+    useEffect(() => {
+        if (timerState === 'stopped') {
+            // countDownClod.stop()
+        }
+
+    }, [timerState])
     return (
         <></>
     )

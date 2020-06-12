@@ -27,7 +27,10 @@ export const timerslice = createSlice({
         activeTimer: { id: '' },// id of the timer which is currently running
         countDownTimerActive: false, //to check if any timer is running
         timerType: 'current', //'current' means only active timer will be palyer. 'all' means all timer card will be player serially until last
-        loopCard: false
+        loopCard: false,
+        timerState: 'playing',//'playing','paused','stopped'
+        playSound: false,
+        notification: {title:''}
     },
     reducers: {
         updateTimer: (state, action) => {
@@ -105,6 +108,7 @@ export const timerslice = createSlice({
                 state.loopCard = loop
                 state.timers[timerToPlayId].status = 'active'
                 state.activeTimer = { id: timerToPlayId }
+                state.timerState = 'playing'
             }
         },
         timerFinished: (state, action) => {
@@ -114,7 +118,11 @@ export const timerslice = createSlice({
             let activeTimerCard = state.timerCards[activeTimerCardId]
             let timersInCard = activeTimerCard.timerList
             let lengthOfTimersInCard = timersInCard.length
+
+            if (activeTimerId !== action.payload.id) return
             //all timers in card has not been palyed
+            state.playSound = true
+            state.notification = {title: activeTimerId}
             if (currentTimerIndex < lengthOfTimersInCard - 1) {
                 let newtimerToPlayIndex = currentTimerIndex + 1
                 let newTimerToPlayId = timersInCard[newtimerToPlayIndex]
@@ -136,12 +144,25 @@ export const timerslice = createSlice({
                     console.log('All timers in this card has been played')
                 }
             }
+        },
+        stopTimer: (state, action) => {
+            let activeTimerCardId = state.activeTimerCard.id
+            state.activeTimerCard.currentTimerIndex = 0
+            let activeTimerId = state.activeTimer.id
+            state.activeTimer.id = ''
+            state.timers[activeTimerId].status = 'inactive'
+
+            state.timerState = 'stopped'
+        },
+        stopSound: (state, action) => {
+            state.playSound = false
         }
+
 
 
     }
 })
 export const selectTimerCards = state => state.timerCards;
 
-export const { updateTimer, createNextTimer, createChildTimer, createTimer, createTimerCard,toggleCardLoop, saveTimer, playTimer, timerFinished, playCard } = timerslice.actions;
+export const { updateTimer, createNextTimer, createChildTimer, createTimer, createTimerCard, toggleCardLoop, saveTimer, playTimer, timerFinished, playCard, stopTimer,stopSound } = timerslice.actions;
 export default timerslice.reducer;
