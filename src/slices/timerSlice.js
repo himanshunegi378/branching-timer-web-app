@@ -28,9 +28,9 @@ export const timerslice = createSlice({
         countDownTimerActive: false, //to check if any timer is running
         timerType: 'current', //'current' means only active timer will be palyer. 'all' means all timer card will be player serially until last
         loopCard: false,
-        timerState: 'playing',//'playing','paused','stopped'
+        timerState: 'paused',//'playing','paused','stopped'
         playSound: false,
-        notification: {title:''}
+        notification: { title: '' }
     },
     reducers: {
         updateTimer: (state, action) => {
@@ -119,10 +119,10 @@ export const timerslice = createSlice({
             let timersInCard = activeTimerCard.timerList
             let lengthOfTimersInCard = timersInCard.length
 
-            if (activeTimerId !== action.payload.id) return
+            // if (activeTimerId !== action.payload.id) return
             //all timers in card has not been palyed
             state.playSound = true
-            state.notification = {title: activeTimerId}
+            state.notification = { title: activeTimerId }
             if (currentTimerIndex < lengthOfTimersInCard - 1) {
                 let newtimerToPlayIndex = currentTimerIndex + 1
                 let newTimerToPlayId = timersInCard[newtimerToPlayIndex]
@@ -130,6 +130,7 @@ export const timerslice = createSlice({
                 state.timers[activeTimerId].status = 'inactive'
                 state.timers[newTimerToPlayId].status = 'active'
                 state.activeTimer.id = newTimerToPlayId
+                state.timerState = 'playing'
             } else {
                 if (activeTimerCard.loop) {
                     let newtimerToPlayIndex = 0
@@ -138,6 +139,8 @@ export const timerslice = createSlice({
                     state.timers[activeTimerId].status = 'inactive'
                     state.timers[newTimerToPlayId].status = 'active'
                     state.activeTimer.id = newTimerToPlayId
+                    state.timerState = 'playing'
+
                 } else {
                     state.timers[activeTimerId].status = 'inactive'
                     state.activeTimer = ''
@@ -164,5 +167,5 @@ export const timerslice = createSlice({
 })
 export const selectTimerCards = state => state.timerCards;
 
-export const { updateTimer, createNextTimer, createChildTimer, createTimer, createTimerCard, toggleCardLoop, saveTimer, playTimer, timerFinished, playCard, stopTimer,stopSound } = timerslice.actions;
+export const { updateTimer, createNextTimer, createChildTimer, createTimer, createTimerCard, toggleCardLoop, saveTimer, playTimer, timerFinished, playCard, stopTimer, stopSound } = timerslice.actions;
 export default timerslice.reducer;
