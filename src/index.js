@@ -5,6 +5,22 @@ import App from './App';
 import store from './store/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
+import {throttle} from 'lodash';
+
+const saveState = (state) => {
+  try {
+    const serializedState = JSON.stringify(state);
+    localStorage.setItem('state', serializedState);
+  } catch {
+    // ignore write errors
+  }
+};
+
+store.subscribe(throttle(() => {
+  saveState({
+    timer: store.getState().timer
+  });
+},1000));
 
 ReactDOM.render(
   <React.StrictMode>
@@ -18,4 +34,4 @@ ReactDOM.render(
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+serviceWorker.register();

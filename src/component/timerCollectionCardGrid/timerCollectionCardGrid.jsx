@@ -1,22 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
 import TimerCollectionCard from '../timerCollectionCard/timerCollectionCard'
 
 function TimerCollectionCardGrid(props) {
-    const [timerCollectionCard_html, setTimerCollectionCard_html] = useState([])
+    const [timerCollectionCard_html, setTimerCollectionCard_html] = useState(()=>[])
 
 
     useEffect(() => {
+        let htmls = []
         for (const key in props.timerCollectionCards) {
             if (props.timerCollectionCards.hasOwnProperty(key)) {
                 let html = <TimerCollectionCard key={key} id={key} />
-                setTimerCollectionCard_html(previousState => [...previousState, html])
+                htmls.push(html)
             }
         }
+        setTimerCollectionCard_html(htmls)
     }, [props.timerCollectionCards])
 
     return (
         <div className='d-flex flex-row flex-shrink-0'>
+
             {timerCollectionCard_html}
         </div>
     )

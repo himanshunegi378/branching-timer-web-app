@@ -4,11 +4,10 @@ import { Howl } from 'howler';
 import alarmSound from './alarm.mp3'
 import { stopSound } from '../../slices/timerSlice';
 
-function AlarmSound() {
-    const playSound = useSelector(state => state.timer.playSound)
+function AlarmSound(props) {
     const dispatch = useDispatch()
     useEffect(() => {
-        if (playSound) {
+        if (true) {
             var sound = new Howl({
                 src: [alarmSound]
             });
@@ -21,11 +20,11 @@ function AlarmSound() {
 
         }
 
-    }, [playSound])
+    }, [])
     return (
-        <div>
+        <>
 
-        </div>
+        </>
     )
 }
 

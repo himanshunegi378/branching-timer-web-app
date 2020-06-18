@@ -1,21 +1,82 @@
-import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect } from 'react'
+import { useSelector, useStore, shallowEqual } from 'react-redux'
 import TimerList from '../timerList/timerList'
 import { Button, Card } from 'react-bootstrap'
-import { createTimer, playCard, toggleCardLoop, stopTimer } from '../../slices/timerSlice'
+import { createTimer, toggleCardLoop, stopTimer, togglePlayPause, timerFinished, deleteCard, TimerCard, Timer } from '../../slices/timerSlice'
 import { useDispatch } from "react-redux";
 import repeatIcon from './repeat.svg';
+import CountDownClockManager from "../countDownTimer/countDownClockManager";
+import AlarmSound from '../alarmSound/alarmSound'
+const { v1: uuidv1 } = require('uuid');
+
 
 
 function TimerCollectionCard(props) {
-    const timerCollectionDetail = useSelector(state => state.timer.timerCards[props.id])
-
-
+    const timerCollectionDetail = useSelector(state => {
+        if (state.timer.timerCards[props.id]) {
+            return state.timer.timerCards[props.id]
+        }
+        return TimerCard
+    })
+    const activeTimerId = useSelector(state => {
+        if (timerCollectionDetail) {
+            return timerCollectionDetail.activeTimer
+        }
+        else {
+            return { id: '', index: -1 }
+        }
+    }, shallowEqual)
+    const [alarmComponent, setAlarmComponent] = useState('')
+    const [activeTimer, setActiveTimer] = useState('')
+    const [remainingMin, setRemainingMin] = useState(() => '00')
+    const [remainingSec, setRemainingSec] = useState(() => '00')
+    const timerState = useSelector(state => {
+        if (timerCollectionDetail) {
+            return timerCollectionDetail.status
+        }
+    })
     const dispatch = useDispatch()
-    return (
+    const store = useStore()
 
+
+
+    useEffect(() => {
+        if (activeTimerId.id) {
+            let timer = store.getState().timer.timers[activeTimerId.id]
+            setActiveTimer(Object.assign({}, timer))
+        }
+        else{
+            setActiveTimer('')
+        }
+
+    }, [activeTimerId])
+
+    const onCountDownStopped = () => {
+        setRemainingMin('00')
+        setRemainingSec('00')
+    }
+
+    const onCountDownFinished = () => {
+        setAlarmComponent(<AlarmSound key={uuidv1()} />)
+        dispatch(timerFinished({ id: props.id }))
+    }
+
+    const onCountDownTick = (secs) => {
+        const minutes = parseInt(secs / 60)
+        const seconds = secs % 60
+        setRemainingMin(("0" + minutes).slice(-2))
+        setRemainingSec(("0" + seconds).slice(-2))
+    }
+
+    return (
         <Card className='m-1' style={{ width: '25%', minWidth: '250px' }}>
+            <div className='d-flex flex-row-reverse'>
+                <div onClick={() => { dispatch(deleteCard({ id: props.id })) }} >Close</div>
+            </div>
             <Card.Body>
+                <div className='h1'>
+                    {remainingMin}:{remainingSec}
+                </div>
                 <div className='row'>
                     <div className='col-10 align-content-center'>
                         <Card.Title>{timerCollectionDetail.message}</Card.Title>
@@ -27,11 +88,12 @@ function TimerCollectionCard(props) {
                     </div>
                 </div>
                 <div className='row'>
-                    <Button className='w-100 col-12' style={{ height: '2rem' }} onClick={() => { dispatch(playCard({ cardId: props.id, loop: true })) }}>Play card</Button>
-                    <Button className='w-100 col-12' style={{ height: '2rem' }} onClick={() => { dispatch(stopTimer()) }}>Stop card</Button>
+                    <Button className='w-100 col-12' style={{ height: '2rem' }} onClick={() => { dispatch(togglePlayPause({ cardId: props.id })) }}>{timerCollectionDetail.status === 'playing' ? `pause card` : `play card`}</Button>
+                    {timerCollectionDetail.status === 'stopped' ? null : <Button className='w-100 col-12' style={{ height: '2rem' }} onClick={() => { dispatch(stopTimer({ cardId: props.id })) }}>Stop card</Button>}
                 </div>
-
-                <TimerList id={props.id} />
+                <CountDownClockManager activeTimer={activeTimer} state={timerState} onFinish={onCountDownFinished} onTick={onCountDownTick} onStopped={() => { onCountDownStopped() }} />
+                {alarmComponent}
+                <TimerList id={props.id} activeTimerId={activeTimer.id} />
                 <Button size='sm' onClick={() => { dispatch(createTimer({ id: props.id })) }}>Add Timer</Button>
             </Card.Body>
 

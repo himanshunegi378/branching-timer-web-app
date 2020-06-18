@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import style from './style.module.css'
-import { saveTimer } from "../../slices/timerSlice";
+import { updateTimer } from "../../slices/timerSlice";
 import { useSelector, useDispatch } from 'react-redux'
 
 function Timer(props) {
@@ -13,7 +13,7 @@ function Timer(props) {
 
     useEffect(() => {
         if (unsavedChanges) {
-            dispatch(saveTimer({ id: TimerDetail.id, message: TimerDetail.message, mins: parseInt(mins), secs: parseInt(secs) }))
+            dispatch(updateTimer({ id: TimerDetail.id, message: TimerDetail.message, mins: parseInt(mins), secs: parseInt(secs) }))
             setunsavedChanges(false)
         }
 
@@ -21,28 +21,42 @@ function Timer(props) {
 
 
     useEffect(() => {
-        if(TimerDetail.status === 'active'){
+        if (props.active) {
             setMessageBgColor('alert-danger')
         }
-        else{
+        else {
             setMessageBgColor('alert-info')
         }
-       
-    }, [TimerDetail])
+
+    }, [props.active])
 
     return (
         <div id={props.id} className={`my-1 ${style.timer}`}>
             <div className={messageBgColor}>{TimerDetail.message}</div>
 
-            <input style={{ width: '3em' }} type='number' placeholder='m' value={mins} onChange={(e) => {
-                setMins(e.target.value)
-                setunsavedChanges(true)
-            }} />
+            <input style={{ width: '3em' }} type='number' placeholder='m' value={mins} onBlur={(e) => {
+                if (e.target.value === '') {
+                    setMins('0')
+                    setunsavedChanges(true)
+
+                }
+            }}
+                onChange={(e) => {
+                    setMins(e.target.value)
+                    setunsavedChanges(true)
+                }} />
             <span className='mx-1'>:</span>
-            <input style={{ width: '3em' }} type='number' placeholder='s' value={secs} onChange={(e) => {
-                setSecs(e.target.value)
-                setunsavedChanges(true)
-            }} />
+            <input style={{ width: '3em' }} type='number' placeholder='s' value={secs} onBlur={(e) => {
+                if (e.target.value === '') {
+                    setSecs('0')
+                    setunsavedChanges(true)
+
+                }
+            }}
+                onChange={(e) => {
+                    setSecs(e.target.value)
+                    setunsavedChanges(true)
+                }} />
         </div>
     )
 }

@@ -1,13 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import countdownTimer from "../core/dataStructure/new_timerTree";
+import { removeIn ,remove} from "immutable";
+const { v1: uuidv1 } = require('uuid');
 
-const TimerCard = {
+
+export const TimerCard = {
     message: '',
     timerList: [],
-    loop: false
+    loop: false,
+    status: 'stopped',
+    activeTimer: { id: '', index: -1 }
 }
 
-const Timer = {
+export const Timer = {
     id: '',
     message: '',
     mins: 0,
@@ -33,53 +38,49 @@ export const timerslice = createSlice({
         notification: { title: '' }
     },
     reducers: {
-        updateTimer: (state, action) => {
-            let updatedTimer = countdownTimer.updateTimer(action.payload.id, action.payload.opts)
-            state.timers[updatedTimer.id] = updatedTimer
-        },
-        createNextTimer: (state, action) => {
-            let newTimer = countdownTimer.insertTimerToRight(action.payload.id, action.payload.opts)
-            let { id, message } = newTimer
-            state.timers[newTimer.id] = { id, message }
-        },
-        createChildTimer: (state, action) => {
-            let newTimer = countdownTimer.insertTimerBelow(action.payload.id, action.payload.opts)
-            let { id, message } = newTimer
-            state.timers[newTimer.id] = { id, message, mins: 5, secs: 0 }
-        },
-        createTimer: (state, action) => {
-            let timercollectionId = action.payload.id
-            let findTimer = countdownTimer.findTimer(timercollectionId)
-            let childTimer = findTimer
-            while (childTimer.child) {
-                childTimer = childTimer.child
-            }
-            let newChildTimer = countdownTimer.insertTimerBelow(childTimer.id)
-            let { id, message } = newChildTimer
-            state.timers[id] = { id, message, mins: 5, secs: 0, status: 'inactive' }
-            state.timerCards[timercollectionId].timerList.push(id)
+        createTimerCard: (state, action) => {
+            const newCardId = uuidv1()
+            let newCard = { ...TimerCard }
+            newCard.message = 'no message'
+            state.timerCards[newCardId] = newCard
+            state.timerCardsSequence.push(newCardId)
 
         },
-        saveTimer: (state, action) => {
+        deleteCard: (state, action) => {
+            const cardId = action.payload.id
+            const { timerList } = state.timerCards[cardId]
+            let newTimers
+            let newState = Object.keys(state.timers).reduce((r, e) => {
+                if (timerList.indexOf(e) === -1) r[e] = state.timers[e];
+                return r
+            }, {})
+            state.timerCards[cardId].activeTimer = { id: '', index: -1 }
+            state.timerCards[cardId].timerList = []
+            state.timers = newState
+
+           
+            let newTimerCard=remove(state.timerCards,cardId)
+            state.timerCards = newTimerCard
+            state.timerCardsSequence = state.timerCardsSequence.filter(id=> id!==cardId)
+        },
+        createTimer: (state, action) => {
+            const timerCardId = action.payload.id
+            const newTimerId = uuidv1()
+
+            state.timers[newTimerId] = { id: newTimerId, message: 'no message', mins: 5, secs: 0, status: 'inactive' }
+            state.timerCards[timerCardId].timerList.push(newTimerId)
+        },
+        updateTimer: (state, action) => {
             let { id, mins, secs, message, status } = action.payload
             Object.assign(state.timers[id], action.payload)
             state.timers[id] = { id, message, mins, secs, status: status || state.timers[id].status }
         },
-        createTimerCard: (state, action) => {
-            let nexTimer = countdownTimer.insertTimerToRight(action.payload.id)
-            let { id, message } = nexTimer
-            let newCard = { ...TimerCard }
-            newCard.message = message
-            state.timerCards[id] = newCard
-            state.timerCardsSequence.push(id)
 
-        },
         toggleCardLoop: (state, action) => {
             let cardId = action.payload.id
             let TimerCard = state.timerCards[cardId]
             TimerCard.loop = !TimerCard.loop
-        }
-        ,
+        },
         //plays the next timer in the active card
         playTimer: (state, action) => {
             try {
@@ -101,6 +102,10 @@ export const timerslice = createSlice({
         playCard: (state, action) => {
             let { cardId, loop } = action.payload
             if (state.activeTimer.id) {
+                if (state.activeTimerCard.id === cardId) {
+                    console.log('pasuing')
+                    state.timerState = 'paused'
+                }
                 console.log('A timer is already running')
             } else {
                 let timerToPlayId = state.timerCards[cardId].timerList[0]
@@ -112,53 +117,86 @@ export const timerslice = createSlice({
             }
         },
         timerFinished: (state, action) => {
-            let activeTimerCardId = state.activeTimerCard.id
-            let currentTimerIndex = state.activeTimerCard.currentTimerIndex
-            let activeTimerId = state.activeTimer.id
-            let activeTimerCard = state.timerCards[activeTimerCardId]
-            let timersInCard = activeTimerCard.timerList
-            let lengthOfTimersInCard = timersInCard.length
+            const cardId = action.payload.id
+            const activeTimer = state.timerCards[cardId].activeTimer
+            const lengthOfTimerList = state.timerCards[cardId].timerList.length
 
-            // if (activeTimerId !== action.payload.id) return
-            //all timers in card has not been palyed
-            state.playSound = true
-            state.notification = { title: activeTimerId }
-            if (currentTimerIndex < lengthOfTimersInCard - 1) {
-                let newtimerToPlayIndex = currentTimerIndex + 1
-                let newTimerToPlayId = timersInCard[newtimerToPlayIndex]
-                state.activeTimerCard.currentTimerIndex = newtimerToPlayIndex
-                state.timers[activeTimerId].status = 'inactive'
-                state.timers[newTimerToPlayId].status = 'active'
-                state.activeTimer.id = newTimerToPlayId
-                state.timerState = 'playing'
+            if (activeTimer.index + 1 < lengthOfTimerList) {
+                const nextTimerIndex = state.timerCards[cardId].timerList[activeTimer.index + 1]
+                state.timerCards[cardId].activeTimer = { id: nextTimerIndex, index: activeTimer.index + 1 }
             } else {
-                if (activeTimerCard.loop) {
-                    let newtimerToPlayIndex = 0
-                    let newTimerToPlayId = timersInCard[newtimerToPlayIndex]
-                    state.activeTimerCard.currentTimerIndex = newtimerToPlayIndex
-                    state.timers[activeTimerId].status = 'inactive'
-                    state.timers[newTimerToPlayId].status = 'active'
-                    state.activeTimer.id = newTimerToPlayId
-                    state.timerState = 'playing'
+                if (state.timerCards[cardId].loop) {
+                    console.log('looping')
 
+                    state.timerCards[cardId].activeTimer = { id: state.timerCards[cardId].timerList[0], index: 0 }
                 } else {
-                    state.timers[activeTimerId].status = 'inactive'
-                    state.activeTimer = ''
-                    console.log('All timers in this card has been played')
+                    state.timerCards[cardId].activeTimer = { id: '', index: -1 }
+                    state.timerCards[cardId].status = 'paused'
+
                 }
+
             }
+            // let activeTimerCardId = state.activeTimerCard.id
+            // let currentTimerIndex = state.activeTimerCard.currentTimerIndex
+            // let activeTimerId = state.activeTimer.id
+            // let activeTimerCard = state.timerCards[activeTimerCardId]
+            // let timersInCard = activeTimerCard.timerList
+            // let lengthOfTimersInCard = timersInCard.length
+
+            // // if (activeTimerId !== action.payload.id) return
+            // //all timers in card has not been palyed
+            // state.playSound = true
+            // state.notification = { title: activeTimerId }
+            // if (currentTimerIndex < lengthOfTimersInCard - 1) {
+            //     let newtimerToPlayIndex = currentTimerIndex + 1
+            //     let newTimerToPlayId = timersInCard[newtimerToPlayIndex]
+            //     state.activeTimerCard.currentTimerIndex = newtimerToPlayIndex
+            //     state.timers[activeTimerId].status = 'inactive'
+            //     state.timers[newTimerToPlayId].status = 'active'
+            //     state.activeTimer.id = newTimerToPlayId
+            //     state.timerState = 'playing'
+            // } else {
+            //     if (activeTimerCard.loop) {
+            //         let newtimerToPlayIndex = 0
+            //         let newTimerToPlayId = timersInCard[newtimerToPlayIndex]
+            //         state.activeTimerCard.currentTimerIndex = newtimerToPlayIndex
+            //         state.timers[activeTimerId].status = 'inactive'
+            //         state.timers[newTimerToPlayId].status = 'active'
+            //         state.activeTimer.id = newTimerToPlayId
+            //         state.timerState = 'playing'
+
+            //     } else {
+            //         state.timers[activeTimerId].status = 'inactive'
+            //         state.activeTimer = ''
+            //         console.log('All timers in this card has been played')
+            //     }
+            // }
         },
         stopTimer: (state, action) => {
-            let activeTimerCardId = state.activeTimerCard.id
-            state.activeTimerCard.currentTimerIndex = 0
-            let activeTimerId = state.activeTimer.id
-            state.activeTimer.id = ''
-            state.timers[activeTimerId].status = 'inactive'
-
-            state.timerState = 'stopped'
+            const activeTimerCardId = action.payload.cardId
+            const timerCard = state.timerCards[activeTimerCardId]
+            // state.timerCards[activeTimerCardId] = Object.assign({}, timerCard, { activeTimer: { id: '', index: -1 },status:'stopped' })
+            state.timerCards[activeTimerCardId].activeTimer = { id: '', index: -1 }
+            state.timerCards[activeTimerCardId].status = 'stopped'
         },
         stopSound: (state, action) => {
             state.playSound = false
+        },
+        //should have card id as payload that needs to be play paused
+        togglePlayPause: (state, action) => {
+            let { cardId } = action.payload
+            const timerCard = state.timerCards[cardId]
+            let status = timerCard.status
+            if (status === 'playing') {
+                state.timerCards[cardId].status = 'paused'
+            }
+            else {
+                if (timerCard.activeTimer.index === -1) {
+                    state.timerCards[cardId] = Object.assign({}, timerCard, { activeTimer: { id: timerCard.timerList[0], index: 0 } })
+                }
+                state.timerCards[cardId].status = 'playing'
+            }
+
         }
 
 
@@ -167,5 +205,5 @@ export const timerslice = createSlice({
 })
 export const selectTimerCards = state => state.timerCards;
 
-export const { updateTimer, createNextTimer, createChildTimer, createTimer, createTimerCard, toggleCardLoop, saveTimer, playTimer, timerFinished, playCard, stopTimer, stopSound } = timerslice.actions;
+export const { updateTimer, createNextTimer, createChildTimer, createTimer, createTimerCard, toggleCardLoop, updateTimer: saveTimer, playTimer, timerFinished, playCard, stopTimer, stopSound, togglePlayPause, deleteCard } = timerslice.actions;
 export default timerslice.reducer;

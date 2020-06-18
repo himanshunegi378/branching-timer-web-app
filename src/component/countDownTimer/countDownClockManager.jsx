@@ -3,32 +3,39 @@ import CountDownClock from './countDownClock'
 import { useDispatch } from 'react-redux'
 
 const CountDownClockManager = (props) => {
-    const [timeInSeconds, setTimeInSeconds] = useState({t:0})
-    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState({t:0})
+    const [timeInSeconds, setTimeInSeconds] = useState(()=> {return{ t: 0 }})
+    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(()=>{return{ t: 0 } })
     useEffect(() => {
         console.log(props.activeTimer)
         if (props.activeTimer) {
             const { mins, secs } = props.activeTimer
             let seconds = (mins ? mins * 60 : 0) + (secs ? secs : 0)
-            setTimeInSeconds({t:seconds})
-            setRemainingTimeInSeconds({t:seconds})
+            setTimeInSeconds({ t: seconds })
+            setRemainingTimeInSeconds({ t: seconds })
 
         }
         else {
-            setTimeInSeconds({t:0})
-            setRemainingTimeInSeconds({t:0})
+            setTimeInSeconds({ t: 0 })
+            setRemainingTimeInSeconds({ t: 0 })
         }
 
     }, [props.activeTimer])
 
     useEffect(() => {
         if (props.state === 'stopped') {
-            setTimeInSeconds({t:0})
-            setRemainingTimeInSeconds({t:0})
+            setTimeInSeconds({ t: 0 })
+            setRemainingTimeInSeconds({ t: 0 })
+            props.onStopped()
         } else {
             if (props.state === 'paused') {
                 if (remainingTimeInSeconds.t > 0) {
-                    setTimeInSeconds(remainingTimeInSeconds.t)
+                    setTimeInSeconds(remainingTimeInSeconds)
+                }
+            } else {
+                if (props.state === 'playing') {
+                    if (remainingTimeInSeconds.t > 0) {
+                        setTimeInSeconds(remainingTimeInSeconds)
+                    }
                 }
             }
         }
@@ -42,9 +49,7 @@ const CountDownClockManager = (props) => {
 
     const onCountDownTick = (seconds) => {
         props.onTick(seconds)
-        if (props.state === 'playing') {
-            setRemainingTimeInSeconds({t:seconds})
-        }
+        setRemainingTimeInSeconds({ t: seconds })
     }
 
     return (
