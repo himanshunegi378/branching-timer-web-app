@@ -23,12 +23,17 @@ const CountDownClock = (props) => {
             }
             setRemainingTime(props.time.t)//set initial countdown timer of the timer
 
+            var start = Date.now();
+            const countDownValue = props.time.t
+
             //created a new timer with 
             let timer = setInterval(() => {
                 if (!unmounted) {
-                    setRemainingTime(remainingTime => {
-                        return (remainingTime - 1)
+                    var delta = Date.now() - start; // milliseconds elapsed since start
+                    setRemainingTime(value => {
+                        return parseInt(countDownValue - (delta / 1000))
                     })
+             
                 }
 
 
@@ -37,7 +42,7 @@ const CountDownClock = (props) => {
         }
 
         return () => {
-              
+
         }
     }, [props.time])
 
@@ -45,10 +50,12 @@ const CountDownClock = (props) => {
         return () => {
             clearInterval(timerId)
             setTimerId('')
-            setUnmounted(true)        }
+            setUnmounted(true)
+        }
     }, [])
 
     useEffect(() => {
+        console.log(remainingTime)
         // if timer has finished
         if (remainingTime <= 0 && timerId) {
             props.onFinished()
@@ -58,6 +65,8 @@ const CountDownClock = (props) => {
         props.onTick(remainingTime)
 
     }, [remainingTime])
+
+
 
     return (
         <></>
