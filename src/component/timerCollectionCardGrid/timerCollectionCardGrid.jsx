@@ -17,7 +17,7 @@ function TimerCollectionCardGrid(props) {
     }, [props.timerCollectionCards])
 
     return (
-        <div className='d-flex flex-row flex-shrink-0'>
+        <div className='d-flex flex-row' style={{alignItems: 'flex-start'}}>
 
             {timerCollectionCard_html}
         </div>

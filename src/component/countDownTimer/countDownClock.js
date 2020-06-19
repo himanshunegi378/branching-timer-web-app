@@ -33,10 +33,7 @@ const CountDownClock = (props) => {
                     setRemainingTime(value => {
                         return parseInt(countDownValue - (delta / 1000))
                     })
-             
                 }
-
-
             }, 1000);
             setTimerId(timer)//store new handler as timerId 
         }

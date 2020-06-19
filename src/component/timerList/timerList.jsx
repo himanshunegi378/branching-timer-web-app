@@ -10,7 +10,7 @@ function TimerList(props) {
         return []
     })
     const timerList_html = timerList.map((timerId, index) => {
-        return <Timer key={timerId} id={timerId} active={props.activeTimerId === timerId ? true : false} />
+        return <Timer key={timerId} id={timerId} cardId={props.id} active={props.activeTimerId === timerId ? true : false} />
     })
     return (
         <div>

@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import CountDownClock from './countDownClock'
-import { useDispatch } from 'react-redux'
 
 const CountDownClockManager = (props) => {
-    const [timeInSeconds, setTimeInSeconds] = useState(()=> {return{ t: 0 }})
-    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(()=>{return{ t: 0 } })
+    const [timeInSeconds, setTimeInSeconds] = useState(() => { return { t: 0 } })
+    const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(() => { return { t: 0 } })
     useEffect(() => {
         console.log(props.activeTimer)
         if (props.activeTimer) {
-            const { mins, secs } = props.activeTimer
-            let seconds = (mins ? mins * 60 : 0) + (secs ? secs : 0)
-            setTimeInSeconds({ t: seconds })
-            setRemainingTimeInSeconds({ t: seconds })
+                const { mins, secs } = props.activeTimer
+                let seconds = (mins ? mins * 60 : 0) + (secs ? secs : 0)
+                setTimeInSeconds({ t: seconds })
+                setRemainingTimeInSeconds({ t: seconds })
+
 
         }
         else {

@@ -1,7 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import timerReducer from '../slices/timerSlice';
 import notificationReducer from '../slices/notificationSlice';
-import { updateIn } from "immutable";
 
 
 const loadState = () => {
