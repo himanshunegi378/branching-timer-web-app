@@ -22,6 +22,7 @@
     "react-scripts": "3.4.1",
     "react-web-notification": "^0.8.0",
     "rx": "^4.1.0",
+    "rxjs": "^6.5.5",
     "treantjs": "^1.0.0",
     "uuid": "^8.1.0"
   },

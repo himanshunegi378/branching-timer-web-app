@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+
 let intervalId
 const CountDownClock = (props) => {
     const [unmounted, setUnmounted] = useState(false)
@@ -46,6 +47,7 @@ const CountDownClock = (props) => {
 
     useEffect(() => {
         return () => {
+            console.log('going down')
             clearInterval(intervalId)
             setTimerId('')
             setUnmounted(true)

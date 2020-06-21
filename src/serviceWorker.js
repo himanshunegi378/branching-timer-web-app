@@ -12,12 +12,12 @@
 
 const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
-    // [::1] is the IPv6 localhost address.
-    window.location.hostname === '[::1]' ||
-    // 127.0.0.0/8 are considered localhost for IPv4.
-    window.location.hostname.match(
-      /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
-    )
+  // [::1] is the IPv6 localhost address.
+  window.location.hostname === '[::1]' ||
+  // 127.0.0.0/8 are considered localhost for IPv4.
+  window.location.hostname.match(
+    /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
+  )
 );
 
 export function register(config) {
@@ -30,7 +30,21 @@ export function register(config) {
       // serve assets; see https://github.com/facebook/create-react-app/issues/2374
       return;
     }
-
+    window.addEventListener('activate', function (event) {
+      event.waitUntil(
+        caches.keys().then(function (cacheNames) {
+          return Promise.all(
+            cacheNames.filter(function (cacheName) {
+              // Return true if you want to remove this cache,
+              // but remember that caches are shared across
+              // the whole origin
+            }).map(function (cacheName) {
+              return caches.delete(cacheName);
+            })
+          );
+        })
+      );
+    });
     window.addEventListener('load', () => {
       const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
 
@@ -43,7 +57,7 @@ export function register(config) {
         navigator.serviceWorker.ready.then(() => {
           console.log(
             'This web app is being served cache-first by a service ' +
-              'worker. To learn more, visit https://bit.ly/CRA-PWA'
+            'worker. To learn more, visit https://bit.ly/CRA-PWA'
           );
         });
       } else {
@@ -71,7 +85,7 @@ function registerValidSW(swUrl, config) {
               // content until all client tabs are closed.
               console.log(
                 'New content is available and will be used when all ' +
-                  'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
+                'tabs for this page are closed. See https://bit.ly/CRA-PWA.'
               );
 
               // Execute callback

@@ -5,7 +5,9 @@ import App from './App';
 import store from './store/store';
 import { Provider } from 'react-redux';
 import * as serviceWorker from './serviceWorker';
-import {throttle} from 'lodash';
+import { throttle } from 'lodash';
+import Rx, { Observable, interval } from 'rxjs';
+import { throttle as rxThrottle } from 'rxjs/operators';
 
 const saveState = (state) => {
   try {
@@ -16,11 +18,27 @@ const saveState = (state) => {
   }
 };
 
-store.subscribe(throttle(() => {
-  saveState({
-    timer: store.getState().timer
+function getState$(store) {
+  return new Observable.create(function (observer) {
+    // emit the current state as first value:
+    observer.next(store.getState());
+    const unsubscribe = store.subscribe(function () {
+      // emit on every new state changes
+      observer.next(store.getState());
+    });
+    // let's return the function that will be called
+    // when the Observable is unsubscribed
+    return unsubscribe;
   });
-},1000));
+}
+
+const state$ = getState$(store);
+
+const subscription = state$.pipe(rxThrottle(ev => interval(1000))).subscribe(function (state) {
+  console.log(state);
+  saveState(state)
+});
+
 
 ReactDOM.render(
   <React.StrictMode>
