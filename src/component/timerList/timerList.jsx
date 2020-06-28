@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { } from 'react'
 import { useSelector } from 'react-redux'
 import Timer from '../timer/timer'
+import PropTypes from 'prop-types'
 
 function TimerList (props) {
   const timerList = useSelector((state) => {
@@ -17,6 +18,10 @@ function TimerList (props) {
       {timerList_html}
     </div>
   )
+}
+
+TimerList.propTypes = {
+
 }
 
 export default TimerList

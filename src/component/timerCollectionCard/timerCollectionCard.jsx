@@ -6,6 +6,8 @@ import { createTimer, toggleCardLoop, stopTimer, togglePlayPause, timerFinished,
 
 import CountDownClockManager from '../countDownTimer/countDownClockManager'
 import AlarmSound from '../alarmSound/alarmSound'
+import PropTypes from 'prop-types'
+
 const { v1: uuidv1 } = require('uuid')
 
 function TimerCollectionCard (props) {
@@ -45,6 +47,13 @@ function TimerCollectionCard (props) {
     }
   }, [activeTimerId])
 
+  useEffect(() => {
+    if (timerCollectionDetail.status === 'playing') {
+      dispatch(stopTimer({ cardId: props.id }))
+    }
+  }
+  , [])
+
   const onCountDownStopped = () => {
     setRemainingMin('00')
     setRemainingSec('00')
@@ -63,7 +72,7 @@ function TimerCollectionCard (props) {
   }
 
   return (
-    <Card className='m-1 shadow-lg' style={{ width: '25%', minWidth: '250px' }}>
+    <Card className='m-1 shadow-lg' style={{ width: '25%', minWidth: '265px', maxWidth: '265px' }}>
       <div className='d-flex flex-row-reverse'>
         <Button size='sm' className='btn btn-danger' onClick={() => { dispatch(deleteCard({ id: props.id })) }} >X</Button>
       </div>
@@ -136,6 +145,10 @@ function TimerCollectionCard (props) {
 
     </Card>
   )
+}
+
+TimerCollectionCard.propTypes = {
+  id: PropTypes.any
 }
 
 export default TimerCollectionCard

@@ -1,41 +1,50 @@
-import { configureStore } from '@reduxjs/toolkit';
-import timerReducer from '../slices/timerSlice';
-import notificationReducer from '../slices/notificationSlice';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit'
+import timerReducer from '../slices/timerSlice'
+import notificationReducer from '../slices/notificationSlice'
+import todoReducer from '../slices/todoSlice'
+import {
+  persistStore, persistReducer, FLUSH,
+  REHYDRATE, PAUSE, PERSIST,
+  PURGE, REGISTER
+} from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
 
-
-const loadState = () => {
-  try {
-    const serializedState = localStorage.getItem('state');
-    if (serializedState === null) {
-      return undefined;
-    }
-    return JSON.parse(serializedState);
-  } catch (err) {
-    return undefined;
+const mainConfig = [
+  {
+    persistConfig: { key: 'timer', storage: storage },
+    reducer: timerReducer,
+    rootName: 'timer'
+  },
+  {
+    persistConfig: { key: 'todo', storage: storage },
+    reducer: todoReducer,
+    rootName: 'todo'
   }
-};
+]
 
-const persistedstate = loadState()
-if (persistedstate) {
-  for (const key in persistedstate.timer.timerCards) {
-    if (persistedstate.timer.timerCards.hasOwnProperty(key)) {
-      const timerCard = persistedstate.timer.timerCards[key];
-      persistedstate.timer.timerCards[key] = { ...timerCard, status: 'stopped', activeTimer: { id: '', index: -1 } }
-
+function persistStoreCreator (config = mainConfig) {
+  const combinedReducer = {}
+  config.forEach(element => {
+    try {
+      const persistConfig = element.persistConfig
+      const reducer = element.reducer
+      const rootName = element.rootName
+      combinedReducer[rootName] = persistReducer(persistConfig, reducer)
+    } catch (err) {
+      console.log(err)
     }
-  }
+  })
+  const store = configureStore({
+    reducer: combinedReducer,
+    middleware: getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+      }
+    })
+  })
+  const persistor = persistStore(store)
+  return { persistor, store }
 }
 
-export default configureStore({
-  reducer: {
-    timer: timerReducer,
-    notification: notificationReducer
-  },
-  preloadedState: persistedstate
-});
-
-
-
-
-
-
+export { persistStoreCreator }
+export default persistStoreCreator

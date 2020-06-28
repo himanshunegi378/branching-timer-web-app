@@ -37,21 +37,20 @@ function Timer (props) {
 
   return (
     <div id={props.id} className={`my-1 ${style.timer}`}>
-      <ul className={titleBgColor}>
-        <li></li>
-        <li onClick={() => setEditTitle(true)} onBlur={() => {
+      <div className={`${titleBgColor} d-flex justify-content-between`}>
+        <div className='pl-2' onClick={() => setEditTitle(true)} onBlur={() => {
           setEditTitle(false)
           dispatch(editTimerTitle({ timerId: props.id, newTitle: timerTitle }))
         }}>
           {editTitle ? <input autoFocus type='text' value={timerTitle} onChange={(e) => setTimerTitle(e.target.value)} /> : TimerDetail.title}
-        </li>
-        <li >
+        </div>
+        <div >
           <Button size='sm' className='btn-danger' onClick={() => {
             dispatch(deleteTimer({ cardId: props.cardId, timerId: props.id }))
           }}>x
           </Button>
-        </li>
-      </ul>
+        </div>
+      </div>
       {/* <div className={messageBgColor}>{TimerDetail.message}</div> */}
       <div className='text-center'>
         <input style={{ width: '3em' }} type='number' placeholder='m' value={mins} onBlur={(e) => {

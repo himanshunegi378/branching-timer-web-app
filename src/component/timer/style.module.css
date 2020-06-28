@@ -1,7 +1,7 @@
-.timer {
+ .timer {
     border: 1px solid black;
 }
-
+/*
 li:first-child {
     margin-right: auto;
     visibility: hidden;
@@ -24,4 +24,4 @@ li {
     display: flex;
     margin: 1px;
     padding: 1px;
-}
+} */
