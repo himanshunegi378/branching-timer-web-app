@@ -4,22 +4,13 @@ import App from './App'
 import { persistStoreCreator } from './store/store'
 import { Provider } from 'react-redux'
 import * as serviceWorker from './serviceWorker'
-import {
-  BrowserRouter as Router, Switch, Route
 
-} from 'react-router-dom'
 const { store, persistor } = persistStoreCreator()
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <Router>
-        <Switch>
-          <Route path='/branching-timer-web-app'>
-            <App />
-          </Route>
-        </Switch>
-      </Router>
-    </Provider>
+    <App />
+      </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 )
