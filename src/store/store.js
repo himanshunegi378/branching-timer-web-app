@@ -22,7 +22,8 @@ const mainConfig = [
   }
 ]
 
-function persistStoreCreator (config = mainConfig) {
+function persistStoreCreator(config = mainConfig) {
+
   const combinedReducer = {}
   config.forEach(element => {
     try {
@@ -45,6 +46,6 @@ function persistStoreCreator (config = mainConfig) {
   const persistor = persistStore(store)
   return { persistor, store }
 }
+const { persistor, store } = persistStoreCreator()
 
-export { persistStoreCreator }
-export default persistStoreCreator
+export { persistor, store }

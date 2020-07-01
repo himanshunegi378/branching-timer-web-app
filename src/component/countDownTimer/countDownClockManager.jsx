@@ -1,58 +1,83 @@
-import React, { useState, useEffect } from 'react'
-import CountDownClock from './countDownClock'
+import React, { useEffect, useRef } from 'react'
+import createCountDownTimer, { createCountDownTimerWithCardId, doesCardIdExist } from './newCountDownClock'
 
 const CountDownClockManager = (props) => {
-  const [timeInSeconds, setTimeInSeconds] = useState(() => { return { t: 0 } })
-  const [remainingTimeInSeconds, setRemainingTimeInSeconds] = useState(() => { return { t: 0 } })
-  useEffect(() => {
-    console.log(props.activeTimer)
-    if (props.activeTimer) {
-      const { mins, secs } = props.activeTimer
-      const seconds = (mins ? mins * 60 : 0) + (secs || 0)
-      setTimeInSeconds({ t: seconds })
-      setRemainingTimeInSeconds({ t: seconds })
-    } else {
-      setTimeInSeconds({ t: 0 })
-      setRemainingTimeInSeconds({ t: 0 })
-    }
-  }, [props.activeTimer])
+  const { onFinish = () => { }, onTick = () => { }, onStopped = () => { }, activeTimer, state, cardId } = props
 
-  useEffect(() => {
-    if (props.state === 'stopped') {
-      setTimeInSeconds({ t: 0 })
-      setRemainingTimeInSeconds({ t: 0 })
-      props.onStopped()
-    } else {
-      if (props.state === 'paused') {
-        if (remainingTimeInSeconds.t > 0) {
-          setTimeInSeconds(remainingTimeInSeconds)
-        }
-      } else {
-        if (props.state === 'playing') {
-          if (remainingTimeInSeconds.t > 0) {
-            setTimeInSeconds(remainingTimeInSeconds)
-          }
-        }
+
+  const onCountDownFinished = React.useCallback(
+    () => {
+      onFinish()
+    },
+    [onFinish],
+  )
+
+  const onCountDownTick = React.useCallback(
+    (seconds) => {
+      onTick(seconds)
+    },
+    [onTick],
+  )
+
+
+  useEffectDebugger(() => {
+    if (!activeTimer) return
+    const timer = doesCardIdExist(cardId)
+    if (timer) {
+      console.log(timer)
+      clearInterval(timer.handle)
+      createCountDownTimerWithCardId(cardId, timer.remainingTime, onTick, onFinish)
+    }
+    else {
+      const { mins, secs } = activeTimer
+      const seconds = (mins ? mins * 60 : 0) + (secs || 0)
+      const timer = createCountDownTimerWithCardId(cardId, seconds, onTick, onFinish)
+      return () => {
+        // clearInterval(timer.handle)
+        // onStopped()
+
       }
     }
-  }, [props.state])
-
-  const onCountDownFinished = () => {
-    props.onFinish()
-    // set state of timerFinished to true
-  }
-
-  const onCountDownTick = (seconds) => {
-    props.onTick(seconds)
-    setRemainingTimeInSeconds({ t: seconds })
-  }
+  }, [activeTimer, cardId])
 
   return (
     <>
-      {props.state === 'playing' ? <CountDownClock time={timeInSeconds} onTick={onCountDownTick} onFinished={onCountDownFinished} /> : null}
 
     </>
   )
 }
+
+const usePrevious = (value, initialValue) => {
+  const ref = useRef(initialValue);
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
+const useEffectDebugger = (effectHook, dependencies, dependencyNames = []) => {
+  const previousDeps = usePrevious(dependencies, []);
+
+  const changedDeps = dependencies.reduce((accum, dependency, index) => {
+    if (dependency !== previousDeps[index]) {
+      const keyName = dependencyNames[index] || index;
+      return {
+        ...accum,
+        [keyName]: {
+          before: previousDeps[index],
+          after: dependency
+        }
+      };
+    }
+
+    return accum;
+  }, {});
+
+  if (Object.keys(changedDeps).length) {
+    console.log('[use-effect-debugger] ', changedDeps);
+  }
+
+  useEffect(effectHook, dependencies);
+};
 
 export default CountDownClockManager

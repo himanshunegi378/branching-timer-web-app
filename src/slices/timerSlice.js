@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { remove, removeIn } from 'immutable'
+import { timer } from 'rxjs'
 const { v1: uuidv1 } = require('uuid')
 
 export const TimerCard = {
@@ -24,14 +25,6 @@ export const timerslice = createSlice({
     timers: {}, // contains timer deatail of all the timer in every timercard
     timerCards: {}, // contains timercard with array of timers in it
     timerCardsSequence: [], // array of ids of timer card to maintain order in which ther are added
-    activeTimerCard: { id: '', currentTimerIndex: '' }, // id fo the card in which the current timer is running and the index of the timer in the card
-    activeTimer: { id: '' }, // id of the timer which is currently running
-    countDownTimerActive: false, // to check if any timer is running
-    timerType: 'current', // 'current' means only active timer will be palyer. 'all' means all timer card will be player serially until last
-    loopCard: false,
-    timerState: 'paused', // 'playing','paused','stopped'
-    playSound: false,
-    notification: { title: '' }
   },
   reducers: {
     createTimerCard: (state, action) => {
@@ -95,7 +88,22 @@ export const timerslice = createSlice({
       Object.assign(state.timers[id], action.payload)
       state.timers[id] = { id, title, mins, secs, status: status || state.timers[id].status }
     },
-
+    pauseCard: (state, action) => {
+      const { cardId } = action.payload
+      if (cardId) {
+        state.timerCards[cardId].status = 'paused'
+      }
+    },
+    playCard: (state, action) => {
+      const { cardId } = action.payload
+      const timerCard = state.timerCards[cardId]
+      if (cardId) {
+        if (timerCard.activeTimer.index === -1) {
+          state.timerCards[cardId] = Object.assign({}, timerCard, { activeTimer: { id: timerCard.timerList[0], index: 0 } })
+        }
+        state.timerCards[cardId].status = 'playing'
+      }
+    },
     toggleCardLoop: (state, action) => {
       const cardId = action.payload.id
       const TimerCard = state.timerCards[cardId]
@@ -115,23 +123,6 @@ export const timerslice = createSlice({
         }
       } catch (error) {
         console.log(error)
-      }
-    },
-    playCard: (state, action) => {
-      const { cardId, loop } = action.payload
-      if (state.activeTimer.id) {
-        if (state.activeTimerCard.id === cardId) {
-          console.log('pasuing')
-          state.timerState = 'paused'
-        }
-        console.log('A timer is already running')
-      } else {
-        const timerToPlayId = state.timerCards[cardId].timerList[0]
-        state.activeTimerCard = { id: cardId, currentTimerIndex: 0 }
-        state.loopCard = loop
-        state.timers[timerToPlayId].status = 'active'
-        state.activeTimer = { id: timerToPlayId }
-        state.timerState = 'playing'
       }
     },
     timerFinished: (state, action) => {
@@ -177,11 +168,19 @@ export const timerslice = createSlice({
         }
         state.timerCards[cardId].status = 'playing'
       }
+    },
+    onCardUnmounting: (state, action) => {
+      const { cardId, mins, secs } = action.payload
+      state.timerCards[cardId].lastPlayed = { time: new Date().getTime(), mins: mins, secs: secs }
+    },
+    onMounting: (state, action) => {
+      const { cardId } = action.payload
+      state.timerCards[cardId].lastPlayed = undefined
     }
 
   }
 })
 export const selectTimerCards = state => state.timerCards
 
-export const { updateTimer, createNextTimer, createChildTimer, createTimer, createTimerCard, toggleCardLoop, updateTimer: saveTimer, playTimer, timerFinished, playCard, stopTimer, stopSound, togglePlayPause, deleteCard, deleteTimer, editCardTitle, editTimerTitle } = timerslice.actions
+export const { updateTimer, createNextTimer, createChildTimer, createTimer, createTimerCard, toggleCardLoop, updateTimer: saveTimer, playTimer, timerFinished, playCard, stopTimer, stopSound, togglePlayPause, deleteCard, deleteTimer, editCardTitle, editTimerTitle, onCardUnmounting, onMounting, pauseCard } = timerslice.actions
 export default timerslice.reducer

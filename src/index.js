@@ -1,11 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
-import { persistStoreCreator } from './store/store'
+import { persistor,store } from './store/store'
 import { Provider } from 'react-redux'
 import * as serviceWorker from './serviceWorker'
 
-const { store, persistor } = persistStoreCreator()
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

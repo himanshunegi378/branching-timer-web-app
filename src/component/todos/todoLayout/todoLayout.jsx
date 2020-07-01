@@ -6,6 +6,7 @@ import TodoList from '../todoList/todoList'
 import TodoDateSelector from '../todoDateSelector/todoDataSelector'
 
 export default function TodoLayout (props) {
+  console.log('im in todo')
   const dispatch = useDispatch()
   const [currentSelectedDateInString, setCurrentSelectedDateInString] = useState(convertDatetoString(new Date()))
   const store = useStore()

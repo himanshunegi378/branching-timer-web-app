@@ -8,14 +8,15 @@ import { createTimerCard } from './slices/timerSlice'
 import TodoLayout from './component/todos/todoLayout/todoLayout'
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
+import { BrowserRouter as Router, Route, Switch, Link } from "react-router-dom";
 
-function App (props) {
+function App(props) {
   const dispatch = useDispatch()
   const timerCards = useSelector(state => state.timer.timerCards)// will be passed to timer collection card grid
 
   return (
     <>
-      <Tabs>
+      {/* <Tabs>
         <TabList>
           <Tab>Timer</Tab>
           <Tab>Todo</Tab>
@@ -29,7 +30,23 @@ function App (props) {
         <TabPanel>
           <TodoLayout />
         </TabPanel>
-      </Tabs>
+      </Tabs> */}
+      <Router>
+        <Switch>
+          <Route path='/branching-timer-web-app/todo'>
+            <TodoLayout />
+          </Route>
+          <Route path='/'>
+            <div>
+              <Link to='/branching-timer-web-app/todo'>Todo</Link>
+              <Button onClick={() => { dispatch(createTimerCard()) }}>Add Timer Card</Button>
+              <div className='overflow-auto' style={{ height: '80vh' }}>
+                <TimerCollectionCardGrid timerCollectionCards={timerCards} />
+              </div>
+            </div>
+          </Route>
+        </Switch>
+      </Router>
 
     </>
   )

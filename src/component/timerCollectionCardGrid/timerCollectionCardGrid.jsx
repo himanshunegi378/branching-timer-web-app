@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import TimerCollectionCard from '../timerCollectionCard/timerCollectionCard'
+import { Link, Route, Switch } from "react-router-dom";
+import TodoLayout from '../todos/todoLayout/todoLayout'
 
-function TimerCollectionCardGrid (props) {
+function TimerCollectionCardGrid(props) {
   const [timerCollectionCard_html, setTimerCollectionCard_html] = useState(() => [])
 
   useEffect(() => {
@@ -16,10 +18,12 @@ function TimerCollectionCardGrid (props) {
   }, [props.timerCollectionCards])
 
   return (
+
     <div className='d-flex flex-row' style={{ alignItems: 'flex-start' }}>
 
       {timerCollectionCard_html}
     </div>
+
   )
 }
 
