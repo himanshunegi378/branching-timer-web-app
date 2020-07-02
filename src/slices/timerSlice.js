@@ -89,9 +89,11 @@ export const timerslice = createSlice({
       state.timers[id] = { id, title, mins, secs, status: status || state.timers[id].status }
     },
     pauseCard: (state, action) => {
-      const { cardId } = action.payload
+      const { cardId, mins, secs } = action.payload
       if (cardId) {
         state.timerCards[cardId].status = 'paused'
+        state.timerCards[cardId].activeTimer.mins = mins
+        state.timerCards[cardId].activeTimer.secs = secs
       }
     },
     playCard: (state, action) => {

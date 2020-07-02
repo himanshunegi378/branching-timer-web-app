@@ -4,16 +4,11 @@ import TimerList from '../timerList/timerList'
 import { Button, Card } from 'react-bootstrap'
 import { createTimer, toggleCardLoop, stopTimer, togglePlayPause, timerFinished, deleteCard, TimerCard, editCardTitle, onCardUnmounting, onMounting, playCard, pauseCard } from '../../slices/timerSlice'
 
-import CountDownClockManager from '../countDownTimer/countDownClockManager'
-import AlarmSound from '../alarmSound/alarmSound'
-import PropTypes from 'prop-types'
 import { PlayButton } from "./playButton";
 import { LoopButton } from "./loopButton";
 import StopButton from './stopButton'
-import { Link, Route, Switch } from "react-router-dom";
 import { doesCardIdExist, createCountDownTimerWithCardId, createCountDownTimerWithCardIdWithoutCallBack } from '../countDownTimer/newCountDownClock'
 
-const { v1: uuidv1 } = require('uuid')
 
 export default function TimerCollectionCard(props) {
   const timerCollectionDetail = useSelector(state => {
@@ -44,6 +39,7 @@ export default function TimerCollectionCard(props) {
   const store = useStore()
 
 
+
   useEffect(() => {
     if (activeTimerId.id) {
       const timer = store.getState().timer.timers[activeTimerId.id]
@@ -53,22 +49,7 @@ export default function TimerCollectionCard(props) {
     }
   }, [activeTimerId, store])
 
-  useEffect(() => {
 
-    return () => {
-      console.log('card unmounting')
-    }
-  }, [])
-
-  const onCountDownStopped = () => {
-    setRemainingMin('00')
-    setRemainingSec('00')
-  }
-
-  const memofinished = useCallback(() => {
-    setAlarmComponent(<AlarmSound key={uuidv1()} />)
-    dispatch(timerFinished({ id: props.id }))
-  }, [dispatch, props.id])
 
   const onCountDownTick = (secs) => {
 
@@ -78,13 +59,6 @@ export default function TimerCollectionCard(props) {
     setRemainingSec(('0' + seconds).slice(-2))
   }
 
-  const memostop = useCallback(
-    () => {
-      onCountDownStopped()
-    },
-    [],
-  )
-
   const memoTick = useCallback(
     (tick) => {
       onCountDownTick(tick)
@@ -93,33 +67,58 @@ export default function TimerCollectionCard(props) {
   )
 
   useEffect(() => {
-    if (timerCollectionDetail.status === 'stopped' || timerCollectionDetail.status === 'paused') {
-      const data = doesCardIdExist(props.id)
-      if (data) {
-        clearInterval(data.handle)
-        if (timerCollectionDetail.status === 'stopped') {
-          dispatch(stopTimer({ cardId: props.id }))
-          data.destroy()
-        }
-      }
-    } else {
-      if (timerCollectionDetail.status === 'playing') {
-        createCountDownTimerWithCardId(props.id, memoTick)
-        // return () => {
-        //   const data = doesCardIdExist(props.id)
-        //   if (data) {
-        //     createCountDownTimerWithCardIdWithoutCallBack(props.id)
-        //   }
-        // }
-      }
+    window.addEventListener('beforeunload', (event) => {
+      event.preventDefault()
+      dispatch(pauseCard({ cardId: props.id, mins: remainingMin, secs: remainingSec }))
+    });
 
+  }, [dispatch, props.id, remainingMin, remainingSec])
+
+  useEffect(() => {
+
+    switch (timerCollectionDetail.status) {
+      case 'stopped':
+        {
+          const data = doesCardIdExist(props.id)
+          if (data) {
+            clearInterval(data.handle)
+            dispatch(stopTimer({ cardId: props.id }))
+            data.destroy()
+            setRemainingMin('00')
+            setRemainingSec('00')
+          }
+          break;
+        }
+      case 'paused':
+        {
+          const data = doesCardIdExist(props.id)
+          if (data) {
+            clearInterval(data.handle)
+          }
+          break;
+        }
+      case 'playing':
+        {
+          createCountDownTimerWithCardId(props.id, memoTick)
+          return () => {
+            const data = doesCardIdExist(props.id)
+            if (data) {
+              clearInterval(data.handle)
+              createCountDownTimerWithCardIdWithoutCallBack(props.id)
+            }
+          }
+        }
+
+
+      default:
+        break;
     }
+
 
   }, [dispatch, memoTick, props.id, timerCollectionDetail.status])
 
   return (
     <>
-      {/* <CountDownClockManager cardId={props.id} activeTimer={activeTimer} state={timerState} onFinish={memofinished} onTick={memoTick} onStopped={memostop} /> */}
 
 
       <Card className='m-1 shadow-lg' style={{ width: '25%', minWidth: '265px', maxWidth: '265px' }}>
@@ -147,7 +146,7 @@ export default function TimerCollectionCard(props) {
           <div className='d-flex  user-select-none'>
             <div className=' mx-2 h-auto my-1' style={{ width: '2rem' }}>
               <PlayButton isPlaying={timerCollectionDetail.status === 'playing'} onChange={(state) => {
-                const action = state ? playCard({ cardId: props.id }) : pauseCard({ cardId: props.id })
+                const action = state ? playCard({ cardId: props.id }) : pauseCard({ cardId: props.id, mins: remainingMin, secs: remainingSec })
                 dispatch(action)
               }} />
             </div>
@@ -167,6 +166,3 @@ export default function TimerCollectionCard(props) {
     </>
   )
 }
-
-
-
