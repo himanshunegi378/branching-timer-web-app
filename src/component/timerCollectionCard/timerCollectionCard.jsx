@@ -84,14 +84,17 @@ export default function TimerCollectionCard(props) {
             clearInterval(data.handle)
             dispatch(stopTimer({ cardId: props.id }))
             data.destroy()
-            setRemainingMin('00')
-            setRemainingSec('00')
+
           }
+          setRemainingMin('00')
+          setRemainingSec('00')
           break;
         }
       case 'paused':
         {
           const data = doesCardIdExist(props.id)
+          setRemainingMin(timerCollectionDetail.activeTimer.mins)
+          setRemainingSec(timerCollectionDetail.activeTimer.secs)
           if (data) {
             clearInterval(data.handle)
           }
@@ -115,7 +118,7 @@ export default function TimerCollectionCard(props) {
     }
 
 
-  }, [dispatch, memoTick, props.id, timerCollectionDetail.status])
+  }, [dispatch, memoTick, props.id, timerCollectionDetail.activeTimer.mins, timerCollectionDetail.activeTimer.secs, timerCollectionDetail.status])
 
   return (
     <>

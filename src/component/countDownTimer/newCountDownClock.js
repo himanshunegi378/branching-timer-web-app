@@ -59,7 +59,7 @@ function createCountDownTimerWithCardId(cardId, onTick, onFinished) {
             }
             onTick(remainingTime)
         }
-    reduceRemainingTime()
+    onTick(remainingTime)
     const timerHandle = setInterval(reduceRemainingTime, 1000);
 
     timersRunning[cardId].handle = timerHandle
