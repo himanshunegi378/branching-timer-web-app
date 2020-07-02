@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 
-function TodoInput (props) {
+function TodoInput(props) {
   const { onTodoAdded = () => { }, className = '' } = props
   const todoInput = useRef('')
 
@@ -9,6 +9,7 @@ function TodoInput (props) {
     const task = todoInput.current.value
     if (task) {
       onTodoAdded({ task: task })
+      todoInput.current.value = ''
     } else {
       console.warn('No task defined')
     }
@@ -16,8 +17,8 @@ function TodoInput (props) {
   return (
     <div className={className}>
       <form onSubmit={handleSubmit}>
-        <input ref={todoInput} type='text'/>
-        <input type='submit' value='-->'/>
+        <input ref={todoInput} type='text' />
+        <input type='submit' value='-->' />
       </form>
     </div>
   )
