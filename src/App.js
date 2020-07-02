@@ -20,11 +20,20 @@ function App(props) {
   const card = useRef(null)
 
   useEffect(() => {
+    window.addEventListener('resize',() => {
+      if(!card.current) return
+      card.current.style.height = `${window.innerHeight - card.current.offsetTop}px`
+    })
+  }, [])
+
+  useEffect(() => {
+    
     if (tabIndex === 0) {
       card.current.style.height = `${window.innerHeight - card.current.offsetTop}px`
     }
 
   }, [tabIndex])
+  
   return (
     <>
       <Tabs selectedIndex={tabIndex} onSelect={(index, previousIndex, event) => setTabIndex(index)}>
