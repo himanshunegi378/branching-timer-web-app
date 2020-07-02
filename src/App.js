@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import TimerCollectionCardGrid from './component/timerCollectionCardGrid/timerCollectionCardGrid'
@@ -16,17 +16,10 @@ import 'rc-menu/assets/index.css'
 function App(props) {
   const dispatch = useDispatch()
   const timerCards = useSelector(state => state.timer.timerCards)// will be passed to timer collection card grid
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [isDrawerHandlerPresent, setIsDrawerHandlerPresent] = useState(false)
+  const card = useRef(null)
   useEffect(() => {
-    if (window.innerWidth > 768) {
-      setIsDrawerOpen(true)
-      setIsDrawerHandlerPresent(false)
-    } else {
-      setIsDrawerHandlerPresent(true)
-      setIsDrawerOpen(false)
-
-    }
+    card.current.style.height = `${window.innerHeight - card.current.offsetTop}px`
+    console.log(window.innerHeight)
   }, [])
   return (
     <>
@@ -37,7 +30,7 @@ function App(props) {
         </TabList>
         <TabPanel>
           <Button onClick={() => { dispatch(createTimerCard()) }}>Add Timer Card</Button>
-          <div className='overflow-auto' style={{ height: '80vh' }}>
+          <div ref={card} className='overflow-auto'>
             <TimerCollectionCardGrid timerCollectionCards={timerCards} />
           </div>
         </TabPanel>
