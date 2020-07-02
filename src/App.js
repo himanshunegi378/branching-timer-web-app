@@ -16,14 +16,18 @@ import 'rc-menu/assets/index.css'
 function App(props) {
   const dispatch = useDispatch()
   const timerCards = useSelector(state => state.timer.timerCards)// will be passed to timer collection card grid
+  const [tabIndex, setTabIndex] = useState(0)
   const card = useRef(null)
+
   useEffect(() => {
-    card.current.style.height = `${window.innerHeight - card.current.offsetTop}px`
-    console.log(window.innerHeight)
-  }, [])
+    if (tabIndex === 0) {
+      card.current.style.height = `${window.innerHeight - card.current.offsetTop}px`
+    }
+
+  }, [tabIndex])
   return (
     <>
-      <Tabs>
+      <Tabs selectedIndex={tabIndex} onSelect={(index, previousIndex, event) => setTabIndex(index)}>
         <TabList>
           <Tab>Timer</Tab>
           <Tab>Todo</Tab>
