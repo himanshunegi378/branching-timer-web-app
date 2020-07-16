@@ -1,126 +1,119 @@
 import { store } from '../../store/store'
 import { timerFinished } from '../../slices/timerSlice';
-import { Howl } from 'howler';
 import alarmSound from './alarm.mp3'
+import { SoundPlayer } from "./SoundPlayer";
+import { CountDownTimer } from './CountDownTimer';
+import { EventEmitter } from "events";
+import showNotification from '../../utils/notification';
 
 const timersRunning = {}
 
-function playSound(sound, seconds) {
-    var soundToPlay = new Howl({
-        src: [sound]
-    })
-    const id = soundToPlay.play()
+
+function playAlarmSound(alarmSound, seconds = 1) {
+    SoundPlayer.play(alarmSound)
+
     setTimeout(() => {
-        soundToPlay.stop(id)
-    }, (seconds || 1) * 1000)
+        SoundPlayer.stop()
+    }, (seconds) * 1000)
 }
 
-
-function createCountDownTimerWithCardId(cardId, onTick, onFinished) {
-    const startTimer = new Date()
-    const Card = store.getState().timer.timerCards[cardId];
-    const activetTimerId = Card.activeTimer.id
-    const activeTimerIndex = Card.activeTimer.index
-    const timer = store.getState().timer.timers[activetTimerId]
-    if (!timer) {
-        return
+function getActiveTimerFromCard(Card, store) {
+    if (Card) {
+        const activetTimerId = Card.activeTimer.id
+        const timer = store.getState().timer.timers[activetTimerId]
+        return timer
     }
-    const { mins, secs } = timer
-    const seconds = (mins ? mins * 60 : 0) + (secs || 0)
-    let countDownTime = seconds
-    let remainingTime = seconds
+    return undefined
+}
 
-    timersRunning[cardId] = timersRunning[cardId] || {}
-    if (timersRunning[cardId].remainingTime) {
-        countDownTime = timersRunning[cardId].remainingTime
-        remainingTime = timersRunning[cardId].remainingTime
-    } else {
-        const { mins, secs } = Card.activeTimer
-        if (mins || secs) {
-            const seconds = (mins ? parseInt(mins) * 60 : 0) + (parseInt(secs) || 0)
-            countDownTime = seconds
-            remainingTime = seconds
+class BackgroundCountDownManager {
+    constructor() {
+        this.activeTimers = {}
+    }
+    playCard(cardId, onTick) {
+
+        if (!this.activeTimers[cardId]) {
+            this.activeTimers[cardId] = new TimerCardPlayer(cardId, store)
+        }
+        const card = this.activeTimers[cardId]
+        onTick = onTick ? onTick : (reamaingTimer) => { }
+        card.play(onTick)
+    }
+    pauseCard(cardId) {
+        if (this.activeTimers[cardId]) {
+            this.activeTimers[cardId].pause()
         }
     }
-    clearInterval(timersRunning[cardId].handle)
+    stopCard(cardId) {
+        if (this.activeTimers[cardId]) {
+            this.activeTimers[cardId].stop()
+        }
+    }
 
-    const reduceRemainingTime =
-        () => {
-            let delta = Date.now() - startTimer
-            remainingTime = countDownTime - (delta / 1000)
-            timersRunning[cardId].remainingTime = remainingTime
-            console.log(timersRunning[cardId])
-            if (remainingTime < 0) {
-                playSound(alarmSound, 3)
-                store.dispatch(timerFinished({ id: cardId }))
-                clearInterval(timerHandle)
-                timersRunning[cardId].remainingTime = undefined
-                createCountDownTimerWithCardId(cardId, onTick)
+
+}
+const backgroundCountDownManager = new BackgroundCountDownManager()
+
+
+class TimerCardPlayer {
+    constructor(cardId, store) {
+        this.cardId = cardId
+        this.countDownTimer = new CountDownTimer()
+        this.store = store
+        this.remainingTime = undefined
+        this.event = new EventEmitter()
+        this.playing = false
+    }
+
+    play(onTick) {
+        if (this.countDownTimer.isRunning()) {
+            this.countDownTimer.stop()
+        }
+        this.playing = true
+        const Card = store.getState().timer.timerCards[this.cardId];
+        const timer = getActiveTimerFromCard(Card, this.store)
+        if (!timer) {
+            return undefined
+        }
+        const { mins, secs } = timer
+        const seconds = (mins ? mins * 60 : 0) + (secs || 0)
+        let countDownTime = seconds
+
+        timersRunning[this.cardId] = timersRunning[this.cardId] || {}
+        if (this.remainingTime) {
+            countDownTime = this.remainingTime
+        } else {
+            const { mins, secs } = Card.activeTimer
+            if (mins || secs) {
+                const seconds = (mins ? parseInt(mins) * 60 : 0) + (parseInt(secs) || 0)
+                countDownTime = seconds
             }
+        }
+        console.log(countDownTime)
+        this.countDownTimer.start(countDownTime, (remainingTime) => {
+            this.remainingTime = remainingTime
+            console.log(this.remainingTime)
             onTick(remainingTime)
-        }
-    onTick(remainingTime)
-    const timerHandle = setInterval(reduceRemainingTime, 1000);
-
-    timersRunning[cardId].handle = timerHandle
-    return timersRunning[cardId]
+        }, () => {
+            console.log('timer Finished')
+            playAlarmSound(alarmSound,3)
+            showNotification(`${timer.title} finished`)
+            this.countDownTimer.stop()
+            store.dispatch(timerFinished({ id: this.cardId }))
+            this.remainingTime = undefined
+            this.play(onTick)
+        })
+    }
+    pause() {
+        this.countDownTimer.stop()
+        this.playing = false
+    }
+    stop() {
+        this.countDownTimer.stop()
+        this.playing = false
+        this.remainingTime = undefined
+    }
+    getNextTimer() { }
 }
 
-function createCountDownTimerWithCardIdWithoutCallBack(cardId, onFinished) {
-    const startTimer = new Date()
-    const Card = store.getState().timer.timerCards[cardId];
-    const activetTimerId = Card.activeTimer.id
-    const activeTimerIndex = Card.activeTimer.index
-    const timer = store.getState().timer.timers[activetTimerId]
-    if (!timer) {
-        return
-    }
-    const { mins, secs } = timer
-    const seconds = (mins ? mins * 60 : 0) + (secs || 0)
-    let countDownTime = seconds
-    let remainingTime = seconds
-
-    timersRunning[cardId] = timersRunning[cardId] || {}
-    if (timersRunning[cardId].remainingTime) {
-        countDownTime = timersRunning[cardId].remainingTime
-        remainingTime = timersRunning[cardId].remainingTime
-    } else {
-        const { mins, secs } = Card.activeTimer
-        if (mins || secs) {
-            const seconds = (mins ? mins * 60 : 0) + (secs || 0)
-            countDownTime = seconds
-            remainingTime = seconds
-        }
-    }
-    clearInterval(timersRunning[cardId].handle)
-
-    const reduceRemainingTime = () => {
-        let delta = Date.now() - startTimer
-        remainingTime = countDownTime - (delta / 1000)
-        timersRunning[cardId].remainingTime = remainingTime
-        console.log(timersRunning[cardId])
-        if (remainingTime < 0) {
-            playSound(alarmSound, 3)
-            store.dispatch(timerFinished({ id: cardId }))
-            clearInterval(timerHandle)
-            timersRunning[cardId].remainingTime = undefined
-            createCountDownTimerWithCardIdWithoutCallBack(cardId)
-        }
-    }
-    reduceRemainingTime()
-    const timerHandle = setInterval(reduceRemainingTime, 1000);
-
-    timersRunning[cardId].handle = timerHandle
-    return timersRunning[cardId]
-}
-
-function doesCardIdExist(cardId) {
-    if (timersRunning.hasOwnProperty(cardId)) {
-        return { ...timersRunning[cardId], destroy: () => { delete timersRunning[cardId] } }
-    } else {
-        return undefined
-    }
-}
-
-
-export { createCountDownTimerWithCardId, createCountDownTimerWithCardIdWithoutCallBack, doesCardIdExist }
+export { backgroundCountDownManager }

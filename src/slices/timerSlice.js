@@ -138,11 +138,11 @@ export const timerslice = createSlice({
       } else {
         if (state.timerCards[cardId].loop) {
           console.log('looping')
-
           state.timerCards[cardId].activeTimer = { id: state.timerCards[cardId].timerList[0], index: 0 }
         } else {
-          state.timerCards[cardId].activeTimer = { id: '', index: -1 }
-          state.timerCards[cardId].status = 'paused'
+          // state.timerCards[cardId].activeTimer = { id: '', index: -1 }
+          // state.timerCards[cardId].status = 'stopped'
+          stopTimer(state, { type: "timer/stopTimer", payload: { cardId: cardId } })
         }
       }
     },

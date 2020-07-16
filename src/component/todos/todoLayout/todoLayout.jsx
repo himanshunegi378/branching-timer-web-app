@@ -5,7 +5,7 @@ import TodoInput from '../todoInput/todoInput'
 import TodoList from '../todoList/todoList'
 import TodoDateSelector from '../todoDateSelector/todoDataSelector'
 
-export default function TodoLayout (props) {
+export default function TodoLayout(props) {
   console.log('im in todo')
   const dispatch = useDispatch()
   const [currentSelectedDateInString, setCurrentSelectedDateInString] = useState(convertDatetoString(new Date()))
@@ -25,15 +25,10 @@ export default function TodoLayout (props) {
     [])
 
   const handleTodoAdded = (todo) => {
-    const lastToDoOfTheDay = getLastTodoOfTheDateFromStore(currentSelectedDateInString, store)
-    if (lastToDoOfTheDay) {
-      if (lastToDoOfTheDay.done) {
-        dispatch(createTodoAndToDate({ todo: todo, addToDate: currentSelectedDateInString, timeAddedAt: new Date().getTime() }))
-      } else {
-        console.log('bro complete this first')
-      }
-    } else {
+    if (isTodoCanBeAddedOnDate(currentSelectedDateInString, store)) {
       dispatch(createTodoAndToDate({ todo: todo, addToDate: currentSelectedDateInString, timeAddedAt: new Date().getTime() }))
+    } else {
+      console.log('bro complete previous first')
     }
   }
 
@@ -60,6 +55,30 @@ const getLastTodoOfTheDateFromStore = (dateAsString, store) => {
   } catch (error) {
     console.log(error)
     return null
+  }
+}
+
+const isTodoDone = (todo) => {
+  if (todo === undefined) {
+    throw new Error('todo is undefined')
+  }
+  if (todo.done) {
+    return true
+  } else {
+    return false
+  }
+}
+
+const isTodoCanBeAddedOnDate = (dateAsString, store) => {
+  const lastToDoOfTheDay = getLastTodoOfTheDateFromStore(dateAsString, store)
+  if (lastToDoOfTheDay) {
+    if (isTodoDone(lastToDoOfTheDay)) {
+      return true
+    } else {
+      return false
+    }
+  } else {
+    return true
   }
 }
 

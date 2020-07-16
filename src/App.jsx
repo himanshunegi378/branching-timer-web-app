@@ -8,11 +8,7 @@ import {createTimerCard} from './slices/timerSlice'
 import TodoLayout from './component/todos/todoLayout/todoLayout'
 import {Tabs, TabList, Tab, TabPanel} from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
-import {BrowserRouter as Router, Route, Switch, Link} from "react-router-dom";
-import Drawer from "rc-drawer";
-import 'rc-drawer/assets/index.css'
-import Menu, {SubMenu, MenuItem} from 'rc-menu';
-import 'rc-menu/assets/index.css'
+
 
 function App(props) {
     const dispatch = useDispatch()
