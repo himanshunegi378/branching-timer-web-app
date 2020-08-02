@@ -2,7 +2,7 @@ import { useSelector, useStore, shallowEqual, useDispatch } from 'react-redux'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import TimerList from '../timerList/timerList'
 import { Button, Card } from 'react-bootstrap'
-
+import style from "./style.module.css";
 import {
     createTimer,
     toggleCardLoop,
@@ -96,7 +96,7 @@ export default function TimerCollectionCard(props) {
     useEffect(() => {
         if (activeTimerId.id === '') return
         // Let's check if the browser supports notifications
-        
+
 
     }, [activeTimerId.id, store, timerCollectionDetail.title])
 
@@ -131,7 +131,11 @@ export default function TimerCollectionCard(props) {
         <>
 
             {/*<Notification key={activeTimerId.id} title={activeTimerId.id}/>*/}
-            <Card className='m-1 shadow-lg' style={{ width: '25%', minWidth: '265px', maxWidth: '265px' }}>
+            <Card className={'m-1 shadow-lg '+ style.fadeIn} style={{
+                width: '25%',
+                minWidth: '265px',
+                maxWidth: '265px',
+            }}>
                 <div className='d-flex flex-row-reverse'>
                     <Button size='sm' className='btn btn-danger' onClick={() => {
                         dispatch(deleteCard({ id: props.id }))
