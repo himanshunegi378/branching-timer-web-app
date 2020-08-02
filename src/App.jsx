@@ -1,12 +1,12 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import TimerCollectionCardGrid from './component/timerCollectionCardGrid/timerCollectionCardGrid'
-import {Button} from 'react-bootstrap'
-import {useSelector, useDispatch} from 'react-redux'
-import {createTimerCard} from './slices/timerSlice'
+import { Button } from 'react-bootstrap'
+import { useSelector, useDispatch } from 'react-redux'
+import { createTimerCard } from './slices/timerSlice'
 import TodoLayout from './component/todos/todoLayout/todoLayout'
-import {Tabs, TabList, Tab, TabPanel} from 'react-tabs'
+import { Tabs, TabList, Tab, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
 
 
@@ -15,7 +15,10 @@ function App(props) {
     const timerCards = useSelector(state => state.timer.timerCards)// will be passed to timer collection card grid
     const [tabIndex, setTabIndex] = useState(0)
     const card = useRef(null)
-
+    useEffect(() => {
+        document.body.classList.remove('page-loading')
+        document.body.classList.add('page-loaded')
+    }, [])
     useEffect(() => {
         window.addEventListener('resize', () => {
             if (!card.current) return
@@ -43,11 +46,11 @@ function App(props) {
                         dispatch(createTimerCard())
                     }}>Add Timer Card</Button>
                     <div ref={card} className='overflow-auto'>
-                        <TimerCollectionCardGrid timerCollectionCards={timerCards}/>
+                        <TimerCollectionCardGrid timerCollectionCards={timerCards} />
                     </div>
                 </TabPanel>
                 <TabPanel>
-                    <TodoLayout/>
+                    <TodoLayout />
                 </TabPanel>
             </Tabs>
         </>

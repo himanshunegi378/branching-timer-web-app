@@ -10,7 +10,7 @@ function TodoItem (props) {
     if (todo.done) return // to prevent dispatch if todo is already completed saving cache write
     dispatch(todoCompleted({ todoId: todoId }))
   }
-
+ 
   return (
 
     <div className='row border align-items-center'>
