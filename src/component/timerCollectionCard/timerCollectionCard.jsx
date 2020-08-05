@@ -29,6 +29,8 @@ import {
 } from '../countDownTimer/newCountDownClock'
 import showNotification from '../../utils/notification'
 // import Notification from "react-web-notification";
+import { useTransition, animated } from 'react-spring'
+import { Transition } from 'react-spring/renderprops';
 
 
 export default function TimerCollectionCard(props) {
@@ -36,7 +38,7 @@ export default function TimerCollectionCard(props) {
         if (state.timer.timerCards[props.id]) {
             return state.timer.timerCards[props.id]
         }
-        return TimerCard
+        return { ...TimerCard, title: undefined }
     })
     const activeTimerId = useSelector(state => {
         if (timerCollectionDetail) {
@@ -77,7 +79,6 @@ export default function TimerCollectionCard(props) {
         setRemainingMin(('0' + minutes).slice(-2))
         setRemainingSec(('0' + seconds).slice(-2))
     }
-
     const memoTick = useCallback(
         (tick) => {
             onCountDownTick(tick)
@@ -126,69 +127,77 @@ export default function TimerCollectionCard(props) {
 
 
     }, [dispatch, memoTick, props.id, timerCollectionDetail.activeTimer.mins, timerCollectionDetail.activeTimer.secs, timerCollectionDetail.status])
+    const transitions = useTransition(true, null, {
+        from: { opacity: 0 },
+        enter: { opacity: 1 },
+        leave: { opacity: 1 },
+        config: { duration: 300, }
+    })
+    console.log(transitions[0].props)
+    const myComponent = <div >
 
-    return (
-        <>
-
-            {/*<Notification key={activeTimerId.id} title={activeTimerId.id}/>*/}
-            <Card className={'m-1 shadow-lg '+ style.fadeIn} style={{
-                width: '25%',
-                minWidth: '265px',
-                maxWidth: '265px',
-            }}>
-                <div className='d-flex flex-row-reverse'>
-                    <Button size='sm' className='btn btn-danger' onClick={() => {
-                        dispatch(deleteCard({ id: props.id }))
-                    }}>X</Button>
+        {/*<Notification key={activeTimerId.id} title={activeTimerId.id}/>*/}
+        <Card className={'m-1 shadow-lg '} style={{
+            width: '25%',
+            minWidth: '265px',
+            maxWidth: '265px',
+        }}>
+            <div className='d-flex flex-row-reverse'>
+                <Button size='sm' className='btn btn-danger' onClick={() => {
+                    dispatch(deleteCard({ id: props.id }))
+                }}>X</Button>
+            </div>
+            <Card.Body>
+                <div className='h1 text-center'>
+                    {remainingMin}:{remainingSec}
                 </div>
-                <Card.Body>
-                    <div className='h1 text-center'>
-                        {remainingMin}:{remainingSec}
-                    </div>
-                    <div className='row'>
+                <div className='row'>
 
-                        <div className='col-10 text-center'>
-                            <Card.Title onClick={() => setEditTitle(true)} onBlur={() => {
-                                setEditTitle(false)
-                                dispatch(editCardTitle({ cardId: props.id, newTitle: cardTitle }))
-                            }}>
-                                {editTitle ? <input autoFocus type='text' value={cardTitle}
-                                    onChange={(e) => setCardTitle(e.target.value)} /> : timerCollectionDetail.title}
-                            </Card.Title>
-                        </div>
-                        <div className='col-2 px-0 user-select-none'>
-                            <LoopButton looping={timerCollectionDetail.loop}
-                                onChange={() => dispatch(toggleCardLoop({ id: props.id }))} />
-                        </div>
+                    <div className='col-10 text-center'>
+                        <Card.Title onClick={() => setEditTitle(true)} onBlur={() => {
+                            setEditTitle(false)
+                            dispatch(editCardTitle({ cardId: props.id, newTitle: cardTitle }))
+                        }}>
+                            {editTitle ? <input autoFocus type='text' value={cardTitle}
+                                onChange={(e) => setCardTitle(e.target.value)} /> : timerCollectionDetail.title}
+                        </Card.Title>
                     </div>
-                    <div className='d-flex  user-select-none'>
-                        <div className=' mx-2 h-auto my-1' style={{ width: '2rem' }}>
-                            <PlayButton isPlaying={timerCollectionDetail.status === 'playing'} onChange={(state) => {
-                                const action = state ? playCard({ cardId: props.id }) : pauseCard({
-                                    cardId: props.id,
-                                    mins: remainingMin,
-                                    secs: remainingSec
-                                })
-                                dispatch(action)
-                            }} />
-                        </div>
-                        <StopButton isStopped={timerCollectionDetail.status === 'stopped'} onChange={(isStopped) => {
-                            if (isStopped) dispatch(stopTimer({ cardId: props.id }))
+                    <div className='col-2 px-0 user-select-none'>
+                        <LoopButton looping={timerCollectionDetail.loop}
+                            onChange={() => dispatch(toggleCardLoop({ id: props.id }))} />
+                    </div>
+                </div>
+                <div className='d-flex  user-select-none'>
+                    <div className=' mx-2 h-auto my-1' style={{ width: '2rem' }}>
+                        <PlayButton isPlaying={timerCollectionDetail.status === 'playing'} onChange={(state) => {
+                            const action = state ? playCard({ cardId: props.id }) : pauseCard({
+                                cardId: props.id,
+                                mins: remainingMin,
+                                secs: remainingSec
+                            })
+                            dispatch(action)
                         }} />
                     </div>
-                    {alarmComponent}
-                    <TimerList id={props.id} activeTimerId={activeTimer.id} />
-                    <div className='row'>
-                        <div className='col-3'></div>
-                        <Button className='col-6' size='sm' onClick={() => {
-                            dispatch(createTimer({ id: props.id }))
-                        }}>Add Timer</Button>
-                        <div className='col-3'></div>
-                    </div>
-                </Card.Body>
+                    <StopButton isStopped={timerCollectionDetail.status === 'stopped'} onChange={(isStopped) => {
+                        if (isStopped) dispatch(stopTimer({ cardId: props.id }))
+                    }} />
+                </div>
+                {alarmComponent}
+                <TimerList id={props.id} activeTimerId={activeTimer.id} />
+                <div className='row'>
+                    <div className='col-3'></div>
+                    <Button className='col-6' size='sm' onClick={() => {
+                        dispatch(createTimer({ id: props.id }))
+                    }}>Add Timer</Button>
+                    <div className='col-3'></div>
+                </div>
+            </Card.Body>
 
-            </Card>
+        </Card>
 
-        </>
+    </div>
+
+    return transitions.map(({ item, key, props }) =>
+        item && <animated.div key={key} style={props}>{myComponent}</animated.div>
     )
 }
