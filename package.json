@@ -1,7 +1,7 @@
 {
   "name": "countdown_webapp",
   "version": "0.1.0",
-  "homepage": "https://himanshunegi378.github.io/branching-timer-web-app",
+  "homepage": "http://wwww.timercards.com",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.3.6",
