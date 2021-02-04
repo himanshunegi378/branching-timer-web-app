@@ -8,6 +8,7 @@ import { createTimerCard } from './slices/timerSlice'
 import TodoLayout from './component/todos/todoLayout/todoLayout'
 import { Tabs, TabList, Tab, TabPanel } from 'react-tabs'
 import 'react-tabs/style/react-tabs.css'
+import useTimerStore from './hooks/useTimerStore'
 
 
 function App(props) {
@@ -33,9 +34,15 @@ function App(props) {
         }
 
     }, [tabIndex])
-
+    const { addTimer, deleteTimer, getTimer, timerStore } = useTimerStore()
     return (
         <>
+            <button onClick={() => {
+                const addedTimer = addTimer('timer', 60)
+                console.log(addedTimer)
+            }}>AddTimer</button>
+
+            <button onClick={()=>console.log(timerStore)}>Get Timers List</button>
             <Tabs selectedIndex={tabIndex} onSelect={(index, previousIndex, event) => setTabIndex(index)}>
                 <TabList>
                     <Tab>Timer</Tab>
