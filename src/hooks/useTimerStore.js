@@ -18,6 +18,7 @@ export default function useTimerStore() {
     function deleteTimer(id) {
         let newTimerStore = { ...timerStore }
         delete newTimerStore[id]
+        setTimerStore(newTimerStore)
     }
 
     function updateTimer(id, opts) {
@@ -27,5 +28,5 @@ export default function useTimerStore() {
         setTimerStore(newTimerStore)
     }
 
-    return { addTimer, getTimer, deleteTimer, updateTimer, timerStore }
+    return { addTimer, getTimer, deleteTimer, updateTimer }
 }
