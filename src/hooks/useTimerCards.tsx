@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import CountdownTimer from "../lib/countdownTimer";
 import showNotification from "../utils/notification";
+import useSoundPlayer from "./useSoundPlayer";
 import useTimerGroup from "./useTimerGroup";
+const defaultSound = require('./alarm.mp3')
 
 export default function useTimerCard(id: string, name = 'Unnamed') {
     const { ...timerGroup } = useTimerGroup(id, name)
@@ -11,7 +13,7 @@ export default function useTimerCard(id: string, name = 'Unnamed') {
     const [onTimerFinished, setOnTimerFinished] = useState(false)//everytime var change it value from false to true next timer is played if constraints satisfied
     const runningTimerRef = useRef(runningTimer) //only used for purpose of storing data to save it later in localstorage
     const timerCardDataRef = useRef(timerCardData)//only used when storing data to local storage
-
+    const { play, pause, stop } = useSoundPlayer()
     //to save running timer data before it is closed
     useEffect(() => {
         const onPageHide = () => {
@@ -27,7 +29,6 @@ export default function useTimerCard(id: string, name = 'Unnamed') {
 
     useEffect(() => {
         const onTick = (remainingTime: number) => {
-            console.log(remainingTime);
             setRunningTimer(({ ...runningTimerData }): any => {
                 const newData = { ...runningTimerData, remainingTime: remainingTime }
                 return newData
@@ -124,6 +125,8 @@ export default function useTimerCard(id: string, name = 'Unnamed') {
         setTimerCardData({ ...timerCardData, status: 'playing' })
         countdownTimerRef.current.on('finished', () => {
             showNotification(`${timerGroup.timerGroupStore.name} => ${timerData.name} | completed`)
+            play(defaultSound, 2)
+
             setOnTimerFinished(true)
         })
     }
