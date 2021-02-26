@@ -7,10 +7,6 @@ type TimerGroupStore = {
   name: string;
   timers: string[];
 };
-type Timer = { id: string; name: string; time: number };
-type TimerStore = {
-  [id: string]: Timer;
-};
 
 export default function useTimerGroup(id: string, name = "unname") {
   const [timerGroupStore, setTimerGroupStore] = useState<TimerGroupStore>({
