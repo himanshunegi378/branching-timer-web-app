@@ -5,10 +5,10 @@ function PlayButton(props) {
 
 
     return (
-        <div onClick={() => { onChange(!isPlaying) }}>
+        <div className='cursor-pointer' onClick={() => { onChange(!isPlaying) }}>
             {isPlaying
                 ?
-                <svg style={{ fill: '#007bff' }} className='w-100 h-auto' height="512" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                <svg style={{ fill: '#007bff' }} className='h-8 w-auto' height="512" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                     viewBox="0 0 477.867 477.867" >
                     <g>
                         <g>
@@ -24,7 +24,7 @@ function PlayButton(props) {
                     </g>
                 </svg>
                 :
-                <svg style={{ fill: '#007bff' }} className='w-100 h-auto' height="512" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                <svg style={{ fill: '#007bff' }} className='h-8 w-auto' height="512" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
                     viewBox="0 0 477.886 477.886">
                     <g>
                         <g>
