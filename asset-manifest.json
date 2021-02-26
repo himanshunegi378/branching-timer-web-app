@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/static/css/main.3b5d0fec.chunk.css",
-    "main.js": "/static/js/main.b05e2df4.chunk.js",
-    "main.js.map": "/static/js/main.b05e2df4.chunk.js.map",
+    "main.css": "/static/css/main.7a90f16e.chunk.css",
+    "main.js": "/static/js/main.af436574.chunk.js",
+    "main.js.map": "/static/js/main.af436574.chunk.js.map",
     "runtime-main.js": "/static/js/runtime-main.b1241a1e.js",
     "runtime-main.js.map": "/static/js/runtime-main.b1241a1e.js.map",
-    "static/js/2.b6569fe2.chunk.js": "/static/js/2.b6569fe2.chunk.js",
-    "static/js/2.b6569fe2.chunk.js.map": "/static/js/2.b6569fe2.chunk.js.map",
+    "static/js/2.ecf40da0.chunk.js": "/static/js/2.ecf40da0.chunk.js",
+    "static/js/2.ecf40da0.chunk.js.map": "/static/js/2.ecf40da0.chunk.js.map",
     "index.html": "/index.html",
-    "static/css/main.3b5d0fec.chunk.css.map": "/static/css/main.3b5d0fec.chunk.css.map",
-    "static/js/2.b6569fe2.chunk.js.LICENSE.txt": "/static/js/2.b6569fe2.chunk.js.LICENSE.txt",
-    "static/media/alarm.mp3": "/static/media/alarm.4ef57659.mp3",
+    "static/css/main.7a90f16e.chunk.css.map": "/static/css/main.7a90f16e.chunk.css.map",
+    "static/js/2.ecf40da0.chunk.js.LICENSE.txt": "/static/js/2.ecf40da0.chunk.js.LICENSE.txt",
+    "static/media/alarm.4ef57659.mp3": "/static/media/alarm.4ef57659.mp3",
     "static/media/close.96841b05.svg": "/static/media/close.96841b05.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.b1241a1e.js",
-    "static/js/2.b6569fe2.chunk.js",
-    "static/css/main.3b5d0fec.chunk.css",
-    "static/js/main.b05e2df4.chunk.js"
+    "static/js/2.ecf40da0.chunk.js",
+    "static/css/main.7a90f16e.chunk.css",
+    "static/js/main.af436574.chunk.js"
   ]
 }
