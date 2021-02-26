@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Button, Card } from "react-bootstrap";
 import Timer from "../timer/Timer";
 import close from "./close.svg";
 

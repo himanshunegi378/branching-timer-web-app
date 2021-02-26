@@ -7,7 +7,6 @@ export default function useSoundPlayer() {
     function play(sound: string, time: number) {
         playerRef.current = new Howl({ src: [sound] })
         const handleId = playerRef.current.play()
-
         if (time) {
             setTimeout(() => {
                 if (!playerRef.current) return

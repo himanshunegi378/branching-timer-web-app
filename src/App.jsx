@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { Button } from "react-bootstrap";
 import { v1 as uuidv1 } from "uuid";
 import TimerCard from "./component/timerCard/TimerCard";
 

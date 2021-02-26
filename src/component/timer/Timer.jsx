@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import style from "./style.module.css";
 import close from "./close.svg";
 
 function Timer(props) {
@@ -97,10 +96,8 @@ function Timer(props) {
             const minutes = parseInt(event.currentTarget.mins.value);
             const seconds = parseInt(event.currentTarget.secs.value);
             let time = 0;
-            console.log(minutes, seconds);
             if (minutes) time += minutes * 60;
             if (seconds) time += seconds;
-            console.log(time);
             onTimeChange(time);
           }}
           className="text-center py-2"
