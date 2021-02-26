@@ -27,7 +27,7 @@ export default function useTimerGroup(id: string, name = "unname") {
   //get localstorage data if any
   useEffect(() => {
     if (!id) return;
-    const savedTimerGroupStoreData = localStorage.getItem<TimerGroupStore>(id);
+    const savedTimerGroupStoreData = loadTimerGroupFromLocalStorage(id);
     if (!savedTimerGroupStoreData) return;
     setTimerGroupStore(savedTimerGroupStoreData);
 
@@ -35,11 +35,26 @@ export default function useTimerGroup(id: string, name = "unname") {
     init(timersList);
   }, [id]);
 
+  const saveTimerGroupToLocalStorage = (timerGroup: TimerGroupStore) => {
+    localStorage.setItem(timerGroup.id, timerGroup);
+  };
+
+  const deleteTimerGroupFromLocalStorage = (timerGroup: TimerGroupStore) => {
+    localStorage.removeItem(timerGroup.id);
+  };
+
+  const loadTimerGroupFromLocalStorage = (
+    id: string
+  ): TimerGroupStore | null => {
+    const timerGroup = localStorage.getItem<TimerGroupStore>(id);
+    return timerGroup;
+  };
+
   function addTimerInGroup(name: string, time: number) {
     const newTimer = addTimer(name, time);
     const newTimerGroups: TimerGroupStore = { ...timerGroupStore };
     newTimerGroups.timers.push(newTimer.id);
-    localStorage.setItem(id, newTimerGroups);
+    saveTimerGroupToLocalStorage(newTimerGroups);
     setTimerGroupStore(newTimerGroups);
     return newTimerGroups;
   }
@@ -52,7 +67,7 @@ export default function useTimerGroup(id: string, name = "unname") {
     if (newTimerList.length !== newTimerGroupsStore.timers.length)
       deleteTimer(timerId);
     newTimerGroupsStore.timers = newTimerList;
-    localStorage.setItem(newTimerGroupsStore.id, newTimerGroupsStore);
+    saveTimerGroupToLocalStorage(newTimerGroupsStore);
     setTimerGroupStore(newTimerGroupsStore);
     return newTimerGroupsStore;
   }
@@ -62,13 +77,13 @@ export default function useTimerGroup(id: string, name = "unname") {
     timersList.forEach((timerId: string) => {
       deleteTimer(timerId);
     });
-    localStorage.removeItem(id);
+    deleteTimerGroupFromLocalStorage(timerGroupStore);
   }
 
   function changeGroupName(newName: string) {
     if (!newName) return;
     setTimerGroupStore({ ...timerGroupStore, name: newName });
-    localStorage.setItem(timerGroupStore.id, {
+    saveTimerGroupToLocalStorage({
       ...timerGroupStore,
       name: newName,
     });

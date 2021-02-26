@@ -96,7 +96,6 @@ export default function useTimerCard(id: string, name = 'Unnamed') {
         if (stringifiedRunningTimerData) {
             const parsedRunningTimerData = JSON.parse(stringifiedRunningTimerData)
             setRunningTimer(parsedRunningTimerData)
-            console.log(parsedRunningTimerData);
         }
 
 

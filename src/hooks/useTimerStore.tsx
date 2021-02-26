@@ -14,7 +14,7 @@ export default function useTimerStore() {
     const id = uuidv1();
     const newTimer = { id: id, name: name, time: time };
     setTimerStore({ ...timerStore, [id]: newTimer });
-    saveTimer(newTimer);
+    saveTimerToStorage(newTimer);
     return newTimer;
   }
   function getTimer(id: string): Timer {
@@ -24,24 +24,28 @@ export default function useTimerStore() {
   function deleteTimer(id: string) {
     const newTimerStore = { ...timerStore };
     delete newTimerStore[id];
-    localStorage.removeItem(id);
+    deleteTimeFromStorage(id);
     setTimerStore(newTimerStore);
   }
 
-  function loadTimer(id: string) {
+  function loadTimerFromStorage(id: string) {
     const timer = localStorage.getItem<Timer>(id);
     if (!timer) return null;
     return timer;
   }
 
-  function saveTimer(timer: Timer) {
+  function saveTimerToStorage(timer: Timer) {
     localStorage.setItem(timer.id, timer);
+  }
+
+  function deleteTimeFromStorage(id: string) {
+    localStorage.removeItem(id);
   }
 
   function init(idList: string[]) {
     const timerStore: TimerStore = {};
     idList.forEach((id) => {
-      const timer = loadTimer(id);
+      const timer = loadTimerFromStorage(id);
       if (timer) timerStore[id] = timer;
     });
     setTimerStore(timerStore);
@@ -51,7 +55,7 @@ export default function useTimerStore() {
     const newTimerStore = { ...timerStore };
     newTimerStore[id].name = opts.name || newTimerStore[id].name;
     newTimerStore[id].time = opts.time || newTimerStore[id].time;
-    saveTimer(newTimerStore[id]);
+    saveTimerToStorage(newTimerStore[id]);
     setTimerStore(newTimerStore);
   }
 
