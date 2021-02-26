@@ -37,10 +37,10 @@ function Timer(props) {
     <div
       id={props.id}
       // className="my-1 px-2 pt-2 border rounded-lg border-gray-300"
-      className="my-1 rounded-lg"
+      className={`my-1 rounded-lg ${active ? "elevation-4 " : "elevation-1"}`}
     >
       <div
-        className={`${titleBgColor} rounded-t-lg  border border-b-0 border-gray-300 px-1 `}
+        className={`${titleBgColor} w-full rounded-t-lg  border border-b-0 border-gray-300 px-1 `}
       >
         <div className={`flex flex-row justify-between items-center`}>
           <div onClick={() => setEditTitle(true)}>
@@ -69,7 +69,7 @@ function Timer(props) {
           </div>
           <div>
             <button
-              className="select-none"
+              className="select-none flex items-center rounded-full elevation-1"
               onClick={() => {
                 onDelete(id);
               }}
@@ -80,7 +80,7 @@ function Timer(props) {
         </div>
       </div>
 
-      <div className="border border-t-0 rounded-b-lg border-gray-300">
+      <div className="border border-t-0 rounded-b-lg  border-gray-300">
         {/* <div className={messageBgColor}>{TimerDetail.message}</div> */}
         <form
           onSubmit={(event) => {

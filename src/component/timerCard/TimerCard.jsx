@@ -16,7 +16,7 @@ export default function TimerCard(props) {
   return (
     <div>
       <div
-        className="m-1 shadow-md p-2 border rounded-lg border-gray-300"
+        className="m-1 md:elevation-4 p-2 border rounded-lg border-gray-300"
         style={{
           width: "25%",
           minWidth: "265px",
@@ -25,7 +25,7 @@ export default function TimerCard(props) {
       >
         <div className="flex flex-row-reverse">
           <button
-            className="select-none"
+            className="select-none outline-none rounded-full elevation-1"
             // className="btn btn-danger"
             onClick={() => {
               timerCard.deleteTimerGroup();

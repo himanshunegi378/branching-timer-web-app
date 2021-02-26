@@ -4,6 +4,7 @@ import App from "./App";
 import SoundPlayerProvider from "./providers/SoundPlayerProvider";
 import * as serviceWorker from "./serviceWorker";
 import "./index.css";
+
 ReactDOM.render(
   <React.StrictMode>
     <SoundPlayerProvider>

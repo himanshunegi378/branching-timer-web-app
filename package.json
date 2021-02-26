@@ -12,6 +12,7 @@
     "@types/immutable": "^3.8.7",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
+    "hover.css": "^2.3.2",
     "howler": "^2.2.0",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.20",
@@ -32,6 +33,7 @@
     "redux-persist": "^6.0.0",
     "rx": "^4.1.0",
     "rxjs": "^6.5.5",
+    "tailwindcss-elevation": "^1.0.1",
     "treantjs": "^1.0.0",
     "uuid": "^8.1.0"
   },
