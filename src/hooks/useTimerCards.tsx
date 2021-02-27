@@ -5,9 +5,13 @@ import useSoundPlayer from "./useSoundPlayer";
 import useTimerGroup from "./useTimerGroup";
 //@ts-ignore
 import defaultSound from "./alarm.mp3";
+import { localStorage } from "../utils/localStorage";
 
 export default function useTimerCard(id: string, name = "Unnamed") {
-  const { ...timerGroup } = useTimerGroup(id, name);
+  const { timerGroupStore, timerStore, ...timerGroup } = useTimerGroup(
+    id,
+    name
+  );
   const [timerCardData, setTimerCardData] = useState({
     looping: false,
     status: "stopped",
@@ -25,14 +29,8 @@ export default function useTimerCard(id: string, name = "Unnamed") {
   //to save running timer data before it is closed
   useEffect(() => {
     const onPageHide = () => {
-      localStorage.setItem(
-        "runningTimerData" + id,
-        JSON.stringify(runningTimerRef.current)
-      );
-      localStorage.setItem(
-        "timerCardData" + id,
-        JSON.stringify(timerCardDataRef.current)
-      );
+      localStorage.setItem("runningTimerData" + id, runningTimerRef.current);
+      localStorage.setItem("timerCardData" + id, timerCardDataRef.current);
     };
     window.addEventListener("pagehide", onPageHide);
     return () => {
@@ -69,9 +67,9 @@ export default function useTimerCard(id: string, name = "Unnamed") {
   useEffect(() => {
     if (!onTimerFinished) return;
 
-    const timerList = timerGroup.timerGroupStore.timers;
+    const timerList = timerGroupStore.timers;
     const indexofFinishedTimer = timerList.indexOf(runningTimer.currentTimerId);
-    let nextTimer = timerGroup.timerStore[timerList[indexofFinishedTimer + 1]];
+    let nextTimer = timerStore[timerList[indexofFinishedTimer + 1]];
     //to check wheter last timer
     if (!nextTimer) {
       //if looping is disabled change status to stopped and do noting
@@ -87,7 +85,7 @@ export default function useTimerCard(id: string, name = "Unnamed") {
       }
 
       //get the first timer and set it as running timer
-      nextTimer = timerGroup.timerStore[timerList[0]];
+      nextTimer = timerStore[timerList[0]];
 
       setRunningTimer({
         currentTimerId: nextTimer.id,
@@ -108,17 +106,17 @@ export default function useTimerCard(id: string, name = "Unnamed") {
   }, [onTimerFinished]);
 
   useEffect(() => {
-    const stringifiedTimerCardData = localStorage.getItem("timerCardData" + id);
-    if (stringifiedTimerCardData) {
-      const parsedTimerCardData = JSON.parse(stringifiedTimerCardData);
+    const parsedTimerCardData = localStorage.getItem("timerCardData" + id);
+    if (parsedTimerCardData) {
+      //@ts-ignore
       setTimerCardData(parsedTimerCardData);
     }
 
-    const stringifiedRunningTimerData = localStorage.getItem(
+    const parsedRunningTimerData = localStorage.getItem(
       "runningTimerData" + id
     );
-    if (stringifiedRunningTimerData) {
-      const parsedRunningTimerData = JSON.parse(stringifiedRunningTimerData);
+    if (parsedRunningTimerData) {
+      //@ts-ignore
       setRunningTimer(parsedRunningTimerData);
     }
   }, [id]);
@@ -129,11 +127,11 @@ export default function useTimerCard(id: string, name = "Unnamed") {
 
     //no currentTimerid might mean its first time playing
     if (!currentTimerId) {
-      currentTimerId = timerGroup.timerGroupStore.timers[0] as string;
+      currentTimerId = timerGroupStore.timers[0] as string;
       //if index 0 does not have current timer id it means card does not have timer hence do nothing
       if (!currentTimerId) return;
     }
-    const timerData = timerGroup.timerStore[currentTimerId];
+    const timerData = timerStore[currentTimerId];
     //in off chance if currenttimerId is invalid do nothing
     if (!timerData) return;
 
@@ -145,10 +143,10 @@ export default function useTimerCard(id: string, name = "Unnamed") {
       countdownTimerRef.current.play(timerData.time);
     }
     setTimerCardData({ ...timerCardData, status: "playing" });
-   
+
     countdownTimerRef.current.on("finished", () => {
       showNotification(
-        `${timerGroup.timerGroupStore.name} => ${timerData.name} | completed`
+        `${timerGroupStore.name} => ${timerData.name} | completed`
       );
       play(defaultSound, 2);
 
@@ -173,19 +171,46 @@ export default function useTimerCard(id: string, name = "Unnamed") {
       looping: !timerCardData.looping,
     };
     setTimerCardData(newTimerCardData);
-    localStorage.setItem(
-      "timerCardData" + id,
-      JSON.stringify(newTimerCardData)
-    );
+    localStorage.setItem("timerCardData" + id, newTimerCardData);
+  };
+
+  const deleteTimerCard = () => {
+    timerGroup.deleteTimerGroup();
+    localStorage.removeItem("runningTimerData" + id);
+    localStorage.removeItem("timerCardData" + id);
+  };
+
+  const addTimer = (name: string, time: number) => {
+    timerGroup.addTimerInGroup(name, time);
+  };
+
+  const removeTimer = (timerId: string) => {
+    timerGroup.deleteTimerFromGroup(timerId);
+  };
+
+  const changeTimerCardName = (newName: string) => {
+    timerGroup.changeGroupName(newName);
+  };
+  const changeTimerName = (timerId: string, newName: string) => {
+    timerGroup.updateTimer(timerId, { name: newName });
+  };
+  const chanageTimerTime = (timerId: string, newTime: number) => {
+    timerGroup.updateTimer(timerId, { time: newTime });
   };
 
   return {
-    ...timerGroup,
+    addTimer,
+    changeTimerCardName,
+    removeTimer,
+    chanageTimerTime,
+    changeTimerName,
+    deleteTimerCard,
     playCard,
     pausecard,
     stopCard,
     toggleLooping,
-    timerCardData,
+    timerStore,
+    timerCardData: { ...timerGroupStore, ...timerCardData },
     runningTimer,
   };
 }

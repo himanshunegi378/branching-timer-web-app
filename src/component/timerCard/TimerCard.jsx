@@ -28,7 +28,7 @@ export default function TimerCard(props) {
             className="select-none outline-none rounded-full transition duration-150 hover:elevation-2 transform hover:scale-110"
             // className="btn btn-danger"
             onClick={() => {
-              timerCard.deleteTimerGroup();
+              timerCard.deleteTimerCard();
               onDelete(timerCardId);
             }}
           >
@@ -55,7 +55,7 @@ export default function TimerCard(props) {
                       event.preventDefault();
                       const title = event.currentTarget.title.value;
                       if (title) {
-                        timerCard.changeGroupName(title);
+                        timerCard.changeTimerCardName(title);
                       }
                       setEditTitle(false);
                     }}
@@ -63,7 +63,7 @@ export default function TimerCard(props) {
                       event.preventDefault();
                       const title = event.currentTarget.title.value;
                       if (title) {
-                        timerCard.changeGroupName(title);
+                        timerCard.changeTimerCardName(title);
                       }
                       setEditTitle(false);
                     }}
@@ -71,7 +71,7 @@ export default function TimerCard(props) {
                     <input autoFocus type="text" name="title" />
                   </form>
                 ) : (
-                  timerCard.timerGroupStore.name
+                  timerCard.timerCardData.name
                 )}
               </div>
             </div>
@@ -101,7 +101,7 @@ export default function TimerCard(props) {
               }}
             />
           </div>
-          {timerCard.timerGroupStore.timers.map((timerId) => {
+          {timerCard.timerCardData.timers.map((timerId) => {
             const timer = timerCard.timerStore[timerId];
             return (
               <Timer
@@ -109,13 +109,13 @@ export default function TimerCard(props) {
                 id={timer.id}
                 active={timerCard.runningTimer?.currentTimerId === timer?.id}
                 onDelete={(timerId) => {
-                  timerCard.deleteTimerFromGroup(timerId);
+                  timerCard.removeTimer(timerId);
                 }}
-                onNameChange={(newName) =>
-                  timerCard.updateTimer(timerId, { name: newName })
+                onNameChange={
+                  (newName) => timerCard.changeTimerName(timerId, newName)
                 }
                 onTimeChange={(newTime) =>
-                  timerCard.updateTimer(timerId, { time: newTime })
+                  timerCard.chanageTimerTime(timerId,newTime)
                 }
                 name={timer.name}
                 time={timer.time}
@@ -126,7 +126,7 @@ export default function TimerCard(props) {
             <button
               className=" bg-blue-600 px-4 py-1 rounded-md text-white select-none transition duration-150 hover:elevation-4 transform hover:scale-110 hover:bg-blue-700"
               onClick={() => {
-                timerCard.addTimerInGroup("unaname", 300);
+                timerCard.addTimer("unaname", 300);
               }}
             >
               Add Timer
