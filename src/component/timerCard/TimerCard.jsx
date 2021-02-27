@@ -14,9 +14,9 @@ export default function TimerCard(props) {
   const [editTitle, setEditTitle] = useState(() => false);
 
   return (
-    <div>
+    <div className="mx-4 my-1 bg-white elevation-2 rounded-lg">
       <div
-        className="m-1 md:elevation-4 p-2 border rounded-lg border-gray-300"
+        className="p-2 border rounded-lg border-gray-300"
         style={{
           width: "25%",
           minWidth: "265px",
@@ -25,7 +25,7 @@ export default function TimerCard(props) {
       >
         <div className="flex flex-row-reverse">
           <button
-            className="select-none outline-none rounded-full elevation-1"
+            className="select-none outline-none rounded-full transition duration-150 hover:elevation-2 transform hover:scale-110"
             // className="btn btn-danger"
             onClick={() => {
               timerCard.deleteTimerGroup();
@@ -122,9 +122,9 @@ export default function TimerCard(props) {
               />
             );
           })}
-          <div className="flex justify-center">
+          <div className="flex justify-center mt-4">
             <button
-              className=" bg-blue-600 px-4 py-1 rounded-md text-white select-none"
+              className=" bg-blue-600 px-4 py-1 rounded-md text-white select-none transition duration-150 hover:elevation-4 transform hover:scale-110 hover:bg-blue-700"
               onClick={() => {
                 timerCard.addTimerInGroup("unaname", 300);
               }}

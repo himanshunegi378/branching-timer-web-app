@@ -19,10 +19,11 @@ function App(props) {
   useEffect(() => {
     document.body.classList.remove("page-loading");
     document.body.classList.add("page-loaded");
+    document.body.classList.add("bg-gray-50");
   }, []);
 
   return (
-    <>
+    <div>
       <button
         className="select-none bg-blue-600 text-white px-4 py-2 rounded-full"
         onClick={() => {
@@ -50,7 +51,7 @@ function App(props) {
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

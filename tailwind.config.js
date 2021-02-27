@@ -7,5 +7,7 @@ module.exports = {
   variants: {
     extend: {},
   },
-  plugins: [require("tailwindcss-elevation")(["hover", "active"])],
+  plugins: [
+    require("tailwindcss-elevation")(["responsive", "hover", "active"]),
+  ],
 };

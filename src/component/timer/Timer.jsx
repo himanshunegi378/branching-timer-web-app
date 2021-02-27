@@ -69,7 +69,7 @@ function Timer(props) {
           </div>
           <div>
             <button
-              className="select-none flex items-center rounded-full elevation-1"
+              className="select-none flex items-center rounded-full transition duration-150 hover:elevation-2 transform hover:scale-110"
               onClick={() => {
                 onDelete(id);
               }}
