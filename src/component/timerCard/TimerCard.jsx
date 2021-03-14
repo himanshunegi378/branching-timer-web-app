@@ -7,11 +7,13 @@ import { LoopButton } from "./loopButton";
 import StopButton from "./stopButton";
 
 import useTimerCard from "../../hooks/useTimerCards";
+import useAudioRecorder from "../../hooks/useAudioRecorder";
 
 export default function TimerCard(props) {
   const { onDelete, timerCardId } = props;
   const { ...timerCard } = useTimerCard(props.timerCardId);
   const [editTitle, setEditTitle] = useState(() => false);
+  const { record, stopRecording, audioBlob } = useAudioRecorder();
 
   return (
     <div className="mx-4 my-1 bg-white elevation-2 rounded-lg">
@@ -111,14 +113,21 @@ export default function TimerCard(props) {
                 onDelete={(timerId) => {
                   timerCard.removeTimer(timerId);
                 }}
-                onNameChange={
-                  (newName) => timerCard.changeTimerName(timerId, newName)
+                onNameChange={(newName) =>
+                  timerCard.changeTimerName(timerId, newName)
                 }
                 onTimeChange={(newTime) =>
-                  timerCard.chanageTimerTime(timerId,newTime)
+                  timerCard.chanageTimerTime(timerId, newTime)
                 }
                 name={timer.name}
                 time={timer.time}
+                onRecordStart={() => {
+                  record();
+                }}
+                onRecordStop={() => {
+                  const audioBlob = stopRecording();
+                  timerCard.addSound(timerId, audioBlob);
+                }}
               />
             );
           })}

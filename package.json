@@ -10,6 +10,7 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "@types/immutable": "^3.8.7",
+    "@types/sass": "^1.16.0",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
     "hover.css": "^2.3.2",
@@ -33,6 +34,7 @@
     "redux-persist": "^6.0.0",
     "rx": "^4.1.0",
     "rxjs": "^6.5.5",
+    "sass": "^1.32.8",
     "tailwindcss-elevation": "^1.0.1",
     "treantjs": "^1.0.0",
     "uuid": "^8.1.0"
@@ -70,6 +72,7 @@
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "@testing-library/react-hooks": "^5.0.3",
     "@types/autoprefixer": "^10.2.0",
+    "@types/dom-mediacapture-record": "^1.0.7",
     "@types/howler": "^2.2.1",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",

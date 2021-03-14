@@ -6,6 +6,8 @@ function Timer(props) {
     onNameChange,
     onTimeChange,
     onDelete,
+    onRecordStart,
+    onRecordStop,
     id,
     name,
     time,
@@ -16,6 +18,7 @@ function Timer(props) {
   const [secs, setSecs] = useState();
   const [editTitle, setEditTitle] = useState(() => false);
   const [titleBgColor, setTitleBgColor] = useState("alert-info");
+  const [isRecording, setIsRecording] = useState(false);
 
   useEffect(() => {
     if (!time) return;
@@ -66,6 +69,17 @@ function Timer(props) {
             ) : (
               name
             )}
+          </div>
+          <div>
+            <button
+              onClick={() => {
+                const action = isRecording ? onRecordStop : onRecordStart;
+                action();
+                setIsRecording(!isRecording);
+              }}
+            >
+              {isRecording ? 'Stop' : 'Record'}
+            </button>
           </div>
           <div>
             <button

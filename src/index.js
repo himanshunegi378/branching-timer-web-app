@@ -4,11 +4,14 @@ import App from "./App";
 import SoundPlayerProvider from "./providers/SoundPlayerProvider";
 import * as serviceWorker from "./serviceWorker";
 import "./index.css";
+import AudioProvider from "./providers/audioProvider";
 
 ReactDOM.render(
   <React.StrictMode>
     <SoundPlayerProvider>
-      <App />
+      <AudioProvider>
+        <App />
+      </AudioProvider>
     </SoundPlayerProvider>
   </React.StrictMode>,
   document.getElementById("root")

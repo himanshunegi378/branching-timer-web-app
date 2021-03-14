@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import CountdownTimer from "../lib/countdownTimer";
 import showNotification from "../utils/notification";
 import useSoundPlayer from "./useSoundPlayer";
@@ -6,8 +6,10 @@ import useTimerGroup from "./useTimerGroup";
 //@ts-ignore
 import defaultSound from "./alarm.mp3";
 import { localStorage } from "../utils/localStorage";
+import { AudioStoreContext } from "../contexts/audioContext";
 
 export default function useTimerCard(id: string, name = "Unnamed") {
+  const { audioStore, addAudio } = useContext(AudioStoreContext);
   const { timerGroupStore, timerStore, ...timerGroup } = useTimerGroup(
     id,
     name
@@ -15,6 +17,7 @@ export default function useTimerCard(id: string, name = "Unnamed") {
   const [timerCardData, setTimerCardData] = useState({
     looping: false,
     status: "stopped",
+    alarmSound: {},
   });
   const [runningTimer, setRunningTimer] = useState({
     currentTimerId: "",
@@ -25,6 +28,7 @@ export default function useTimerCard(id: string, name = "Unnamed") {
   const [onTimerFinished, setOnTimerFinished] = useState(false); //everytime var change it value from false to true next timer is played if constraints satisfied
   const runningTimerRef = useRef(runningTimer); //only used for purpose of storing data to save it later in localstorage
   const timerCardDataRef = useRef(timerCardData); //only used when storing data to local storage
+  const customSoundsRef = useRef<{ [timerId in string]: Blob[] }>({});
   const { play, pause, stop } = useSoundPlayer();
   //to save running timer data before it is closed
   useEffect(() => {
@@ -148,7 +152,15 @@ export default function useTimerCard(id: string, name = "Unnamed") {
       showNotification(
         `${timerGroupStore.name} => ${timerData.name} | completed`
       );
-      play(defaultSound, 2);
+
+      play(
+        (customSoundsRef.current[runningTimerRef.current.currentTimerId] &&
+          URL.createObjectURL(
+            customSoundsRef.current[runningTimerRef.current.currentTimerId]
+          )) ||
+          defaultSound,
+        2
+      );
 
       setOnTimerFinished(true);
     });
@@ -188,6 +200,11 @@ export default function useTimerCard(id: string, name = "Unnamed") {
     timerGroup.deleteTimerFromGroup(timerId);
   };
 
+  const addSound = (timerId: string, audioBlob: Blob[]) => {
+    const audioId = addAudio(audioBlob);
+    customSoundsRef.current[timerId] = audioBlob;
+  };
+
   const changeTimerCardName = (newName: string) => {
     timerGroup.changeGroupName(newName);
   };
@@ -199,6 +216,7 @@ export default function useTimerCard(id: string, name = "Unnamed") {
   };
 
   return {
+    addSound,
     addTimer,
     changeTimerCardName,
     removeTimer,
