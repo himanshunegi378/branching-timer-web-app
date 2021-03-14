@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import CountdownTimer from "../lib/countdownTimer";
 import showNotification from "../utils/notification";
 import useSoundPlayer from "./useSoundPlayer";
@@ -6,10 +6,8 @@ import useTimerGroup from "./useTimerGroup";
 //@ts-ignore
 import defaultSound from "./alarm.mp3";
 import { localStorage } from "../utils/localStorage";
-import { AudioStoreContext } from "../contexts/audioContext";
 
 export default function useTimerCard(id: string, name = "Unnamed") {
-  const { audioStore, addAudio } = useContext(AudioStoreContext);
   const { timerGroupStore, timerStore, ...timerGroup } = useTimerGroup(
     id,
     name
@@ -32,13 +30,22 @@ export default function useTimerCard(id: string, name = "Unnamed") {
   const { play, pause, stop } = useSoundPlayer();
   //to save running timer data before it is closed
   useEffect(() => {
-    const onPageHide = () => {
-      localStorage.setItem("runningTimerData" + id, runningTimerRef.current);
-      localStorage.setItem("timerCardData" + id, timerCardDataRef.current);
+    if (!id) return;
+    const onPageHide = async () => {
+      await localStorage.setItem(
+        "runningTimerData" + id,
+        runningTimerRef.current
+      );
+      await localStorage.setItem(
+        "timerCardData" + id,
+        timerCardDataRef.current
+      );
+      console.log(customSoundsRef.current);
+      await localStorage.setItem("customSound" + id, customSoundsRef.current);
     };
-    window.addEventListener("pagehide", onPageHide);
+    window.addEventListener("beforeunload", onPageHide);
     return () => {
-      window.removeEventListener("pagehide", onPageHide);
+      window.removeEventListener("beforeunload", onPageHide);
     };
   }, [id]);
 
@@ -109,21 +116,42 @@ export default function useTimerCard(id: string, name = "Unnamed") {
     return () => {};
   }, [onTimerFinished]);
 
-  useEffect(() => {
-    const parsedTimerCardData = localStorage.getItem("timerCardData" + id);
+  const loadTimerCardDataFromStorage = useCallback(async () => {
+    return await localStorage.getItem("timerCardData" + id);
+  }, [id]);
+
+  const loadRunningTimerDataFromStorage = useCallback(async () => {
+    return await localStorage.getItem("runningTimerData" + id);
+  }, [id]);
+
+  const loadCustomSoundFromStorage = async () => {
+    return await localStorage.getItem("customSound" + id);
+  };
+
+  const initTimerCard = useCallback(async () => {
+    const parsedTimerCardData = await loadTimerCardDataFromStorage();
     if (parsedTimerCardData) {
       //@ts-ignore
       setTimerCardData(parsedTimerCardData);
     }
 
-    const parsedRunningTimerData = localStorage.getItem(
-      "runningTimerData" + id
-    );
+    const parsedRunningTimerData = await loadRunningTimerDataFromStorage();
     if (parsedRunningTimerData) {
       //@ts-ignore
       setRunningTimer(parsedRunningTimerData);
     }
-  }, [id]);
+
+    const customSoundData = await loadCustomSoundFromStorage();
+    if (customSoundData) {
+      customSoundsRef.current = customSoundData as {
+        [x: string]: Blob[];
+      };
+    }
+  }, [loadRunningTimerDataFromStorage, loadTimerCardDataFromStorage]);
+
+  useEffect(() => {
+    initTimerCard();
+  }, [initTimerCard]);
 
   const playCard = (currentTimerId = "") => {
     currentTimerId =
@@ -152,7 +180,12 @@ export default function useTimerCard(id: string, name = "Unnamed") {
       showNotification(
         `${timerGroupStore.name} => ${timerData.name} | completed`
       );
-
+      console.log(
+        customSoundsRef.current[runningTimerRef.current.currentTimerId] &&
+          URL.createObjectURL(
+            customSoundsRef.current[runningTimerRef.current.currentTimerId]
+          )
+      );
       play(
         (customSoundsRef.current[runningTimerRef.current.currentTimerId] &&
           URL.createObjectURL(
@@ -201,7 +234,6 @@ export default function useTimerCard(id: string, name = "Unnamed") {
   };
 
   const addSound = (timerId: string, audioBlob: Blob[]) => {
-    const audioId = addAudio(audioBlob);
     customSoundsRef.current[timerId] = audioBlob;
   };
 

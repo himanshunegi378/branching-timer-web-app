@@ -5,14 +5,16 @@ import TimerCard from "./component/timerCard/TimerCard";
 import useAudioRecorder from "./hooks/useAudioRecorder";
 import AudioProvider from "./providers/audioProvider";
 import { AudioStoreContext } from "./contexts/audioContext";
+import { localStorage } from "./utils/localStorage";
 
 function App(props) {
   const [timerCardsList, setTimerCardsList] = useState([]);
   useEffect(() => {
-    const savedTimerCardList = localStorage.getItem("timerCardList");
-    if (savedTimerCardList) {
-      setTimerCardsList(JSON.parse(savedTimerCardList));
-    }
+    localStorage.getItem("timerCardList").then((savedTimerCardList) => {
+      if (savedTimerCardList) {
+        setTimerCardsList(JSON.parse(savedTimerCardList));
+      }
+    });
   }, []);
 
   useEffect(() => {
@@ -34,25 +36,6 @@ function App(props) {
   }, [audioBlob]);
   return (
     <div>
-      <div>
-        {audioStore &&
-          Object.keys(audioStore).map((audioId) => {
-            return (
-              <audio
-                src={URL.createObjectURL(audioStore[audioId])}
-                type="audio/wav"
-                controls
-              ></audio>
-            );
-          })}
-
-        <button onClick={record}>Record</button>
-        <button
-          onClick={stopRecording}
-        >
-          stop
-        </button>
-      </div>
       <button
         className="select-none bg-blue-600 text-white px-4 py-2 rounded-full"
         onClick={() => {

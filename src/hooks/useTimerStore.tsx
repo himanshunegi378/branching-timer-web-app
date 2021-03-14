@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { timer } from "rxjs";
 import { v1 as uuidv1 } from "uuid";
 import { localStorage } from "../utils/localStorage";
 
@@ -28,8 +29,8 @@ export default function useTimerStore() {
     setTimerStore(newTimerStore);
   }
 
-  function loadTimerFromStorage(id: string) {
-    const timer = localStorage.getItem<Timer>(id);
+  async function loadTimerFromStorage(id: string) {
+    const timer = await localStorage.getItem<Timer>(id);
     if (!timer) return null;
     return timer;
   }
@@ -42,13 +43,19 @@ export default function useTimerStore() {
     localStorage.removeItem(id);
   }
 
-  function init(idList: string[]) {
+  async function init(idList: string[]) {
     const timerStore: TimerStore = {};
+    const promises: any[] = [];
     idList.forEach((id) => {
-      const timer = loadTimerFromStorage(id);
-      if (timer) timerStore[id] = timer;
+      promises.push(
+        loadTimerFromStorage(id).then((timer) => {
+          if (timer) timerStore[id] = timer;
+        })
+      );
     });
+    await Promise.all(promises);
     setTimerStore(timerStore);
+    return true;
   }
 
   function updateTimer(id: string, opts: any) {

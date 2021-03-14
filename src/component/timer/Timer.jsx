@@ -70,7 +70,7 @@ function Timer(props) {
               name
             )}
           </div>
-          <div>
+          <div className='ml-auto mr-4'>
             <button
               onClick={() => {
                 const action = isRecording ? onRecordStop : onRecordStart;

@@ -27,12 +27,14 @@ export default function useTimerGroup(id: string, name = "unname") {
   //get localstorage data if any
   useEffect(() => {
     if (!id) return;
-    const savedTimerGroupStoreData = loadTimerGroupFromLocalStorage(id);
-    if (!savedTimerGroupStoreData) return;
-    setTimerGroupStore(savedTimerGroupStoreData);
+    loadTimerGroupFromLocalStorage(id).then((savedTimerGroupStoreData) => {
+      if (!savedTimerGroupStoreData) return;
+      const timersList = savedTimerGroupStoreData.timers;
 
-    const timersList = savedTimerGroupStoreData.timers;
-    init(timersList);
+      init(timersList).then(() => {
+        setTimerGroupStore(savedTimerGroupStoreData);
+      });
+    });
   }, [id]);
 
   const saveTimerGroupToLocalStorage = (timerGroup: TimerGroupStore) => {
@@ -43,10 +45,10 @@ export default function useTimerGroup(id: string, name = "unname") {
     localStorage.removeItem(timerGroup.id);
   };
 
-  const loadTimerGroupFromLocalStorage = (
+  const loadTimerGroupFromLocalStorage = async (
     id: string
-  ): TimerGroupStore | null => {
-    const timerGroup = localStorage.getItem<TimerGroupStore>(id);
+  ): Promise<TimerGroupStore | null> => {
+    const timerGroup = await localStorage.getItem<TimerGroupStore>(id);
     return timerGroup;
   };
 

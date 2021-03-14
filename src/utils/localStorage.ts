@@ -1,16 +1,15 @@
-const getItem = <T>(key: string): T | null => {
-  const stringifiedData = localStorage.getItem(key);
-  if (!stringifiedData) return null;
-  const parsedData = JSON.parse(stringifiedData);
-  return parsedData;
+import localforage from "localforage";
+localforage.setDriver([localforage.INDEXEDDB, localforage.LOCALSTORAGE]);
+const getItem = async <T>(key: string): Promise<T | null> => {
+  return await localforage.getItem(key);
 };
 
-const setItem = (key: string, data: { [key: string]: any }): void => {
-  localStorage.setItem(key, JSON.stringify(data));
+const setItem = (key: string, data: { [key: string]: any }) => {
+  return localforage.setItem(key, data);
 };
 
-const removeItem = (key: string): void => {
-  localStorage.removeItem(key);
+const removeItem = (key: string) => {
+  return localforage.removeItem(key);
 };
 
 const ls = { getItem, setItem, removeItem };
