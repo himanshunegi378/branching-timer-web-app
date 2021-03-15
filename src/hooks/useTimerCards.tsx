@@ -186,14 +186,14 @@ export default function useTimerCard(id: string, name = "Unnamed") {
             customSoundsRef.current[runningTimerRef.current.currentTimerId]
           )
       );
-      play(
-        (customSoundsRef.current[runningTimerRef.current.currentTimerId] &&
-          URL.createObjectURL(
-            customSoundsRef.current[runningTimerRef.current.currentTimerId]
-          )) ||
-          defaultSound,
-        2
-      );
+      if (customSoundsRef.current[timerData.id]) {
+        const soundObjectUrl = URL.createObjectURL(
+          customSoundsRef.current[timerData.id]
+        );
+        play(soundObjectUrl);
+      } else {
+        play(defaultSound, 2);
+      }
 
       setOnTimerFinished(true);
     });
