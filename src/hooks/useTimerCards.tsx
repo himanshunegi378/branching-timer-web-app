@@ -180,12 +180,7 @@ export default function useTimerCard(id: string, name = "Unnamed") {
       showNotification(
         `${timerGroupStore.name} => ${timerData.name} | completed`
       );
-      console.log(
-        customSoundsRef.current[runningTimerRef.current.currentTimerId] &&
-          URL.createObjectURL(
-            customSoundsRef.current[runningTimerRef.current.currentTimerId]
-          )
-      );
+
       if (customSoundsRef.current[timerData.id]) {
         const soundObjectUrl = URL.createObjectURL(
           customSoundsRef.current[timerData.id]
