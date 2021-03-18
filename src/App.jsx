@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import "./App.css";
+import style from "./App.module.scss";
 import { v1 as uuidv1 } from "uuid";
 import TimerCard from "./component/timerCard/TimerCard";
 import useAudioRecorder from "./hooks/useAudioRecorder";
@@ -49,9 +49,13 @@ function App(props) {
       </button>
 
       <div className="overflow-auto">
-        <div className="flex" style={{ alignItems: "flex-start" }}>
+        <div
+          className={` ${style.hs}`}
+          style={{ alignItems: "flex-start" }}
+        >
           {timerCardsList.map((timerCardId) => (
             <TimerCard
+              className={style.item}
               key={timerCardId}
               timerCardId={timerCardId}
               onDelete={(id) => {

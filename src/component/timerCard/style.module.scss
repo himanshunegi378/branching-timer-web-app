@@ -1,0 +1,38 @@
+@import "@material/elevation";
+@import "/src/styles/shadeGenerator.scss";
+.add_button {
+  background-color: makeColorPalette(blue, 300);
+  padding: 0.25rem 1rem;
+  border-radius: 12px;
+  color: white;
+  user-select: none;
+  transition: all 0.15s;
+  outline: 0px solid transparent;
+  outline-offset: 2px;
+  border: 2px solid transparent;
+  @include elevation(1);
+
+  &:hover {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    transform: scale(1.1);
+    @include elevation(3);
+  }
+
+  &:focus {
+    border: 2px solid makeColorPalette(blue, 500);
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    transform: scale(1.1);
+    @include elevation(3);
+  }
+
+  &:active {
+    background-color: makeColorPalette(blue, 900);
+
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    transform: scale(1);
+    @include elevation(2);
+  }
+}
