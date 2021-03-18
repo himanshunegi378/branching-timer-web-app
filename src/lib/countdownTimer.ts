@@ -1,49 +1,35 @@
-import { Eventjs } from "./event"
+import timeWorker from "../timeWorker";
+import { Eventjs } from "./event";
+
+const worker = new Worker(timeWorker);
 
 class CountdownTimer extends Eventjs {
-    intervalId: number
-    constructor() {
-        super('tick', 'finished')
-        this.intervalId = -1
+  intervalId: number;
+  time: number;
+  constructor() {
+    super("tick", "finished");
+    this.intervalId = -1;
+    this.time = 0;
+  }
+
+  tick = (e: MessageEvent) => {
+    this.trigger("tick", this.time);
+    if (this.time <= 0) {
+      this.trigger("finished");
+      this.stop();
     }
+    this.time--;
+  };
 
-    play(time: number) {
-        this.stop()
+  play(time: number) {
+    this.time = time;
+    worker.addEventListener("message", this.tick);
+  }
 
-        let start = Date.now(),
-            diff
-        const timer = () => {
-            // get the number of seconds that have elapsed since 
-            // startTimer() was called
-            diff = time - (((Date.now() - start) / 1000) | 0);
-
-            // does the same job as parseInt truncates the float
-            // minutes = (diff / 60) | 0;
-            // seconds = (diff % 60) | 0;
-
-            // minutes = minutes < 10 ? "0" + minutes : minutes;
-            // seconds = seconds < 10 ? "0" + seconds : seconds;
-            this.trigger('tick', diff)
-            if (diff <= 0) {
-                // add one second so that the count down starts at the full duration
-                // example 05:00 not 04:59
-                start = Date.now() + 1000;
-                this.stop()
-
-                this.trigger('finished')
-            }
-        };
-        // we don't want to wait a full second before the timer starts
-        timer();
-        this.intervalId = window.setInterval(timer, 1000);
-
-
-    }
-
-    stop() {
-        clearInterval(this.intervalId)
-    }
-
+  stop() {
+    worker.removeEventListener("message", this.tick);
+    this.time = 0;
+  }
 }
 
-export default CountdownTimer
+export default CountdownTimer;

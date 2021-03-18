@@ -6,6 +6,7 @@ import * as serviceWorker from "./serviceWorker";
 import "./index.css";
 import AudioProvider from "./providers/audioProvider";
 
+
 ReactDOM.render(
   <React.StrictMode>
     <SoundPlayerProvider>
@@ -21,4 +22,3 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.register();
-
