@@ -96,19 +96,20 @@ export default function TimerCard(props) {
         </div>
         {timerCard.timerCardData.timers.map((timerId) => {
           const timer = timerCard.timerStore[timerId];
+          if (!timer) return null;
           return (
             <Timer
               key={timer.id}
               id={timer.id}
-              active={timerCard.runningTimer?.currentTimerId === timer?.id}
+              active={timerCard.runningTimer?.currentTimerId === timer.id}
               onDelete={(timerId) => {
                 timerCard.removeTimer(timerId);
               }}
               onNameChange={(newName) =>
-                timerCard.changeTimerName(timerId, newName)
+                timerCard.changeTimerName(timer.id, newName)
               }
               onTimeChange={(newTime) =>
-                timerCard.chanageTimerTime(timerId, newTime)
+                timerCard.chanageTimerTime(timer.id, newTime)
               }
               name={timer.name}
               time={timer.time}
@@ -117,7 +118,7 @@ export default function TimerCard(props) {
               }}
               onRecordStop={() => {
                 const audioBlob = stopRecording();
-                timerCard.addSound(timerId, audioBlob);
+                timerCard.addSound(timer.id, audioBlob);
               }}
             />
           );

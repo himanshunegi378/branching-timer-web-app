@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useReducer, useState } from "react";
+import { timer } from "rxjs";
 import { v1 as uuidv1 } from "uuid";
 import { localStorage } from "../utils/localStorage";
 
@@ -7,8 +8,38 @@ export type TimerStore = {
   [id: string]: Timer;
 };
 
+type Action =
+  | { type: "ADD_TIMER"; payload: { id: string; name: string; time: number } }
+  | { type: "DELETE_TIMER"; id: string }
+  | {
+      type: "UPDATE_TIMER";
+      payload: { id: string; name: string; time: number };
+    };
+
+function timerStoreReducer(
+  prevTimerStore: TimerStore,
+  action: Action
+): TimerStore {
+  switch (action.type) {
+    case "ADD_TIMER": {
+      const { id, name, time } = action.payload;
+      return { ...prevTimerStore, [id]: { id: id, name: name, time: time } };
+    }
+    case "DELETE_TIMER": {
+      const newStore = { ...prevTimerStore };
+      delete newStore[action.id];
+      return newStore;
+    }
+    case "UPDATE_TIMER": {
+      const { id, name, time } = action.payload;
+      return { ...prevTimerStore, [id]: { id: id, name: name, time: time } };
+    }
+  }
+}
 export default function useTimerStore() {
-  const [timerStore, setTimerStore] = useState<TimerStore>({});
+  const [timerStore, dispatch] = useReducer(timerStoreReducer, {});
+
+  // const [timerStore, setTimerStore] = useState<TimerStore>({});
 
   const createTimer = (name: string, time: number): Timer => {
     const id = uuidv1();
@@ -17,7 +48,7 @@ export default function useTimerStore() {
 
   function addTimer(name: string, time: number): Timer {
     const newTimer = createTimer(name, time);
-    setTimerStore({ ...timerStore, [newTimer.id]: newTimer });
+    dispatch({ type: "ADD_TIMER", payload: { ...newTimer } });
     saveTimerToStorage(newTimer);
     return newTimer;
   }
@@ -26,10 +57,8 @@ export default function useTimerStore() {
     return timer;
   }
   function deleteTimer(id: string) {
-    const newTimerStore = { ...timerStore };
-    delete newTimerStore[id];
+    dispatch({ type: "DELETE_TIMER", id: id });
     deleteTimeFromStorage(id);
-    setTimerStore(newTimerStore);
   }
 
   async function loadTimerFromStorage(id: string) {
@@ -47,26 +76,33 @@ export default function useTimerStore() {
   }
 
   async function init(timerIdList: string[]) {
+    const promises: any = [];
     const timerStore: TimerStore = {};
-    const promises: any[] = [];
     timerIdList.forEach((id) => {
       promises.push(
         loadTimerFromStorage(id).then((timer) => {
-          if (timer) timerStore[id] = timer;
+          if (timer) timerStore[timer.id] = timer;
         })
       );
     });
     await Promise.all(promises);
-    setTimerStore(timerStore);
-    return timerStore;
+    Object.values(timerStore).map((timer) =>
+      dispatch({ type: "ADD_TIMER", payload: timer })
+    );
+    // dispatch({ type: "ADD_TIMER", payload: { ...timer } });
   }
 
   function updateTimer(id: string, opts: { name?: string; time?: number }) {
-    const newTimerStore = { ...timerStore };
-    newTimerStore[id].name = opts.name || newTimerStore[id].name;
-    newTimerStore[id].time = opts.time || newTimerStore[id].time;
-    saveTimerToStorage(newTimerStore[id]);
-    setTimerStore(newTimerStore);
+    const updatedTimer: Timer = {
+      id: id,
+      name: opts.name || timerStore[id].name,
+      time: opts.time || timerStore[id].time,
+    };
+    dispatch({
+      type: "UPDATE_TIMER",
+      payload: updatedTimer,
+    });
+    saveTimerToStorage(updatedTimer);
   }
 
   return {
