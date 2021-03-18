@@ -89,7 +89,6 @@ export default function useTimerStore() {
     Object.values(timerStore).map((timer) =>
       dispatch({ type: "ADD_TIMER", payload: timer })
     );
-    // dispatch({ type: "ADD_TIMER", payload: { ...timer } });
   }
 
   function updateTimer(id: string, opts: { name?: string; time?: number }) {

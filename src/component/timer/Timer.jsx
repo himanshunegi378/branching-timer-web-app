@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import close from "./close.svg";
-
+import style from "./style.module.scss";
 function Timer(props) {
   const {
     onNameChange,
@@ -30,9 +30,9 @@ function Timer(props) {
 
   useEffect(() => {
     if (active) {
-      setTitleBgColor("bg-red-100");
+      // setTitleBgColor("bg-red-100");
     } else {
-      setTitleBgColor("bg-blue-100");
+      // setTitleBgColor("bg-blue-100");
     }
   }, [active]);
 
@@ -40,12 +40,14 @@ function Timer(props) {
     <div
       id={props.id}
       // className="my-1 px-2 pt-2 border rounded-lg border-gray-300"
-      className={`my-1 rounded-lg ${active ? "elevation-4 " : "elevation-1"}`}
+      className={`my-1 rounded-lg ${style.timer} ${
+        active ? style.timer__active : ""
+      }`}
     >
       <div
-        className={`${titleBgColor} w-full rounded-t-lg  border border-b-0 border-gray-300 px-1 `}
+        className={`${style.title} w-full rounded-t-lg  border border-b-0 border-gray-300 px-1 `}
       >
-        <div className={`flex flex-row justify-between items-center`}>
+        <div className={` flex flex-row justify-between items-center`}>
           <div onClick={() => setEditTitle(true)}>
             {editTitle ? (
               <form
@@ -70,7 +72,7 @@ function Timer(props) {
               name
             )}
           </div>
-          <div className='ml-auto mr-4'>
+          <div className="ml-auto mr-4">
             <button
               onClick={() => {
                 const action = isRecording ? onRecordStop : onRecordStart;
@@ -78,7 +80,7 @@ function Timer(props) {
                 setIsRecording(!isRecording);
               }}
             >
-              {isRecording ? 'Stop' : 'Record'}
+              {isRecording ? "Stop" : "Record"}
             </button>
           </div>
           <div>

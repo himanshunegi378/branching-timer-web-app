@@ -1,0 +1,17 @@
+@import "@material/elevation";
+@import "/src/styles/shadeGenerator.scss";
+
+.timer {
+  transition: box-shadow 0.2s;
+  .title {
+    transition: background-color 0.2s;
+    background-color: makeColorPalette(lightblue, 100);
+  }
+}
+
+.timer__active {
+  @include elevation(2, black);
+  .title {
+    background-color: makeColorPalette(pink, 300);
+  }
+}
