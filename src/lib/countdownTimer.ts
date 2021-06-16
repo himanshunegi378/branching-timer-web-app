@@ -4,11 +4,9 @@ import { Eventjs } from "./event";
 const worker = new Worker(timeWorker);
 
 class CountdownTimer extends Eventjs {
-  intervalId: number;
   time: number;
   constructor() {
     super("tick", "finished");
-    this.intervalId = -1;
     this.time = 0;
   }
 
