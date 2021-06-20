@@ -9,17 +9,17 @@ import { localStorage } from "./utils/localStorage";
 
 function App(props) {
   const [timerCardsList, setTimerCardsList] = useState([]);
-  useEffect(() => {
-    localStorage.getItem("timerCardList").then((savedTimerCardList) => {
-      if (savedTimerCardList) {
-        setTimerCardsList(JSON.parse(savedTimerCardList));
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   localStorage.getItem("timerCardList").then((savedTimerCardList) => {
+  //     if (savedTimerCardList) {
+  //       setTimerCardsList(JSON.parse(savedTimerCardList));
+  //     }
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem("timerCardList", JSON.stringify(timerCardsList));
-  }, [timerCardsList]);
+  // useEffect(() => {
+  //   localStorage.setItem("timerCardList", JSON.stringify(timerCardsList));
+  // }, [timerCardsList]);
 
   useEffect(() => {
     document.body.classList.remove("page-loading");
