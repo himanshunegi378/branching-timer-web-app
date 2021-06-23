@@ -114,6 +114,7 @@ export default function TimerCard(props) {
                             //     timer.id
                             // }
                             onDelete={(timerId) => {
+                                action.closeTimer(timer.id)
                                 // timerCard.removeTimer(timerId)
                             }}
                             onNameChange={

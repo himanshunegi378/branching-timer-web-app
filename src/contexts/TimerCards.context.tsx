@@ -1,43 +1,12 @@
 import React, { PropsWithChildren } from "react"
-import { v4 } from "uuid"
+import { useEffectDebug } from "../hooks/useEffectDebug"
 import { Timer } from "../hooks/useTimerStore"
+import { timerCardsReducer } from "./reducer"
 import { Action, TimerCard } from "./TimerCards.types"
 
 const TimeCardsContext = React.createContext<
     [Record<string, TimerCard>, (action: Action) => void]
 >([{}, (action) => {}])
-
-function timerCardsReducer(
-    prevState: Record<string, TimerCard>,
-    action: Action
-) {
-    switch (action.type) {
-        case "SETUP_EMPTY_TIMER": {
-            const { timerCardId } = action.payload
-            const intialTimerCard: TimerCard = {
-                timerGroup: { id: v4(), name: "unnamed", timers: [] },
-                looping: false,
-                status: "stopped",
-                currentTimer: undefined
-            }
-            return { ...prevState, [timerCardId]: intialTimerCard }
-        }
-        case "ADD_TIMER": {
-            const { timerCardId, timerData } = action.payload
-            const { name, time } = timerData
-            const timerCard = prevState[timerCardId]
-            timerCard.timerGroup.timers.push({
-                id: v4(),
-                name: name,
-                time: time
-            })
-            return { ...prevState }
-        }
-
-        default:
-            return prevState
-    }
-}
 
 export function TimerCardsProvider(props: PropsWithChildren<{}>) {
     const [timerCardStore, dispatch] = React.useReducer(timerCardsReducer, {})
@@ -51,8 +20,9 @@ export function TimerCardsProvider(props: PropsWithChildren<{}>) {
 export function useTimerCard(timerCardId: string) {
     const [state, dispatch] = React.useContext(TimeCardsContext)
 
-    const [timerCardData, setTimerCardData] =
-        React.useState<TimerCard | undefined>()
+    const [timerCardData, setTimerCardData] = React.useState<
+        TimerCard | undefined
+    >()
 
     function addTimer(timer: Omit<Timer, "id">) {
         dispatch({
@@ -61,16 +31,35 @@ export function useTimerCard(timerCardId: string) {
         })
     }
 
+    function closeTimer(timerId: string) {
+        dispatch({ type: "REMOVE_TIMER", payload: { timerCardId, timerId } })
+    }
+
+    function updateTimer(
+        timerId: string,
+        timerOption: Omit<Partial<Timer>, "id">
+    ) {
+        dispatch({
+            type: "EDIT_TIMER",
+            payload: {
+                timerCardId,
+                timerId,
+                updatedTimerOption: timerOption
+            }
+        })
+    }
+
     React.useEffect(() => {
         function setupInitialTimer(timerCardId: string) {
             dispatch({ type: "SETUP_EMPTY_TIMER", payload: { timerCardId } })
         }
-        if (!(state && timerCardId)) return
+        // directyly not set initial timercard data so there would be one source of data i.e. state from context
         if (!state[timerCardId]) {
-            return setupInitialTimer(timerCardId)
+            setupInitialTimer(timerCardId)
+            return
         }
         setTimerCardData(state[timerCardId])
     }, [timerCardId, state, dispatch])
 
-    return { timerCardData, action: { addTimer } }
+    return { timerCardData, action: { addTimer, closeTimer, updateTimer } }
 }
