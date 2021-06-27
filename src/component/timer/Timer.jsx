@@ -65,6 +65,7 @@ function Timer(props) {
                   autoFocus
                   autoComplete={"off"}
                   type="text"
+                  defaultValue={name}
                   name="title"
                 />
               </form>

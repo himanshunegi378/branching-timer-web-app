@@ -1,3 +1,5 @@
+import { Immutable } from "immer"
+
 export type Timer = {
     id: string
     name: string
@@ -10,12 +12,12 @@ export type TimerGroup = {
     timers: Timer[]
 }
 
-export type TimerCard = {
+export type TimerCard = Immutable<{
     timerGroup: TimerGroup
     looping: Boolean
     status: "playing" | "paused" | "stopped"
-    currentTimer?: { id: string; remainingTime: number }
-}
+    currentTimer?: { id: string; remainingTime: number; totalTime: number }
+}>
 
 /**
  * Timercard reducer relate types
@@ -28,6 +30,8 @@ export type ActionType =
     | "PAUSE"
     | "PLAY"
     | "STOP"
+    | "TIMER_FINISHED"
+    | "TOGGLE_LOOP"
     | "RENAME_TIMERCARD"
     | "REMOVE_TIMERCARD"
 

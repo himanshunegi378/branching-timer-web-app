@@ -1,6 +1,7 @@
-import React, { PropsWithChildren } from "react"
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react"
 import { useEffectDebug } from "../hooks/useEffectDebug"
 import { Timer } from "../hooks/useTimerStore"
+import CountdownTimer from "../lib/countdownTimer"
 import { timerCardsReducer } from "./reducer"
 import { Action, TimerCard } from "./TimerCards.types"
 
@@ -23,6 +24,16 @@ export function useTimerCard(timerCardId: string) {
     const [timerCardData, setTimerCardData] = React.useState<
         TimerCard | undefined
     >()
+    const [runningTimer, setRunningTimer] = useState({
+        currentTimerId: "",
+        remainingTime: 0,
+        time: 0
+    })
+    const countdownTimerRef = useRef(new CountdownTimer())
+
+    /**
+     *  Timer Realted functions
+     */
 
     function addTimer(timer: Omit<Timer, "id">) {
         dispatch({
@@ -49,6 +60,45 @@ export function useTimerCard(timerCardId: string) {
         })
     }
 
+    /**
+     *  Timercard Realted functions
+     */
+    function changeCardName(newName: string) {
+        dispatch({
+            type: "RENAME_TIMERCARD",
+            payload: {
+                timerCardId: timerCardId,
+                newName: newName
+            }
+        })
+    }
+
+    function deleteCard() {}
+
+    function playCard() {
+        dispatch({ type: "PLAY", payload: { timerCardId } })
+    }
+
+    function pauseCard() {
+        dispatch({
+            type: "PAUSE",
+            payload: { timerCardId, remainingTime: runningTimer.remainingTime }
+        })
+    }
+
+    function stopCard() {
+        dispatch({ type: "STOP", payload: { timerCardId } })
+    }
+
+    function toggleLooping() {
+        dispatch({
+            type: "TOGGLE_LOOP",
+            payload: {
+                timerCardId
+            }
+        })
+    }
+
     React.useEffect(() => {
         function setupInitialTimer(timerCardId: string) {
             dispatch({ type: "SETUP_EMPTY_TIMER", payload: { timerCardId } })
@@ -61,5 +111,77 @@ export function useTimerCard(timerCardId: string) {
         setTimerCardData(state[timerCardId])
     }, [timerCardId, state, dispatch])
 
-    return { timerCardData, action: { addTimer, closeTimer, updateTimer } }
+    useEffect(() => {
+        const countDownTimer = countdownTimerRef.current
+        switch (timerCardData?.status) {
+            case "playing": {
+                if (timerCardData.currentTimer) {
+                    // get the timer from current timer and the reamaining time
+                    const { remainingTime, id, totalTime } =
+                        timerCardData.currentTimer
+                    // start countdown for timer
+                    countDownTimer.play(remainingTime)
+
+                    //on each countdown timer tick...
+                    countDownTimer.on("tick", (remainingTime: number) => {
+                        //change value in running timer ref and running timer state
+                        setRunningTimer({
+                            currentTimerId: id,
+                            remainingTime: remainingTime,
+                            time: totalTime
+                        })
+                    })
+
+                    // on timer finished...
+                    countDownTimer.on("finished", () => {
+                        //dispatch next_timer event
+                        dispatch({
+                            type: "TIMER_FINISHED",
+                            payload: { timerCardId }
+                        })
+                        //show notification
+                        //play sound
+                    })
+                    // repeat
+                }
+                break
+            }
+            case "stopped": {
+                setRunningTimer({
+                    currentTimerId: "",
+                    remainingTime: 0,
+                    time: 0
+                })
+                break
+            }
+            default:
+                break
+        }
+
+        return () => {
+            // these statement are by COINCIDENCE handling case in which timercard is paused
+            countDownTimer.off("finished")
+            countDownTimer.off("tick")
+        }
+    }, [
+        timerCardData?.status,
+        timerCardData?.currentTimer,
+        dispatch,
+        timerCardId
+    ])
+
+    return {
+        timerCardData,
+        runningTimer,
+        action: {
+            addTimer,
+            closeTimer,
+            updateTimer,
+            changeCardName,
+            toggleLooping,
+            playCard,
+            pauseCard,
+            stopCard
+        }
+    }
 }

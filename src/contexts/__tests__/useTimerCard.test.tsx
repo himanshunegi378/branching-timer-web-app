@@ -6,6 +6,13 @@ import { useTimerCard, TimerCardsProvider } from "../TimerCards.context"
 import { Timer, TimerCard } from "../TimerCards.types"
 
 describe("useTimerCard", () => {
+    global.URL.createObjectURL = jest.fn()
+
+    afterEach(() => {
+        //@ts-ignore
+        global.URL.createObjectURL.mockReset()
+    })
+
     test("should provide initial timerCardobject if not timercard exist against timercardId", async () => {
         const wrapper = ({ children }: { children: any }) => (
             <TimerCardsProvider>{children}</TimerCardsProvider>
@@ -86,7 +93,38 @@ describe("useTimerCard", () => {
         expect(
             result.current.timerCardData?.timerGroup.timers[0]
         ).toEqual<Timer>({ id: expect.any(String), name: "himanshu", time: 20 })
-
-        
     })
+    test("should rename timercard", () => {
+        const wrapper = ({ children }: { children: any }) => (
+            <TimerCardsProvider>{children}</TimerCardsProvider>
+        )
+        const timerCardId = v4()
+        const { result } = renderHook(() => useTimerCard(timerCardId), {
+            wrapper
+        })
+
+        const newName = "timercard1"
+        act(() => {
+            result.current.action.changeCardName(newName)
+        })
+        expect(result.current.timerCardData?.timerGroup.name).toBe(newName)
+    })
+    test.todo("should close timer card")
+    test("should toggle loop", () => {
+        const wrapper = ({ children }: { children: any }) => (
+            <TimerCardsProvider>{children}</TimerCardsProvider>
+        )
+        const timerCardId = v4()
+        const { result } = renderHook(() => useTimerCard(timerCardId), {
+            wrapper
+        })
+        const loopStatus = result.current.timerCardData?.looping
+        act(() => {
+            result.current.action.toggleLooping()
+        })
+        expect(result.current.timerCardData?.looping).toBe(!loopStatus)
+    })
+    test.todo("should play card")
+    test.todo("should not play card if no timers")
+    test.todo("should stop timer card")
 })
