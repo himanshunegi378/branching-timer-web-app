@@ -1,4 +1,2 @@
 write test for untested part of useTimerCard
-Find good solution for fetching timercards from storage
---one solution is: createing a hook that will handle creation of new timercard and as well as loading timercard from storage
-implement timercard storage 
+code organization

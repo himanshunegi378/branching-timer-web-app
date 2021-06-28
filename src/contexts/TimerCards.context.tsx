@@ -8,9 +8,11 @@ import React, {
 } from "react"
 import { Timer } from "../hooks/useTimerStore"
 import CountdownTimer from "../lib/countdownTimer"
+import showNotification from "../utils/notification"
 import { timerCardsReducer } from "./reducer"
 import { timerCardIDsStorage, timerCardStorage } from "./storage"
 import { Action, TimerCard } from "./TimerCards.types"
+import EventEmitter from "events"
 
 const TimeCardsContext = React.createContext<
     [Record<string, TimerCard>, (action: Action) => void]
@@ -93,6 +95,29 @@ export function useTimerCard(timerCardId: string) {
         time: 0
     })
     const countdownTimerRef = useRef(new CountdownTimer())
+    const evenEmitterRef = useRef(new EventEmitter())
+
+    useEffect(() => {
+        if (!evenEmitterRef.current) return
+        const eventEmitter = evenEmitterRef.current
+        const notify = (timerId: string) => {
+            showNotification(
+                `${timerCardData?.timerGroup.name} => ${
+                    timerCardData?.timerGroup.timers.find(
+                        (timer) => timer.id === timerCardData.currentTimer?.id
+                    )?.name
+                } | completed`
+            )
+        }
+        eventEmitter.on("notify", notify)
+        return () => {
+            eventEmitter.off("notify", notify)
+        }
+    }, [
+        timerCardData?.currentTimer?.id,
+        timerCardData?.timerGroup.name,
+        timerCardData?.timerGroup.timers
+    ])
 
     //store timercard data in localstorage when web page is closed
     useEffect(() => {
@@ -224,6 +249,10 @@ export function useTimerCard(timerCardId: string) {
                     // on timer finished...
                     countDownTimer.on("finished", () => {
                         //dispatch next_timer event
+                        evenEmitterRef.current.emit(
+                            "notify",
+                            timerCardData.currentTimer?.id
+                        )
                         dispatch({
                             type: "TIMER_FINISHED",
                             payload: { timerCardId }
@@ -253,9 +282,9 @@ export function useTimerCard(timerCardId: string) {
             countDownTimer.off("tick")
         }
     }, [
-        timerCardData?.status,
-        timerCardData?.currentTimer,
         dispatch,
+        timerCardData?.currentTimer,
+        timerCardData?.status,
         timerCardId
     ])
 

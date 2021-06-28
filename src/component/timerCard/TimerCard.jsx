@@ -54,6 +54,7 @@ export default function TimerCard(props) {
                                         const title =
                                             event.currentTarget.title.value
                                         if (title) {
+                                            action.changeCardName(title)
                                             // timerCard.changeTimerCardName(title);
                                         }
                                         setEditTitle(false)
@@ -63,15 +64,23 @@ export default function TimerCard(props) {
                                         const title =
                                             event.currentTarget.title.value
                                         if (title) {
+                                            action.changeCardName(title)
                                             // timerCard.changeTimerCardName(title);
                                         }
                                         setEditTitle(false)
                                     }}
                                 >
-                                    <input autoFocus type="text" name="title" />
+                                    <input
+                                        autoFocus
+                                        type="text"
+                                        name="title"
+                                        defaultValue={
+                                            timerCardData.timerGroup.name
+                                        }
+                                    />
                                 </form>
                             ) : (
-                                "dummy name"
+                                timerCardData.timerGroup.name
                                 // timerCard.timerCardData.name
                             )}
                         </div>
