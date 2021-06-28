@@ -18,6 +18,7 @@ export default function TimerCard(props) {
     const [editTitle, setEditTitle] = useState(() => false)
     const { record, stopRecording, audioBlob } = useAudioRecorder()
     const { timerCardData, runningTimer, action } = useTimerCard(timerCardId)
+    if (!timerCardData) return <div>No timer card for you</div>
     return (
         <div className={`bg-white rounded-lg ${className}`}>
             <div className="flex flex-row-reverse">

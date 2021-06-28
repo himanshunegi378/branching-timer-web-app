@@ -18,6 +18,25 @@ export function TimerCardsProvider(props: PropsWithChildren<{}>) {
     )
 }
 
+//It will be use to create timercards. It will provide id of all timercards in the system
+export function useCreateTimerCard() {
+    const [allTimerCards, dispatch] = React.useContext(TimeCardsContext)
+
+    function createTimerCard(timerCardId: string) {
+        dispatch({ type: "SETUP_EMPTY_TIMER", payload: { timerCardId } })
+    }
+
+    function deleteTimerCard(timerCardId: string) {
+        dispatch({ type: "REMOVE_TIMERCARD", payload: { timerCardId } })
+    }
+
+    return {
+        allTimerCardsId: Object.keys(allTimerCards),
+        createTimerCard,
+        deleteTimerCard
+    }
+}
+
 export function useTimerCard(timerCardId: string) {
     const [state, dispatch] = React.useContext(TimeCardsContext)
 
@@ -73,8 +92,6 @@ export function useTimerCard(timerCardId: string) {
         })
     }
 
-    function deleteCard() {}
-
     function playCard() {
         dispatch({ type: "PLAY", payload: { timerCardId } })
     }
@@ -100,14 +117,6 @@ export function useTimerCard(timerCardId: string) {
     }
 
     React.useEffect(() => {
-        function setupInitialTimer(timerCardId: string) {
-            dispatch({ type: "SETUP_EMPTY_TIMER", payload: { timerCardId } })
-        }
-        // directyly not set initial timercard data so there would be one source of data i.e. state from context
-        if (!state[timerCardId]) {
-            setupInitialTimer(timerCardId)
-            return
-        }
         setTimerCardData(state[timerCardId])
     }, [timerCardId, state, dispatch])
 

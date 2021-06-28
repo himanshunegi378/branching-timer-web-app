@@ -16,6 +16,11 @@ export const timerCardsReducer = produce(
                 prevState[timerCardId] = castDraft(intialTimerCard)
                 break
             }
+            case "REMOVE_TIMERCARD": {
+                const { timerCardId } = action.payload
+                delete prevState[timerCardId]
+                break
+            }
             case "ADD_TIMER": {
                 const { timerCardId, timerData } = action.payload
                 const { name, time } = timerData
