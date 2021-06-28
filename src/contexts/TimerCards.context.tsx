@@ -1,8 +1,15 @@
-import React, { PropsWithChildren, useEffect, useRef, useState } from "react"
-import { useEffectDebug } from "../hooks/useEffectDebug"
+import produce from "immer"
+import React, {
+    PropsWithChildren,
+    useCallback,
+    useEffect,
+    useRef,
+    useState
+} from "react"
 import { Timer } from "../hooks/useTimerStore"
 import CountdownTimer from "../lib/countdownTimer"
 import { timerCardsReducer } from "./reducer"
+import { timerCardIDsStorage, timerCardStorage } from "./storage"
 import { Action, TimerCard } from "./TimerCards.types"
 
 const TimeCardsContext = React.createContext<
@@ -11,6 +18,30 @@ const TimeCardsContext = React.createContext<
 
 export function TimerCardsProvider(props: PropsWithChildren<{}>) {
     const [timerCardStore, dispatch] = React.useReducer(timerCardsReducer, {})
+
+    async function init() {
+        const timercardIds = await timerCardIDsStorage.load()
+        const promises: any[] = []
+        timercardIds?.forEach((id) => {
+            promises.push(timerCardStorage.load(id))
+        })
+        const timerCardData: Record<string, TimerCard> = {}
+        await Promise.all(promises).then((data) => {
+            data.forEach((timerCard: TimerCard) => {
+                if (!timerCard) return
+                timerCardData[timerCard.id] = timerCard
+            })
+        })
+
+        dispatch({
+            type: "INIT",
+            payload: { timerCardsData: timerCardData }
+        })
+    }
+
+    useEffect(() => {
+        init()
+    }, [])
     return (
         <TimeCardsContext.Provider value={[timerCardStore, dispatch]}>
             {props.children}
@@ -22,12 +53,25 @@ export function TimerCardsProvider(props: PropsWithChildren<{}>) {
 export function useCreateTimerCard() {
     const [allTimerCards, dispatch] = React.useContext(TimeCardsContext)
 
+    const saveTimerCardIds = useCallback(() => {
+        timerCardIDsStorage.save(Object.keys(allTimerCards))
+    }, [allTimerCards])
+
+    //save all the timercards Id when page is closed
+    useEffect(() => {
+        window.addEventListener("beforeunload", saveTimerCardIds)
+        return () => {
+            window.removeEventListener("beforeunload", saveTimerCardIds)
+        }
+    }, [saveTimerCardIds])
+
     function createTimerCard(timerCardId: string) {
         dispatch({ type: "SETUP_EMPTY_TIMER", payload: { timerCardId } })
     }
 
     function deleteTimerCard(timerCardId: string) {
         dispatch({ type: "REMOVE_TIMERCARD", payload: { timerCardId } })
+        timerCardStorage.delete(timerCardId)
     }
 
     return {
@@ -50,6 +94,28 @@ export function useTimerCard(timerCardId: string) {
     })
     const countdownTimerRef = useRef(new CountdownTimer())
 
+    //store timercard data in localstorage when web page is closed
+    useEffect(() => {
+        const onPageHide = () => {
+            timerCardStorage.save(
+                timerCardId,
+                produce(timerCardData as TimerCard, (draftTimerCardData) => {
+                    draftTimerCardData.status =
+                        draftTimerCardData.status === "stopped"
+                            ? "stopped"
+                            : "paused"
+                    if (draftTimerCardData.currentTimer) {
+                        draftTimerCardData.currentTimer.remainingTime =
+                            runningTimer.remainingTime
+                    }
+                })
+            )
+        }
+        window.addEventListener("beforeunload", onPageHide)
+        return () => {
+            window.removeEventListener("beforeunload", onPageHide)
+        }
+    }, [runningTimer.remainingTime, timerCardData, timerCardId])
     /**
      *  Timer Realted functions
      */
@@ -115,6 +181,20 @@ export function useTimerCard(timerCardId: string) {
             }
         })
     }
+
+    //when the page loads then set running timer data from current timer
+    //this is done so remaining time and active timer can be seen on ui in first load
+    useEffect(() => {
+        if (timerCardData?.currentTimer) {
+            const currentTimer = timerCardData.currentTimer
+            setRunningTimer({
+                currentTimerId: currentTimer.id,
+                remainingTime: currentTimer.remainingTime,
+                time: currentTimer.totalTime
+            })
+        }
+        return () => {}
+    }, [timerCardData?.currentTimer])
 
     React.useEffect(() => {
         setTimerCardData(state[timerCardId])

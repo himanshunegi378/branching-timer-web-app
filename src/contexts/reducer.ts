@@ -5,9 +5,24 @@ import { Action, TimerCard } from "./TimerCards.types"
 export const timerCardsReducer = produce(
     (prevState: Draft<Record<string, TimerCard>>, action: Action) => {
         switch (action.type) {
+            case "INIT": {
+                const { timerCardsData } = action.payload
+                for (const key in timerCardsData) {
+                    if (
+                        Object.prototype.hasOwnProperty.call(
+                            timerCardsData,
+                            key
+                        )
+                    ) {
+                        prevState[key] = timerCardsData[key]
+                    }
+                }
+                break
+            }
             case "SETUP_EMPTY_TIMER": {
                 const { timerCardId } = action.payload
                 const intialTimerCard: TimerCard = {
+                    id: timerCardId,
                     timerGroup: { id: v4(), name: "unnamed", timers: [] },
                     looping: false,
                     status: "stopped",

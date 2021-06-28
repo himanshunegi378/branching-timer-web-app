@@ -13,6 +13,7 @@ export type TimerGroup = {
 }
 
 export type TimerCard = Immutable<{
+    id: string
     timerGroup: TimerGroup
     looping: Boolean
     status: "playing" | "paused" | "stopped"
@@ -23,6 +24,7 @@ export type TimerCard = Immutable<{
  * Timercard reducer relate types
  */
 export type ActionType =
+    | "INIT"
     | "SETUP_EMPTY_TIMER"
     | "ADD_TIMER"
     | "REMOVE_TIMER"
