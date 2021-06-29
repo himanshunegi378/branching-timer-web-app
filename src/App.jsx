@@ -11,31 +11,13 @@ import { useCreateTimerCard } from "./contexts/TimerCards.context"
 function App(props) {
     const { allTimerCardsId, createTimerCard, deleteTimerCard } =
         useCreateTimerCard()
-    // useEffect(() => {
-    //   localStorage.getItem("timerCardList").then((savedTimerCardList) => {
-    //     if (savedTimerCardList) {
-    //       setTimerCardsList(JSON.parse(savedTimerCardList));
-    //     }
-    //   });
-    // }, []);
-
-    // useEffect(() => {
-    //   localStorage.setItem("timerCardList", JSON.stringify(timerCardsList));
-    // }, [timerCardsList]);
 
     useEffect(() => {
         document.body.classList.remove("page-loading")
         document.body.classList.add("page-loaded")
         document.body.classList.add("bg-gray-50")
     }, [])
-    const { audioStore, addAudio } = useContext(AudioStoreContext)
 
-    const { record, stopRecording, audioBlob } = useAudioRecorder()
-    useEffect(() => {
-        if (audioBlob) {
-            addAudio(audioBlob)
-        }
-    }, [audioBlob])
     return (
         <div>
             <button

@@ -1,7 +1,6 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import App from "./App"
-import SoundPlayerProvider from "./providers/SoundPlayerProvider"
 import * as serviceWorker from "./serviceWorker"
 import "./index.css"
 import AudioProvider from "./providers/audioProvider"
@@ -11,9 +10,7 @@ ReactDOM.render(
     <React.StrictMode>
         <AudioProvider>
             <TimerCardsProvider>
-                <SoundPlayerProvider>
                     <App />
-                </SoundPlayerProvider>
             </TimerCardsProvider>
         </AudioProvider>
     </React.StrictMode>,

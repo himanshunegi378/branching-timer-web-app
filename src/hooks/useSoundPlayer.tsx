@@ -19,10 +19,13 @@ export default function useSoundPlayer() {
         }
         setPlayerId(handleId)
     }, [])
-    const pause = useCallback(function () {
-        if (!playerRef.current) return
-        playerRef.current.pause(playerId)
-    }, [])
+    const pause = useCallback(
+        function () {
+            if (!playerRef.current) return
+            playerRef.current.pause(playerId)
+        },
+        [playerId]
+    )
 
     function stop() {
         if (!playerRef.current) return

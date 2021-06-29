@@ -7,30 +7,26 @@ import { PlayButton } from "./playButton"
 import { LoopButton } from "./loopButton"
 import StopButton from "./stopButton"
 
-// import useTimerCard from "../../hooks/useTimerCards"
 import useAudioRecorder from "../../hooks/useAudioRecorder"
 import { useTimerCard } from "../../contexts/TimerCards.context"
-import { v4 } from "uuid"
 
 export default function TimerCard(props) {
     const { onDelete, timerCardId, className } = props
-    // const { ...timerCard } = useTimerCard(props.timerCardId);
     const [editTitle, setEditTitle] = useState(() => false)
-    const { record, stopRecording, audioBlob } = useAudioRecorder()
+    const { record, stopRecording } = useAudioRecorder()
     const { timerCardData, runningTimer, action } = useTimerCard(timerCardId)
-    if (!timerCardData) return <div>No timer card for you</div>
+
+    if (!timerCardData) return <div>Loading...</div>
     return (
         <div className={`bg-white rounded-lg ${className}`}>
             <div className="flex flex-row-reverse">
                 <button
                     className="select-none outline-none rounded-full transition duration-150 hover:elevation-2 transform hover:scale-110"
-                    // className="btn btn-danger"
                     onClick={() => {
-                        // timerCard.deleteTimerCard();
                         onDelete(timerCardId)
                     }}
                 >
-                    <img className="h-6 w-auto" src={close} />
+                    <img className="h-6 w-auto" src={close} alt="" />
                 </button>
             </div>
             <div>
@@ -55,7 +51,6 @@ export default function TimerCard(props) {
                                             event.currentTarget.title.value
                                         if (title) {
                                             action.changeCardName(title)
-                                            // timerCard.changeTimerCardName(title);
                                         }
                                         setEditTitle(false)
                                     }}
@@ -65,7 +60,6 @@ export default function TimerCard(props) {
                                             event.currentTarget.title.value
                                         if (title) {
                                             action.changeCardName(title)
-                                            // timerCard.changeTimerCardName(title);
                                         }
                                         setEditTitle(false)
                                     }}
@@ -81,7 +75,6 @@ export default function TimerCard(props) {
                                 </form>
                             ) : (
                                 timerCardData.timerGroup.name
-                                // timerCard.timerCardData.name
                             )}
                         </div>
                     </div>

@@ -6,12 +6,11 @@ import React, {
     useRef,
     useState
 } from "react"
-import { Timer } from "../hooks/useTimerStore"
 import CountdownTimer from "../lib/countdownTimer"
 import showNotification from "../utils/notification"
 import { timerCardsReducer } from "./reducer"
 import { timerCardIDsStorage, timerCardStorage } from "./storage"
-import { Action, TimerCard } from "./TimerCards.types"
+import { Action, Timer, TimerCard } from "./TimerCards.types"
 import EventEmitter from "events"
 import useSoundPlayer from "../hooks/useSoundPlayer"
 //@ts-ignore
