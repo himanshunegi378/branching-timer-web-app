@@ -9,13 +9,13 @@ import { TimerCardsProvider } from "./contexts/TimerCards.context"
 
 ReactDOM.render(
     <React.StrictMode>
-        <TimerCardsProvider>
-            <SoundPlayerProvider>
-                <AudioProvider>
+        <AudioProvider>
+            <TimerCardsProvider>
+                <SoundPlayerProvider>
                     <App />
-                </AudioProvider>
-            </SoundPlayerProvider>
-        </TimerCardsProvider>
+                </SoundPlayerProvider>
+            </TimerCardsProvider>
+        </AudioProvider>
     </React.StrictMode>,
     document.getElementById("root")
 )

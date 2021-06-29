@@ -4,6 +4,7 @@ export type Timer = {
     id: string
     name: string
     time: number
+    options: { audioId?: string }
 }
 
 export type TimerGroup = {
@@ -29,6 +30,7 @@ export type ActionType =
     | "ADD_TIMER"
     | "REMOVE_TIMER"
     | "EDIT_TIMER"
+    | "ATTACH_AUDIO"
     | "PAUSE"
     | "PLAY"
     | "STOP"

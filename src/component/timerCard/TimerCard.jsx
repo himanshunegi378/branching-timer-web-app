@@ -138,7 +138,7 @@ export default function TimerCard(props) {
                             }}
                             onRecordStop={() => {
                                 const audioBlob = stopRecording()
-                                // timerCard.addSound(timer.id, audioBlob)
+                                action.attachAudioToTimer(timer.id, audioBlob)
                             }}
                         />
                     )

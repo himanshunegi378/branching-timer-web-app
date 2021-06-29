@@ -43,7 +43,8 @@ export const timerCardsReducer = produce(
                 timerCard.timerGroup.timers.push({
                     id: v4(),
                     name: name,
-                    time: time
+                    time: time,
+                    options: {}
                 })
                 break
             }
@@ -66,6 +67,18 @@ export const timerCardsReducer = produce(
                     return { ...timer, ...updatedTimerOption }
                 })
                 timerCard.timerGroup.timers = timers
+                break
+            }
+            case "ATTACH_AUDIO": {
+                const { timerCardId, timerId, audioId } = action.payload
+                const timerCard = prevState[timerCardId]
+                timerCard.timerGroup.timers = timerCard.timerGroup.timers.map(
+                    (timer) => {
+                        if (timer.id !== timerId) return timer
+                        timer.options.audioId = audioId
+                        return timer
+                    }
+                )
                 break
             }
             case "PLAY": {

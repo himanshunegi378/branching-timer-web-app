@@ -14,8 +14,8 @@ function Timer(props) {
     active,
   } = props;
 
-  const [mins, setMins] = useState();
-  const [secs, setSecs] = useState();
+  const [mins, setMins] = useState(0);
+  const [secs, setSecs] = useState(0);
   const [editTitle, setEditTitle] = useState(() => false);
   const [titleBgColor, setTitleBgColor] = useState("alert-info");
   const [isRecording, setIsRecording] = useState(false);

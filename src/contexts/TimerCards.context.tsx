@@ -13,6 +13,11 @@ import { timerCardsReducer } from "./reducer"
 import { timerCardIDsStorage, timerCardStorage } from "./storage"
 import { Action, TimerCard } from "./TimerCards.types"
 import EventEmitter from "events"
+import useSoundPlayer from "../hooks/useSoundPlayer"
+//@ts-ignore
+import defaultSound from "./alarm.mp3"
+import { useEffectDebug } from "../hooks/useEffectDebug"
+import { useAudioStore } from "../providers/audioProvider"
 
 const TimeCardsContext = React.createContext<
     [Record<string, TimerCard>, (action: Action) => void]
@@ -54,6 +59,7 @@ export function TimerCardsProvider(props: PropsWithChildren<{}>) {
 //It will be use to create timercards. It will provide id of all timercards in the system
 export function useCreateTimerCard() {
     const [allTimerCards, dispatch] = React.useContext(TimeCardsContext)
+    const { deleteAudio } = useAudioStore()
 
     const saveTimerCardIds = useCallback(() => {
         timerCardIDsStorage.save(Object.keys(allTimerCards))
@@ -74,6 +80,11 @@ export function useCreateTimerCard() {
     function deleteTimerCard(timerCardId: string) {
         dispatch({ type: "REMOVE_TIMERCARD", payload: { timerCardId } })
         timerCardStorage.delete(timerCardId)
+        const timers = allTimerCards[timerCardId].timerGroup.timers
+        timers.forEach((timer) => {
+            const audioId = timer.options.audioId
+            if (audioId) deleteAudio(audioId)
+        })
     }
 
     return {
@@ -83,9 +94,10 @@ export function useCreateTimerCard() {
     }
 }
 
+const eventEmitter = new EventEmitter()
 export function useTimerCard(timerCardId: string) {
     const [state, dispatch] = React.useContext(TimeCardsContext)
-
+    const { addAudio, getAudio, deleteAudio } = useAudioStore()
     const [timerCardData, setTimerCardData] = React.useState<
         TimerCard | undefined
     >()
@@ -94,21 +106,22 @@ export function useTimerCard(timerCardId: string) {
         remainingTime: 0,
         time: 0
     })
+    const { play } = useSoundPlayer()
+
     const countdownTimerRef = useRef(new CountdownTimer())
-    const evenEmitterRef = useRef(new EventEmitter())
 
     useEffect(() => {
-        if (!evenEmitterRef.current) return
-        const eventEmitter = evenEmitterRef.current
+        //event emmiter is used for notifcation to preveent unnecessary updates in place where notifcation functionality is required
         const notify = (timerId: string) => {
-            showNotification(
-                `${timerCardData?.timerGroup.name} => ${
-                    timerCardData?.timerGroup.timers.find(
-                        (timer) => timer.id === timerCardData.currentTimer?.id
-                    )?.name
-                } | completed`
-            )
+            // showNotification(
+            //     `${timerCardData?.timerGroup.name} => ${
+            //         timerCardData?.timerGroup.timers.find(
+            //             (timer) => timer.id === timerCardData.currentTimer?.id
+            //         )?.name
+            //     } | completed`
+            // )
         }
+
         eventEmitter.on("notify", notify)
         return () => {
             eventEmitter.off("notify", notify)
@@ -118,6 +131,25 @@ export function useTimerCard(timerCardId: string) {
         timerCardData?.timerGroup.name,
         timerCardData?.timerGroup.timers
     ])
+
+    useEffectDebug(() => {
+        const playSound = (timerId: string) => {
+            const timer = timerCardData?.timerGroup.timers.find(
+                (timer) => timer.id === timerId
+            )
+            const audioBlob =
+                timer?.options.audioId && getAudio(timer.options.audioId)
+            if (audioBlob) {
+                play(URL.createObjectURL(audioBlob))
+            } else {
+                play(defaultSound, 2)
+            }
+        }
+        eventEmitter.on("playSound", playSound)
+        return () => {
+            eventEmitter.off("playSound", playSound)
+        }
+    }, [getAudio, play, timerCardData?.timerGroup.timers])
 
     //store timercard data in localstorage when web page is closed
     useEffect(() => {
@@ -153,6 +185,12 @@ export function useTimerCard(timerCardId: string) {
     }
 
     function closeTimer(timerId: string) {
+        const timer = timerCardData?.timerGroup.timers.find(
+            (timer) => timer.id === timerId
+        )
+        if (timer?.options.audioId) {
+            deleteAudio(timer.options.audioId)
+        }
         dispatch({ type: "REMOVE_TIMER", payload: { timerCardId, timerId } })
     }
 
@@ -166,6 +204,24 @@ export function useTimerCard(timerCardId: string) {
                 timerCardId,
                 timerId,
                 updatedTimerOption: timerOption
+            }
+        })
+    }
+
+    function attachAudioToTimer(timerId: string, audio: Blob[]) {
+        const audioId = addAudio(audio)
+        const timer = timerCardData?.timerGroup.timers.find(
+            (timer) => timer.id === timerId
+        )
+        if (timer?.options.audioId) {
+            deleteAudio(timer.options.audioId)
+        }
+        dispatch({
+            type: "ATTACH_AUDIO",
+            payload: {
+                timerCardId,
+                timerId,
+                audioId
             }
         })
     }
@@ -248,11 +304,15 @@ export function useTimerCard(timerCardId: string) {
 
                     // on timer finished...
                     countDownTimer.on("finished", () => {
-                        //dispatch next_timer event
-                        evenEmitterRef.current.emit(
+                        eventEmitter.emit(
                             "notify",
                             timerCardData.currentTimer?.id
                         )
+                        eventEmitter.emit(
+                            "playSound",
+                            timerCardData.currentTimer?.id
+                        )
+                        //dispatch next_timer event
                         dispatch({
                             type: "TIMER_FINISHED",
                             payload: { timerCardId }
@@ -292,6 +352,7 @@ export function useTimerCard(timerCardId: string) {
         timerCardData,
         runningTimer,
         action: {
+            attachAudioToTimer,
             addTimer,
             closeTimer,
             updateTimer,
