@@ -1,11 +1,7 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useEffect } from "react"
 import style from "./App.module.scss"
-import { v1 as uuidv1, v4 } from "uuid"
+import { v4 } from "uuid"
 import TimerCard from "./component/timerCard/TimerCard"
-import useAudioRecorder from "./hooks/useAudioRecorder"
-import AudioProvider from "./providers/audioProvider"
-import { AudioStoreContext } from "./contexts/audioContext"
-import { localStorage } from "./utils/localStorage"
 import { useCreateTimerCard } from "./contexts/TimerCards.context"
 
 function App(props) {

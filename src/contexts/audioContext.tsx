@@ -1,4 +1,4 @@
-import { createContext, useContext } from "react"
+import { createContext } from "react"
 
 export type audioContextType = {
     audioStore: { [id in string]: Blob[] }
@@ -13,4 +13,3 @@ export const AudioStoreContext = createContext<audioContextType>({
     },
     deleteAudio: (id: string) => {}
 })
-// export const useTheme = () => useContext(AudioStoreContext);

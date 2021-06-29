@@ -112,13 +112,13 @@ export function useTimerCard(timerCardId: string) {
     useEffect(() => {
         //event emmiter is used for notifcation to preveent unnecessary updates in place where notifcation functionality is required
         const notify = (timerId: string) => {
-            // showNotification(
-            //     `${timerCardData?.timerGroup.name} => ${
-            //         timerCardData?.timerGroup.timers.find(
-            //             (timer) => timer.id === timerCardData.currentTimer?.id
-            //         )?.name
-            //     } | completed`
-            // )
+            showNotification(
+                `${timerCardData?.timerGroup.name} => ${
+                    timerCardData?.timerGroup.timers.find(
+                        (timer) => timer.id === timerCardData.currentTimer?.id
+                    )?.name
+                } | completed`
+            )
         }
 
         eventEmitter.on("notify", notify)

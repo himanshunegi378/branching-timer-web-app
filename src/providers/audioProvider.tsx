@@ -1,17 +1,13 @@
 import produce from "immer"
 import React, {
     PropsWithChildren,
-    ReactChild,
-    ReactElement,
-    ReactNode,
     useCallback,
     useContext,
     useEffect,
-    useRef,
     useState
 } from "react"
 import { v4 } from "uuid"
-import { AudioStoreContext, audioContextType } from "../contexts/audioContext"
+import { AudioStoreContext } from "../contexts/audioContext"
 import { localStorage } from "../utils/localStorage"
 
 export default function AudioProvider(props: PropsWithChildren<{}>) {
