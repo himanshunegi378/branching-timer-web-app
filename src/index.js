@@ -4,13 +4,12 @@ import App from "./App"
 import * as serviceWorker from "./serviceWorker"
 import "./index.css"
 import AudioProvider from "./providers/audioProvider"
-import { TimerCardsProvider } from "./contexts/TimerCards.context"
-
+import { TimerCardsProvider } from "./contexts/TimerCards"
 ReactDOM.render(
     <React.StrictMode>
         <AudioProvider>
             <TimerCardsProvider>
-                    <App />
+                <App />
             </TimerCardsProvider>
         </AudioProvider>
     </React.StrictMode>,

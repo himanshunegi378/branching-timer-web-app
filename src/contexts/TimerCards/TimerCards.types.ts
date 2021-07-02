@@ -13,13 +13,13 @@ export type TimerGroup = {
     timers: Timer[]
 }
 
-export type TimerCard = Immutable<{
+export type TimerCard = {
     id: string
     timerGroup: TimerGroup
     looping: Boolean
     status: "playing" | "paused" | "stopped"
     currentTimer?: { id: string; remainingTime: number; totalTime: number }
-}>
+}
 
 /**
  * Timercard reducer relate types

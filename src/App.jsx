@@ -1,10 +1,11 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import style from "./App.module.scss"
 import { v4 } from "uuid"
 import TimerCard from "./component/timerCard/TimerCard"
-import { useCreateTimerCard } from "./contexts/TimerCards.context"
+import { useCreateTimerCard } from "./contexts/TimerCards"
 
 function App(props) {
+    const [isActive, setIsActive] = useState(true)
     const { allTimerCardsId, createTimerCard, deleteTimerCard } =
         useCreateTimerCard()
 
@@ -24,23 +25,32 @@ function App(props) {
             >
                 Add Timer Card
             </button>
+            <button
+                onClick={() => {
+                    setIsActive(!isActive)
+                }}
+            >
+                Toggle
+            </button>
 
             <div className="overflow-auto">
-                <div
-                    className={` ${style.hs}`}
-                    style={{ alignItems: "flex-start" }}
-                >
-                    {allTimerCardsId.map((timerCardId) => (
-                        <TimerCard
-                            className={style.item}
-                            key={timerCardId}
-                            timerCardId={timerCardId}
-                            onDelete={(id) => {
-                                deleteTimerCard(id)
-                            }}
-                        />
-                    ))}
-                </div>
+                {isActive ? (
+                    <div
+                        className={` ${style.hs}`}
+                        style={{ alignItems: "flex-start" }}
+                    >
+                        {allTimerCardsId.map((timerCardId) => (
+                            <TimerCard
+                                className={style.item}
+                                key={timerCardId}
+                                timerCardId={timerCardId}
+                                onDelete={(id) => {
+                                    deleteTimerCard(id)
+                                }}
+                            />
+                        ))}
+                    </div>
+                ) : null}
             </div>
         </div>
     )

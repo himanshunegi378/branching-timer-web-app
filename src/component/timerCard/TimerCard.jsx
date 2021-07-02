@@ -8,7 +8,7 @@ import { LoopButton } from "./loopButton"
 import StopButton from "./stopButton"
 
 import useAudioRecorder from "../../hooks/useAudioRecorder"
-import { useTimerCard } from "../../contexts/TimerCards.context"
+import { useTimerCard } from "../../contexts/TimerCards"
 
 export default function TimerCard(props) {
     const { onDelete, timerCardId, className } = props
@@ -21,6 +21,7 @@ export default function TimerCard(props) {
         <div className={`bg-white rounded-lg ${className}`}>
             <div className="flex flex-row-reverse">
                 <button
+                    test="closeButton"
                     className="select-none outline-none rounded-full transition duration-150 hover:elevation-2 transform hover:scale-110"
                     onClick={() => {
                         onDelete(timerCardId)
@@ -138,9 +139,10 @@ export default function TimerCard(props) {
                 })}
                 <div className="flex justify-center mt-4">
                     <button
+                        test="addButton"
                         className={style.add_button}
                         onClick={() => {
-                            action.addTimer({ name: "unnamed", time: 5 })
+                            action.addTimer({ name: "unnamed", time: 60 })
                         }}
                     >
                         Add Timer

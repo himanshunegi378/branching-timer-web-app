@@ -1,4 +1,4 @@
-import { localStorage } from "../utils/localStorage"
+import { localStorage } from "../../utils/localStorage"
 import { TimerCard } from "./TimerCards.types"
 
 export const timerCardIDsStorage = {

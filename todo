@@ -1,2 +1,4 @@
+fix on view change timer not playing
+fix record audio volume very low issue
 write test for untested part of useTimerCard
 code organization

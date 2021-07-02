@@ -2,8 +2,8 @@ import { renderHook } from "@testing-library/react-hooks"
 import * as React from "react"
 import { act } from "react-test-renderer"
 import { v4 } from "uuid"
-import { useTimerCard, TimerCardsProvider } from "../TimerCards.context"
-import { Timer, TimerCard } from "../TimerCards.types"
+import { useTimerCard, TimerCardsProvider } from "../TimerCards/TimerCards.context"
+import { Timer, TimerCard } from "../TimerCards/TimerCards.types"
 
 describe("useTimerCard", () => {
     global.URL.createObjectURL = jest.fn()
