@@ -1,33 +1,34 @@
-import timeWorker from "../timeWorker";
-import { Eventjs } from "./event";
+import timeWorker from "../timeWorker"
+import { Eventjs } from "./event"
 
-const worker = new Worker(timeWorker);
+const worker = new Worker(timeWorker)
 
 class CountdownTimer extends Eventjs {
-  time: number;
-  constructor() {
-    super("tick", "finished");
-    this.time = 0;
-  }
-
-  tick = (e: MessageEvent) => {
-    this.trigger("tick", this.time);
-    if (this.time <= 0) {
-      this.trigger("finished");
-      this.stop();
+    time: number
+    constructor() {
+        super("tick", "finished")
+        this.time = 0
     }
-    this.time--;
-  };
 
-  play(time: number) {
-    this.time = time;
-    worker.addEventListener("message", this.tick);
-  }
+    tick = (e: MessageEvent) => {
+        if (this.time < 0) {
+            this.stop()
+            this.trigger("finished")
+        } else {
+            this.trigger("tick", this.time)
+        }
+        this.time--
+    }
 
-  stop() {
-    worker.removeEventListener("message", this.tick);
-    this.time = 0;
-  }
+    play(time: number) {
+        this.time = time
+        worker.addEventListener("message", this.tick)
+    }
+
+    stop() {
+        worker.removeEventListener("message", this.tick)
+        this.time = 0
+    }
 }
 
-export default CountdownTimer;
+export default CountdownTimer

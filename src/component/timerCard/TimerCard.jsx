@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Timer from "../timer/Timer"
 import close from "./close.svg"
 import style from "./style.module.scss"
@@ -14,7 +14,7 @@ export default function TimerCard(props) {
     const { onDelete, timerCardId, className } = props
     const [editTitle, setEditTitle] = useState(() => false)
     const { record, stopRecording } = useAudioRecorder()
-    const { timerCardData, runningTimer, action } = useTimerCard(timerCardId)
+    const { timerCardData, runningTimer, actions } = useTimerCard(timerCardId)
 
     if (!timerCardData) return <div>Loading...</div>
     return (
@@ -51,7 +51,7 @@ export default function TimerCard(props) {
                                         const title =
                                             event.currentTarget.title.value
                                         if (title) {
-                                            action.changeCardName(title)
+                                            actions.renameTimerCard(title)
                                         }
                                         setEditTitle(false)
                                     }}
@@ -60,7 +60,7 @@ export default function TimerCard(props) {
                                         const title =
                                             event.currentTarget.title.value
                                         if (title) {
-                                            action.changeCardName(title)
+                                            actions.renameTimerCard(title)
                                         }
                                         setEditTitle(false)
                                     }}
@@ -82,7 +82,9 @@ export default function TimerCard(props) {
                     <div className="px-0 user-select-none">
                         <LoopButton
                             looping={timerCardData?.looping}
-                            onChange={() => action.toggleLooping()}
+                            onChange={() => {
+                                actions.toggleLoop()
+                            }}
                         />
                     </div>
                 </div>
@@ -91,17 +93,18 @@ export default function TimerCard(props) {
                         <PlayButton
                             isPlaying={timerCardData?.status === "playing"}
                             onChange={(state) => {
-                                const foo = state
-                                    ? action.playCard
-                                    : action.pauseCard
-                                foo()
+                                if (state) {
+                                    actions.playCard()
+                                } else {
+                                    actions.pauseCard()
+                                }
                             }}
                         />
                     </div>
                     <StopButton
                         isStopped={timerCardData?.status === "stopped"}
                         onChange={(isStopped) => {
-                            if (isStopped) action.stopCard()
+                            if (isStopped) actions.stopCard()
                         }}
                     />
                 </div>
@@ -111,17 +114,17 @@ export default function TimerCard(props) {
                         <Timer
                             key={timer.id}
                             id={timer.id}
-                            active={runningTimer.currentTimerId === timer.id}
+                            active={runningTimer.id === timer.id}
                             onDelete={(timerId) => {
-                                action.closeTimer(timer.id)
+                                actions.removeTimer(timer.id)
                             }}
                             onNameChange={(newName) => {
-                                action.updateTimer(timer.id, {
+                                actions.editTimer(timer.id, {
                                     name: newName
                                 })
                             }}
                             onTimeChange={(newTime) => {
-                                action.updateTimer(timer.id, {
+                                actions.editTimer(timer.id, {
                                     time: newTime
                                 })
                             }}
@@ -132,7 +135,7 @@ export default function TimerCard(props) {
                             }}
                             onRecordStop={() => {
                                 const audioBlob = stopRecording()
-                                action.attachAudioToTimer(timer.id, audioBlob)
+                                // action.attachAudioToTimer(timer.id, audioBlob)
                             }}
                         />
                     )
@@ -142,7 +145,8 @@ export default function TimerCard(props) {
                         test="addButton"
                         className={style.add_button}
                         onClick={() => {
-                            action.addTimer({ name: "unnamed", time: 60 })
+                            actions.addTimer({ name: "unnamed", time: 60 })
+                            // action.addTimer({ name: "unnamed", time: 60 })
                         }}
                     >
                         Add Timer

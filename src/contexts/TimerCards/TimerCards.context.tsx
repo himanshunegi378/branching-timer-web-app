@@ -3,232 +3,80 @@ import CountdownTimer from "../../lib/countdownTimer"
 import showNotification from "../../utils/notification"
 import { timerCardsReducer } from "./reducer"
 import { timerCardIDsStorage, timerCardStorage } from "./storage"
-import { Action, TimerCard } from "./TimerCards.types"
+import { Action, TimerCard as TimerCardType } from "./TimerCards.types"
 import EventEmitter from "events"
 import useSoundPlayer from "../../hooks/useSoundPlayer"
 //@ts-ignore
 import defaultSound from "./alarm.mp3"
 import { useAudioStore } from "../../providers/audioProvider"
 import { usePrevious } from "../../hooks/usePrevious"
-
+import { TimerCard } from "./TimerCard"
+import { v4 } from "uuid"
+import { localStorage } from "../../utils/localStorage"
 export const TimeCardsContext = React.createContext<{
-    timerCardsStore: Record<string, TimerCard>
-    dispatch: (action: Action) => void
-
-    countdownTimers: Record<string, CountdownTimer>
-    runningTimersEvent: Record<string, EventEmitter>
+    Timercards: Record<string, TimerCard>
+    actions: any
+    timerCardsId: string[]
 }>({
-    timerCardsStore: {},
-    dispatch: (action) => {},
-    countdownTimers: {},
-    runningTimersEvent: {}
+    Timercards: {},
+    actions: {},
+    timerCardsId: []
 })
 
 export function TimerCardsProvider(props: PropsWithChildren<{}>) {
-    const { getAudio } = useAudioStore()
-    const { play } = useSoundPlayer()
-    const [timerCardsStore, dispatch] = React.useReducer(timerCardsReducer, {})
-    const prevtimerCardStore =
-        usePrevious<Record<string, TimerCard>>(timerCardsStore)
-    const runningTimers = useRef<
-        Record<
-            string,
-            { currentTimerId: string; remainingTime: number; time: number }
-        >
-    >({})
-    const [timerCardEvent] = useState(new EventEmitter())
-    const timersRef = useRef<Record<string, CountdownTimer>>({})
-    const runningTimerEvent = useRef<Record<string, EventEmitter>>({})
+    const TimerCardsRef = useRef<Record<string, TimerCard>>({})
+    const [timerCardsId, setTimerCardsId] = useState<string[]>([])
 
     useEffect(() => {
-        const onPlay = (timerCardId: string) => {
-            const timerCard: TimerCard = timerCardsStore[timerCardId]
-            // get the timer from current timer and the reamaining time
-            const { remainingTime, id, totalTime } = timerCard.currentTimer!
-            // start countdown for timer
-            if (!timersRef.current[timerCardId]) {
-                timersRef.current[timerCardId] = new CountdownTimer()
-            }
+        const onPageOpen = async () => {
+            const timerCardsId = await timerCardIDsStorage.load()
+            if (!timerCardsId) return
 
-            const countDownTimer = timersRef.current[timerCardId]
-            countDownTimer.off("finished")
-            countDownTimer.off("tick")
-            countDownTimer.play(remainingTime)
-            //on each countdown timer tick...
-            countDownTimer.on("tick", (remainingTime: number) => {
-                //change value in running timer ref and running timer state
-
-                runningTimers.current[timerCardId] = {
-                    currentTimerId: id,
-                    remainingTime: remainingTime,
-                    time: totalTime
-                }
-
-                runningTimerEvent.current[timerCardId].emit(
-                    "tick",
-                    timerCardId,
-                    {
-                        currentTimerId: id,
-                        remainingTime: remainingTime,
-                        time: totalTime
-                    }
-                )
+            timerCardsId.forEach((id) => {
+                if (!id) return
+                const timerCard = new TimerCard(id)
+                TimerCardsRef.current[id] = timerCard
             })
+            setTimerCardsId(timerCardsId)
+        }
+        onPageOpen()
+    }, [])
 
-            // on timer finished...
-            countDownTimer.on("finished", () => {
-                const timerCard: TimerCard = timerCardsStore[timerCardId]
-                if (!timerCard) return
-                const timer = timerCard?.timerGroup.timers.find(
-                    (timer) => timer.id === timerCard.currentTimer?.id
-                )
-                const audioBlob =
-                    timer?.options.audioId && getAudio(timer.options.audioId)
-                if (audioBlob) {
-                    play(URL.createObjectURL(audioBlob))
-                } else {
-                    play(defaultSound, 2)
-                }
+    useEffect(() => {
+        timerCardIDsStorage.save(timerCardsId)
 
-                showNotification(
-                    `${timerCard?.timerGroup.name} => ${
-                        timerCard?.timerGroup.timers.find(
-                            (timer) => timer.id === timerCard.currentTimer?.id
-                        )?.name
-                    } | completed`
-                )
-                //dispatch next_timer event
-                dispatch({
-                    type: "TIMER_FINISHED",
-                    payload: { timerCardId }
-                })
+        const onPageClose = () => {
+            timerCardsId.forEach((id) => {
+                TimerCardsRef.current[id].save()
             })
         }
-
-        const onPause = (timerCardId: string) => {
-            const countDownTimer = timersRef.current[timerCardId]
-            if (countDownTimer) {
-                countDownTimer.off("finished")
-                countDownTimer.off("tick")
-            }
-            const runningTimer = runningTimers.current[timerCardId] || {
-                currentTimerId: "",
-                remainingTime: 0,
-                time: 0
-            }
-            runningTimerEvent.current[timerCardId].emit("tick", timerCardId, {
-                currentTimerId: runningTimer.currentTimerId,
-                remainingTime: runningTimer.remainingTime,
-                time: runningTimer.time
-            })
-        }
-
-        const onStop = (timerCardId: string) => {
-            const countDownTimer = timersRef.current[timerCardId]
-            if (countDownTimer) {
-                countDownTimer.off("finished")
-                countDownTimer.off("tick")
-                delete timersRef.current[timerCardId]
-            }
-
-            if (runningTimers.current[timerCardId]) {
-                delete runningTimers.current[timerCardId]
-            }
-            runningTimerEvent.current[timerCardId].emit("tick", timerCardId, {
-                currentTimerId: "",
-                remainingTime: 0,
-                time: 0
-            })
-        }
-        timerCardEvent.on("play", onPlay)
-        timerCardEvent.on("pause", onPause)
-        timerCardEvent.on("stop", onStop)
+        window.addEventListener("beforeunload", onPageClose)
         return () => {
-            timerCardEvent.off("play", onPlay)
-            timerCardEvent.off("pause", onPause)
-            timerCardEvent.off("stop", onStop)
-            console.log("some thing")
+            window.removeEventListener("beforeunload", onPageClose)
         }
-    }, [getAudio, play, timerCardEvent, timerCardsStore])
+    }, [timerCardsId])
 
-    useEffect(() => {
-        for (const timerCardId in timerCardsStore) {
-            if (
-                Object.prototype.hasOwnProperty.call(
-                    timerCardsStore,
-                    timerCardId
-                )
-            ) {
-                const { status, currentTimer } = timerCardsStore[timerCardId]
-
-                switch (status) {
-                    case "playing": {
-                        // emit "Play" only when previous status is not same as current one(meaning status change to "playing" from something else)
-                        // or previous currenttimerid is not equal to current timer Id(for case when prev and current status is "playing" but currenttimerid is different because previous timer finished and next timer needs to be played)
-                        if (
-                            status !==
-                                prevtimerCardStore?.[timerCardId]?.status ||
-                            currentTimer?.id !==
-                                prevtimerCardStore?.[timerCardId].currentTimer
-                                    ?.id
-                        ) {
-                            timerCardEvent.emit("play", timerCardId)
-                        }
-                        break
-                    }
-                    case "paused": {
-                        if (
-                            status !== prevtimerCardStore?.[timerCardId]?.status
-                        ) {
-                            timerCardEvent.emit("pause", timerCardId)
-                        }
-
-                        break
-                    }
-                    case "stopped": {
-                        if (
-                            status !== prevtimerCardStore?.[timerCardId]?.status
-                        ) {
-                            timerCardEvent.emit("stop", timerCardId)
-                        }
-                        break
-                    }
-                }
-            }
-        }
-    }, [prevtimerCardStore, timerCardEvent, timerCardsStore])
-
-    async function init() {
-        const timercardIds = await timerCardIDsStorage.load()
-        const promises: any[] = []
-        timercardIds?.forEach((id) => {
-            promises.push(timerCardStorage.load(id))
-        })
-        const timerCardData: Record<string, TimerCard> = {}
-        await Promise.all(promises).then((data) => {
-            data.forEach((timerCard: TimerCard) => {
-                if (!timerCard) return
-                timerCardData[timerCard.id] = timerCard
-                runningTimerEvent.current[timerCard.id] = new EventEmitter()
-            })
-        })
-
-        dispatch({
-            type: "INIT",
-            payload: { timerCardsData: timerCardData }
-        })
+    const addTimerCard = (timercardId: string) => {
+        const newTimerCard = new TimerCard(timercardId)
+        TimerCardsRef.current[timercardId] = newTimerCard
+        setTimerCardsId((ids) => [...ids, timercardId])
     }
 
-    useEffect(() => {
-        init()
-    }, [])
+    const deleteTimerCard = (timerCardId: string) => {
+        TimerCardsRef.current[timerCardId].cleanup()
+        delete TimerCardsRef.current[timerCardId]
+        setTimerCardsId((ids) => ids.filter((id) => id !== timerCardId))
+    }
+
     return (
         <TimeCardsContext.Provider
             value={{
-                timerCardsStore,
-                dispatch,
-                countdownTimers: timersRef.current,
-                runningTimersEvent: runningTimerEvent.current
+                Timercards: TimerCardsRef.current,
+                timerCardsId,
+                actions: {
+                    addTimerCard,
+                    deleteTimerCard
+                }
             }}
         >
             {props.children}
