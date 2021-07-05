@@ -1,10 +1,15 @@
 import EventEmitter from "events"
 import produce from "immer"
 import { v4 } from "uuid"
+import { AudioStorage } from "../../lib/audio-storage/AudioStorage"
 import CountdownTimer from "../../lib/countdownTimer"
-import { localStorage } from "../../utils/localStorage"
+import { SoundPlayer } from "../../lib/soundPlayer/SoundPlayer"
+import showNotification from "../../utils/notification"
 import { timerCardStorage } from "./storage"
 import { Timer, TimerCard as TimerCardType } from "./TimerCards.types"
+//@ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import defaultSound from "./alarm.mp3"
 
 type runningTimerType = {
     id: string
@@ -15,17 +20,21 @@ export class TimerCard extends EventEmitter {
     timerCardId: string
     countDownTimer: CountdownTimer
     runningTimer: runningTimerType
+    audioStorage: AudioStorage
+    audioPlayer: SoundPlayer
     constructor(timerCardId: string) {
         super()
         this.timerCardId = timerCardId
         this.timerCardData = {
             id: this.timerCardId,
             timerGroup: { id: v4(), name: "unnamed", timers: [] },
-            looping: true,
+            looping: false,
             status: "stopped",
             currentTimer: undefined
         }
-        this.load(timerCardId)
+        this.load()
+        this.audioStorage = new AudioStorage()
+        this.audioPlayer = new SoundPlayer()
         this.runningTimer = {
             id: "",
             remainingTime: 0
@@ -56,6 +65,21 @@ export class TimerCard extends EventEmitter {
         this.timerCardData = produce(this.timerCardData, cb)
         this.emitTimerCardData()
         this.save()
+    }
+
+    private async timerFinished(timerId: string) {
+        const cardName = this.timerCardData.timerGroup.name
+        const timerData = this.timerCardData.timerGroup.timers.find(
+            (timer) => timer.id === timerId
+        )
+        showNotification(`${cardName} => ${timerData?.name} finished`)
+        const audioId = timerData?.options.audioId
+        if (audioId) {
+            const audioBlob =await this.audioStorage.load(audioId)
+            this.audioPlayer.play(URL.createObjectURL(audioBlob))
+        } else {
+            this.audioPlayer.play(defaultSound,2)
+        }
     }
 
     addTimer(timerData: Omit<Timer, "id" | "options">) {
@@ -94,6 +118,20 @@ export class TimerCard extends EventEmitter {
             draftCardData.timerGroup.timers = timers
         })
     }
+    async addAudioToTimer(timerId: string, audioBlob: Blob[]) {
+        const audioId = v4()
+        this.audioStorage.save(audioId, audioBlob)
+        this.updateCardData((draft) => {
+            draft.timerGroup.timers = draft.timerGroup.timers.map((timer) => {
+                if (timerId !== timer.id) {
+                    return timer
+                } else {
+                    timer.options.audioId = audioId
+                    return timer
+                }
+            })
+        })
+    }
 
     renameTimerCard(newName: string) {
         this.updateCardData((draftCardData) => {
@@ -112,6 +150,8 @@ export class TimerCard extends EventEmitter {
             this.timerCardData.timerGroup.timers.findIndex(
                 (timer) => timer.id === currentTimerId
             )
+
+        this.timerFinished(this.timerCardData.currentTimer!.id)
 
         //check if current timer is last timer
         if (this.timerCardData.timerGroup.timers[currentTimerIndex + 1]) {
@@ -203,11 +243,11 @@ export class TimerCard extends EventEmitter {
         this.emitRunningTimer()
     }
 
-    cleanup() {
+    async cleanup() {
         this.countDownTimer.stop()
         this.countDownTimer.off("tick")
         this.countDownTimer.off("finished")
-        this.deleteStorageData()
+        await this.deleteStorageData()
         this.removeAllListeners()
     }
     save() {
@@ -219,15 +259,13 @@ export class TimerCard extends EventEmitter {
             timerCardData.currentTimer!.remainingTime =
                 this.runningTimer.remainingTime
         }
-
         timerCardStorage.save(this.timerCardId, timerCardData)
     }
-    private async load(timerCardId: string) {
-        const timerCardData = await timerCardStorage.load(timerCardId)
+    private async load() {
+        const timerCardData = await timerCardStorage.load(this.timerCardId)
         if (timerCardData) {
             this.timerCardData = timerCardData
             this.updateCardData((draftcardData) => undefined)
-
             if (timerCardData.currentTimer) {
                 this.runningTimer = {
                     id: timerCardData.currentTimer.id,
@@ -237,7 +275,7 @@ export class TimerCard extends EventEmitter {
             }
         }
     }
-    public deleteStorageData() {
-        timerCardStorage.delete(this.timerCardId)
+    private deleteStorageData() {
+        return timerCardStorage.delete(this.timerCardId)
     }
 }

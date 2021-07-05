@@ -8,46 +8,36 @@ import React, {
 } from "react"
 import { v4 } from "uuid"
 import { AudioStoreContext } from "../contexts/audioContext"
-import { localStorage } from "../utils/localStorage"
+import { soundsIdStorage } from "./storage/sound-id-storage"
+import { soundStorage } from "./storage/sound-storage"
 
 export default function AudioProvider(props: PropsWithChildren<{}>) {
     const { children } = props
     const [audioStore, setAudioStore] = useState<{ [id in string]: Blob[] }>({})
 
     async function init() {
-        const soundIds = await localStorage.getItem<string[]>("soundIds")
+        //loads aall audio from storage
+        const soundIds = await soundsIdStorage.load()
         const promises: any[] = []
         const audioData: { [id in string]: Blob[] } = {}
         soundIds?.forEach((id) => {
             promises.push(
-                localStorage.getItem<Blob[]>(`sound_${id}`).then((audio) => {
-                    return { id: id, audio }
+                soundStorage.load(id).then((audio) => {
+                    if (!audio) return
+                    audioData[id] = audio
                 })
             )
         })
-        await Promise.all(promises).then((audios) => {
-            audios.forEach((audio) => (audioData[audio.id] = audio.audio))
-        })
+        await Promise.all(promises)
         setAudioStore(audioData)
     }
     useEffect(() => {
         init()
     }, [])
 
-    const storeIdsToStorage = useCallback(() => {
-        localStorage.setItem("soundIds", Object.keys(audioStore))
-    }, [audioStore])
-
-    const saveAudioToStorage = (id: string, audioBlob: Blob[]) => {
-        localStorage.setItem(`sound_${id}`, audioBlob)
-    }
-
-    const deleteAudioFromStorage = (id: string) => {
-        localStorage.removeItem(`sound_${id}`)
-    }
     function addAudio(audioBlob: Blob[]) {
         const id = v4()
-        saveAudioToStorage(id, audioBlob)
+        soundStorage.save(id, audioBlob)
         setAudioStore((prevAudioStore) =>
             produce(prevAudioStore, (draftAudioStore) => {
                 draftAudioStore[id] = audioBlob
@@ -62,16 +52,20 @@ export default function AudioProvider(props: PropsWithChildren<{}>) {
                 delete draftAudioStore[id]
             })
         )
-        deleteAudioFromStorage(id)
+        soundStorage.delete(id)
     }
 
     useEffect(() => {
-        storeIdsToStorage()
-    }, [storeIdsToStorage])
+        soundsIdStorage.save(Object.keys(audioStore))
+    }, [audioStore])
 
     return (
         <AudioStoreContext.Provider
-            value={{ audioStore: audioStore, addAudio, deleteAudio }}
+            value={{
+                audioStore,
+                addAudio,
+                deleteAudio
+            }}
         >
             {children}
         </AudioStoreContext.Provider>

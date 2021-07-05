@@ -39,16 +39,18 @@ function App(props) {
                         className={` ${style.hs}`}
                         style={{ alignItems: "flex-start" }}
                     >
-                        {allTimerCardsId.map((timerCardId) => (
-                            <TimerCard
-                                className={style.item}
-                                key={timerCardId}
-                                timerCardId={timerCardId}
-                                onDelete={(id) => {
-                                    deleteTimerCard(id)
-                                }}
-                            />
-                        ))}
+                        {allTimerCardsId.map((timerCardId) => {
+                            return (
+                                <TimerCard
+                                    className={style.item}
+                                    key={timerCardId}
+                                    timerCardId={timerCardId}
+                                    onDelete={(id) => {
+                                        deleteTimerCard(id)
+                                    }}
+                                />
+                            )
+                        })}
                     </div>
                 ) : null}
             </div>

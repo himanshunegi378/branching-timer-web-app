@@ -1,5 +1,3 @@
-import { Immutable } from "immer"
-
 export type Timer = {
     id: string
     name: string

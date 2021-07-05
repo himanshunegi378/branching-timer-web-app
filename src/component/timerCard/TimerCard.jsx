@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import Timer from "../timer/Timer"
 import close from "./close.svg"
 import style from "./style.module.scss"
@@ -135,7 +135,7 @@ export default function TimerCard(props) {
                             }}
                             onRecordStop={() => {
                                 const audioBlob = stopRecording()
-                                // action.attachAudioToTimer(timer.id, audioBlob)
+                                actions.addAudioToTimer(timer.id, audioBlob)
                             }}
                         />
                     )
@@ -145,8 +145,7 @@ export default function TimerCard(props) {
                         test="addButton"
                         className={style.add_button}
                         onClick={() => {
-                            actions.addTimer({ name: "unnamed", time: 60 })
-                            // action.addTimer({ name: "unnamed", time: 60 })
+                            actions.addTimer({ name: "unnamed", time: 1 })
                         }}
                     >
                         Add Timer
