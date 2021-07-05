@@ -120,7 +120,16 @@ export class TimerCard extends EventEmitter {
     }
     async addAudioToTimer(timerId: string, audioBlob: Blob[]) {
         const audioId = v4()
-        this.audioStorage.save(audioId, audioBlob)
+        await this.audioStorage.save(audioId, audioBlob)
+
+        //check and delete existing audio
+        const timer = this.timerCardData.timerGroup.timers.find(
+            (timer) => timer.id === timerId
+        )
+        const existingAudioId = timer?.options.audioId
+        existingAudioId && (await this.audioStorage.delete(existingAudioId))
+
+        //add new audoio id
         this.updateCardData((draft) => {
             draft.timerGroup.timers = draft.timerGroup.timers.map((timer) => {
                 if (timerId !== timer.id) {
