@@ -60,7 +60,7 @@ export function TimerCardsProvider(props: PropsWithChildren<{}>) {
     }
 
     const deleteTimerCard = async (timerCardId: string) => {
-        await TimerCardsRef.current[timerCardId].cleanup()
+        await TimerCardsRef.current[timerCardId].onTimerCardDelete()
         delete TimerCardsRef.current[timerCardId]
         setTimerCardsId((ids) => ids.filter((id) => id !== timerCardId))
     }

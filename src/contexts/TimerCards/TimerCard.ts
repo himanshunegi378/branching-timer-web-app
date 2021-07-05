@@ -75,10 +75,10 @@ export class TimerCard extends EventEmitter {
         showNotification(`${cardName} => ${timerData?.name} finished`)
         const audioId = timerData?.options.audioId
         if (audioId) {
-            const audioBlob =await this.audioStorage.load(audioId)
+            const audioBlob = await this.audioStorage.load(audioId)
             this.audioPlayer.play(URL.createObjectURL(audioBlob))
         } else {
-            this.audioPlayer.play(defaultSound,2)
+            this.audioPlayer.play(defaultSound, 2)
         }
     }
 
@@ -243,7 +243,7 @@ export class TimerCard extends EventEmitter {
         this.emitRunningTimer()
     }
 
-    async cleanup() {
+    async onTimerCardDelete() {
         this.countDownTimer.stop()
         this.countDownTimer.off("tick")
         this.countDownTimer.off("finished")
@@ -275,7 +275,15 @@ export class TimerCard extends EventEmitter {
             }
         }
     }
-    private deleteStorageData() {
+    private async deleteStorageData() {
+        const promises: Promise<any>[] = []
+        this.timerCardData.timerGroup.timers.forEach((timer) => {
+            const audioId = timer.options.audioId
+            if (audioId) {
+                promises.push(this.audioStorage.delete(audioId))
+            }
+        })
+        await Promise.all(promises)
         return timerCardStorage.delete(this.timerCardId)
     }
 }
