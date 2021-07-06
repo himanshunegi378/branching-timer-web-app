@@ -14,13 +14,13 @@ class CountdownTimer extends Eventjs {
 
     tick = (e: MessageEvent) => {
         //wrapped in settimeout so if there are many eventlistenere on worker
-        //they dont block the code
+        //they dont block other codes from executing
         setTimeout(() => {
+            if (!this.playing) return
+
             if (this.time < 0) {
-                if (this.playing) {
-                    this.stop()
-                    this.trigger("finished")
-                }
+                this.stop()
+                this.trigger("finished")
             } else {
                 this.trigger("tick", this.time)
             }

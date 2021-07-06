@@ -66,18 +66,18 @@ export class TimerCard extends EventEmitter {
     }
 
     private async timerFinished(timerId: string) {
-        // const cardName = this.timerCardData.timerGroup.name
-        // const timerData = this.timerCardData.timerGroup.timers.find(
-        //     (timer) => timer.id === timerId
-        // )
-        // showNotification(`${cardName} => ${timerData?.name} finished`)
-        // const audioId = timerData?.options.audioId
-        // if (audioId) {
-        //     const audioBlob = await audioStorage.load(audioId)
-        //     this.audioPlayer.play(URL.createObjectURL(audioBlob))
-        // } else {
-        //     this.audioPlayer.play(defaultSound, 2)
-        // }
+        const cardName = this.timerCardData.timerGroup.name
+        const timerData = this.timerCardData.timerGroup.timers.find(
+            (timer) => timer.id === timerId
+        )
+        showNotification(`${cardName} => ${timerData?.name} finished`)
+        const audioId = timerData?.options.audioId
+        if (audioId) {
+            const audioBlob = await audioStorage.load(audioId)
+            this.audioPlayer.play(URL.createObjectURL(audioBlob))
+        } else {
+            this.audioPlayer.play(defaultSound, 2)
+        }
     }
 
     addTimer(timerData: Omit<Timer, "id" | "options">) {
