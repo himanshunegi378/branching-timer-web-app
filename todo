@@ -1,3 +1,8 @@
+prevent extra cb in countdowntimer [doit]
+add more text to page for seo
+show time at which card will finish
+attach task to timer or card need to think about it
+feedback page
 crate storage interface class that will be used by other class
 fix record audio volume very low issue
 write test for untested part of useTimerCard

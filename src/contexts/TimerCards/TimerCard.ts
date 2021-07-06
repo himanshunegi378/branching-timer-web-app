@@ -1,7 +1,6 @@
 import EventEmitter from "events"
 import produce from "immer"
 import { v4 } from "uuid"
-import { AudioStorage } from "../../lib/audio-storage/AudioStorage"
 import CountdownTimer from "../../lib/countdownTimer"
 import { SoundPlayer } from "../../lib/soundPlayer/SoundPlayer"
 import showNotification from "../../utils/notification"
@@ -10,6 +9,7 @@ import { Timer, TimerCard as TimerCardType } from "./TimerCards.types"
 //@ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import defaultSound from "./alarm.mp3"
+import { audioStorage } from "../../lib/audio-storage/AudioStorage"
 
 type runningTimerType = {
     id: string
@@ -20,7 +20,6 @@ export class TimerCard extends EventEmitter {
     timerCardId: string
     countDownTimer: CountdownTimer
     runningTimer: runningTimerType
-    audioStorage: AudioStorage
     audioPlayer: SoundPlayer
     constructor(timerCardId: string) {
         super()
@@ -33,7 +32,6 @@ export class TimerCard extends EventEmitter {
             currentTimer: undefined
         }
         this.load()
-        this.audioStorage = new AudioStorage()
         this.audioPlayer = new SoundPlayer()
         this.runningTimer = {
             id: "",
@@ -68,18 +66,18 @@ export class TimerCard extends EventEmitter {
     }
 
     private async timerFinished(timerId: string) {
-        const cardName = this.timerCardData.timerGroup.name
-        const timerData = this.timerCardData.timerGroup.timers.find(
-            (timer) => timer.id === timerId
-        )
-        showNotification(`${cardName} => ${timerData?.name} finished`)
-        const audioId = timerData?.options.audioId
-        if (audioId) {
-            const audioBlob = await this.audioStorage.load(audioId)
-            this.audioPlayer.play(URL.createObjectURL(audioBlob))
-        } else {
-            this.audioPlayer.play(defaultSound, 2)
-        }
+        // const cardName = this.timerCardData.timerGroup.name
+        // const timerData = this.timerCardData.timerGroup.timers.find(
+        //     (timer) => timer.id === timerId
+        // )
+        // showNotification(`${cardName} => ${timerData?.name} finished`)
+        // const audioId = timerData?.options.audioId
+        // if (audioId) {
+        //     const audioBlob = await audioStorage.load(audioId)
+        //     this.audioPlayer.play(URL.createObjectURL(audioBlob))
+        // } else {
+        //     this.audioPlayer.play(defaultSound, 2)
+        // }
     }
 
     addTimer(timerData: Omit<Timer, "id" | "options">) {
@@ -119,15 +117,18 @@ export class TimerCard extends EventEmitter {
         })
     }
     async addAudioToTimer(timerId: string, audioBlob: Blob[]) {
-        const audioId = v4()
-        await this.audioStorage.save(audioId, audioBlob)
-
-        //check and delete existing audio
         const timer = this.timerCardData.timerGroup.timers.find(
             (timer) => timer.id === timerId
         )
+        const audioId = v4()
+        await audioStorage.save(audioId, audioBlob, {
+            name: `${timer?.name}_${audioId}`
+        })
+
+        //check and delete existing audio
+
         const existingAudioId = timer?.options.audioId
-        existingAudioId && (await this.audioStorage.delete(existingAudioId))
+        existingAudioId && (await audioStorage.delete(existingAudioId))
 
         //add new audoio id
         this.updateCardData((draft) => {
@@ -142,6 +143,8 @@ export class TimerCard extends EventEmitter {
         })
     }
 
+    async removeAudioFromTimer(timerId: string) {}
+
     renameTimerCard(newName: string) {
         this.updateCardData((draftCardData) => {
             draftCardData.timerGroup.name = newName
@@ -154,30 +157,19 @@ export class TimerCard extends EventEmitter {
     }
 
     private onTimerFinished = () => {
-        const currentTimerId = this.timerCardData.currentTimer?.id
-        const currentTimerIndex =
-            this.timerCardData.timerGroup.timers.findIndex(
-                (timer) => timer.id === currentTimerId
-            )
+        try {
+            const currentTimerId = this.timerCardData.currentTimer?.id
+            const currentTimerIndex =
+                this.timerCardData.timerGroup.timers.findIndex(
+                    (timer) => timer.id === currentTimerId
+                )
 
-        this.timerFinished(this.timerCardData.currentTimer!.id)
+            this.timerFinished(this.timerCardData.currentTimer!.id)
 
-        //check if current timer is last timer
-        if (this.timerCardData.timerGroup.timers[currentTimerIndex + 1]) {
-            const nextTimer =
-                this.timerCardData.timerGroup.timers[currentTimerIndex + 1]
-            this.updateCardData((draftCardData) => {
-                draftCardData.currentTimer = {
-                    id: nextTimer.id,
-                    remainingTime: nextTimer.time,
-                    totalTime: nextTimer.time
-                }
-            })
-            this.emit("_play")
-        } else {
-            //--if loop is on get the first one else stop timer card
-            if (this.timerCardData.looping) {
-                const nextTimer = this.timerCardData.timerGroup.timers[0]
+            //check if current timer is last timer
+            if (this.timerCardData.timerGroup.timers[currentTimerIndex + 1]) {
+                const nextTimer =
+                    this.timerCardData.timerGroup.timers[currentTimerIndex + 1]
                 this.updateCardData((draftCardData) => {
                     draftCardData.currentTimer = {
                         id: nextTimer.id,
@@ -187,8 +179,24 @@ export class TimerCard extends EventEmitter {
                 })
                 this.emit("_play")
             } else {
-                this.emit("_stop")
+                //--if loop is on get the first one else stop timer card
+                if (this.timerCardData.looping) {
+                    const nextTimer = this.timerCardData.timerGroup.timers[0]
+                    this.updateCardData((draftCardData) => {
+                        draftCardData.currentTimer = {
+                            id: nextTimer.id,
+                            remainingTime: nextTimer.time,
+                            totalTime: nextTimer.time
+                        }
+                    })
+                    this.emit("_play")
+                } else {
+                    this.emit("_stop")
+                }
             }
+        } catch (e) {
+            console.log(e)
+            console.log(this.timerCardData)
         }
     }
     playCard = () => {
@@ -289,7 +297,7 @@ export class TimerCard extends EventEmitter {
         this.timerCardData.timerGroup.timers.forEach((timer) => {
             const audioId = timer.options.audioId
             if (audioId) {
-                promises.push(this.audioStorage.delete(audioId))
+                promises.push(audioStorage.delete(audioId))
             }
         })
         await Promise.all(promises)

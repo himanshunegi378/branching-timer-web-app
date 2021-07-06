@@ -40,9 +40,9 @@ export function TimerCardsProvider(props: PropsWithChildren<{}>) {
 
     useEffect(() => {
         //save data on page close
-        timerCardIDsStorage.save(timerCardsId)
 
         const onPageClose = () => {
+            timerCardIDsStorage.save(timerCardsId)
             timerCardsId.forEach((id) => {
                 TimerCardsRef.current[id].save()
             })
