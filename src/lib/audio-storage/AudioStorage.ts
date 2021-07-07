@@ -13,12 +13,16 @@ class AudioStorage {
         return localStorage.setItem("audioIds", ids)
     }
 
-    async save(id: string, audioBlob: Blob[], meta: Omit<MetaType, "id">) {
+    async save(
+        id: string,
+        audioBlob: Blob[],
+        meta: Omit<MetaType, "id" | "createdAt">
+    ) {
         const savedAudioIds = (await this.loadAudioIds()) || []
         savedAudioIds.push(id)
         await this.saveAudioIds(savedAudioIds)
 
-        await this.metaStorage.save(id, { ...meta, id })
+        await this.metaStorage.save(id, { ...meta, id, createdAt: Date.now() })
         return localStorage.setItem(`audio_${id}`, audioBlob)
     }
 

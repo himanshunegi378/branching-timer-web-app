@@ -1,0 +1,51 @@
+@import "@material/elevation";
+.hs {
+    $gutter: 2rem;
+    height: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-shrink: 0;
+    overflow-x: auto;
+    // display: grid;
+    gap: $gutter / 2;
+    // grid-template-columns: 10px;
+    // grid-template-rows: minmax(100vh, max-content);
+    // grid-auto-flow: column;
+    // grid-auto-columns: calc(325px - #{$gutter} * 2);
+    // overflow-x: auto;
+    // scroll-snap-type: x proximity;
+    padding: 0.75 * $gutter 0px;
+
+    &:before,
+    &:after {
+        content: "";
+        width: 10px;
+    }
+
+    .item {
+        scroll-snap-align: center;
+        padding: 1rem;
+        display: flex;
+        flex: 1 0 250px;
+        max-width: 250px;
+        flex-direction: column;
+        background: #fff;
+        border-radius: 8px;
+        max-height: 100%;
+        width: 100%;
+        @include elevation(2, black);
+    }
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+
+    .header {
+    }
+    .body {
+        flex: 1;
+        overflow: hidden;
+    }
+}

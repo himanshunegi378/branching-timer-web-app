@@ -7,3 +7,8 @@ crate storage interface class that will be used by other class
 fix record audio volume very low issue
 write test for untested part of useTimerCard
 code organization
+
+wannabe features:
+1. Timercard grouping based on some value. i.e. consider a file that consist of timercard and then other file that consist of timercard
+2. A system to record and preview audio combined with ui for assigning that audio to timer.
+3. add react context in timers.

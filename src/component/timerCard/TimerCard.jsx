@@ -19,7 +19,43 @@ export default function TimerCard(props) {
     if (!timerCardData) return <div></div>
     return (
         <div className={`bg-white rounded-lg ${className}`}>
-            <div className="flex flex-row-reverse">
+            <div className="flex justify-between align-items-center">
+                <div className="text-center font-medium cursor-pointer fancy-scrollbar mr-2">
+                    <div onClick={() => setEditTitle(true)}>
+                        {editTitle ? (
+                            <form
+                                onSubmit={(event) => {
+                                    event.preventDefault()
+                                    const title =
+                                        event.currentTarget.title.value
+                                    if (title) {
+                                        actions.renameTimerCard(title)
+                                    }
+                                    setEditTitle(false)
+                                }}
+                                onBlur={(event) => {
+                                    event.preventDefault()
+                                    const title =
+                                        event.currentTarget.title.value
+                                    if (title) {
+                                        actions.renameTimerCard(title)
+                                    }
+                                    setEditTitle(false)
+                                }}
+                            >
+                                <input
+                                    autoFocus
+                                    type="text"
+                                    name="title"
+                                    defaultValue={timerCardData.timerGroup.name}
+                                />
+                            </form>
+                        ) : (
+                            timerCardData.timerGroup.name
+                        )}
+                    </div>
+                </div>
+
                 <button
                     test="closeButton"
                     className="select-none outline-none rounded-full transition duration-150 hover:elevation-2 transform hover:scale-110"
@@ -30,8 +66,8 @@ export default function TimerCard(props) {
                     <img className="h-6 w-auto" src={close} alt="" />
                 </button>
             </div>
-            <div className='flex flex-col min-h-0'>
-                <div className="text-7xl font-mono tracking-tighter font-medium text-center select-none">
+            <div className="flex flex-col min-h-0">
+                <div className="text-7xl font-mono tracking-tighter font-medium text-center select-none ">
                     {parseInt(runningTimer.remainingTime / 60) <= 9
                         ? "0" + parseInt(runningTimer.remainingTime / 60)
                         : parseInt(runningTimer.remainingTime / 60)}
@@ -41,54 +77,7 @@ export default function TimerCard(props) {
                         : runningTimer.remainingTime % 60}
                 </div>
                 <hr />
-                <div className="flex flex-row justify-between mx-2">
-                    <div className="text-center font-medium cursor-pointer">
-                        <div onClick={() => setEditTitle(true)}>
-                            {editTitle ? (
-                                <form
-                                    onSubmit={(event) => {
-                                        event.preventDefault()
-                                        const title =
-                                            event.currentTarget.title.value
-                                        if (title) {
-                                            actions.renameTimerCard(title)
-                                        }
-                                        setEditTitle(false)
-                                    }}
-                                    onBlur={(event) => {
-                                        event.preventDefault()
-                                        const title =
-                                            event.currentTarget.title.value
-                                        if (title) {
-                                            actions.renameTimerCard(title)
-                                        }
-                                        setEditTitle(false)
-                                    }}
-                                >
-                                    <input
-                                        autoFocus
-                                        type="text"
-                                        name="title"
-                                        defaultValue={
-                                            timerCardData.timerGroup.name
-                                        }
-                                    />
-                                </form>
-                            ) : (
-                                timerCardData.timerGroup.name
-                            )}
-                        </div>
-                    </div>
-                    <div className="px-0 user-select-none">
-                        <LoopButton
-                            looping={timerCardData?.looping}
-                            onChange={() => {
-                                actions.toggleLoop()
-                            }}
-                        />
-                    </div>
-                </div>
-                <div className="flex">
+                <div className="flex mt-2">
                     <div className=" mx-2 h-8 w-auto my-1">
                         <PlayButton
                             isPlaying={timerCardData?.status === "playing"}
@@ -107,8 +96,16 @@ export default function TimerCard(props) {
                             if (isStopped) actions.stopCard()
                         }}
                     />
+                    <div className="px-0 user-select-none ml-auto">
+                        <LoopButton
+                            looping={timerCardData?.looping}
+                            onChange={() => {
+                                actions.toggleLoop()
+                            }}
+                        />
+                    </div>
                 </div>
-                <div className='overflow-auto fancy-scrollbar px-1  '>
+                <div className="overflow-auto fancy-scrollbar px-1  ">
                     {timerCardData?.timerGroup?.timers.map((timer) => {
                         if (!timer) return null
                         return (

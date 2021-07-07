@@ -3,6 +3,7 @@ import { localStorage } from "../../utils/localStorage"
 export type MetaType = {
     name: string
     id: string
+    createdAt: number
 }
 
 export class MetaStorage {

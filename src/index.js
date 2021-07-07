@@ -5,11 +5,14 @@ import * as serviceWorker from "./serviceWorker"
 import "./index.css"
 import AudioProvider from "./providers/audioProvider"
 import { TimerCardsProvider } from "./contexts/TimerCards"
+import { BrowserRouter as Router } from "react-router-dom"
 ReactDOM.render(
     <React.StrictMode>
         <AudioProvider>
             <TimerCardsProvider>
-                <App />
+                <Router>
+                    <App />
+                </Router>
             </TimerCardsProvider>
         </AudioProvider>
     </React.StrictMode>,
