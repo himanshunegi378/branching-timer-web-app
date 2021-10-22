@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Timer from "../timer/Timer"
 import close from "./close.svg"
 import style from "./style.module.scss"
@@ -8,13 +8,21 @@ import { LoopButton } from "./loopButton"
 import StopButton from "./stopButton"
 
 import useAudioRecorder from "../../hooks/useAudioRecorder"
-import { useTimerCard } from "../../contexts/TimerCards"
+import { useEndTime, useTimerCard } from "../../contexts/TimerCards"
 
 export default function TimerCard(props) {
     const { onDelete, timerCardId, className } = props
     const [editTitle, setEditTitle] = useState(() => false)
     const { record, stopRecording } = useAudioRecorder()
     const { timerCardData, runningTimer, actions } = useTimerCard(timerCardId)
+    const endTimes = useEndTime(timerCardId, 5)
+
+    useEffect(() => {
+        endTimes.forEach((endTime, i) => {
+            console.log(`${i + 1} ${endTime.toLocaleString()}`)
+        })
+        return () => {}
+    }, [endTimes])
 
     if (!timerCardData) return <div></div>
     return (

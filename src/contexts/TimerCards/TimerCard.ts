@@ -50,6 +50,10 @@ export class TimerCard extends EventEmitter {
         })
     }
 
+    public getTimerData() {
+        return this.timerCardData
+    }
+
     //will be ivoked on anychange to timercardata
     private emitTimerCardData() {
         this.emit("timer_data", this.timerCardData)
