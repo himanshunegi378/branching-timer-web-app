@@ -3,18 +3,18 @@ import ReactDOM from "react-dom"
 import App from "./App"
 import * as serviceWorker from "./serviceWorker"
 import "./index.css"
-import AudioProvider from "./providers/audioProvider"
 import { TimerCardsProvider } from "./contexts/TimerCards"
 import { BrowserRouter as Router } from "react-router-dom"
+import { SpeechProvider } from "./contexts/Speech"
 ReactDOM.render(
     <React.StrictMode>
-        <AudioProvider>
+        <SpeechProvider>
             <TimerCardsProvider>
                 <Router>
                     <App />
                 </Router>
             </TimerCardsProvider>
-        </AudioProvider>
+        </SpeechProvider>
     </React.StrictMode>,
     document.getElementById("root")
 )

@@ -80,7 +80,13 @@ export class TimerCard extends EventEmitter {
             const audioBlob = await audioStorage.load(audioId)
             this.audioPlayer.play(URL.createObjectURL(audioBlob))
         } else {
-            this.audioPlayer.play(defaultSound, 2)
+            // if speech syntesis is available use that else use default sound
+            if ("speechSynthesis" in window) {
+                speechSynthesis.speak(new SpeechSynthesisUtterance(`${timerData?.name} timer. finished playing`))
+            }
+            else {
+                this.audioPlayer.play(defaultSound, 2)
+            }
         }
     }
 
@@ -147,7 +153,7 @@ export class TimerCard extends EventEmitter {
         })
     }
 
-    async removeAudioFromTimer(timerId: string) {}
+    async removeAudioFromTimer(timerId: string) { }
 
     renameTimerCard(newName: string) {
         this.updateCardData((draftCardData) => {
