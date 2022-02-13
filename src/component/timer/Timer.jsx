@@ -29,7 +29,9 @@ function Timer(props) {
         className={`${style.title} w-full rounded-t-lg  border border-b-0 border-gray-300 px-1 `}
       >
         <div className={` flex flex-row justify-between items-center`}>
-          <div onClick={() => setEditTitle(true)}>
+          <div 
+          className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full"
+          onClick={() => setEditTitle(true)}>
             {editTitle ? (
               <form
                 onSubmit={(event) => {

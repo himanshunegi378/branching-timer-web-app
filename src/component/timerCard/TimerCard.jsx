@@ -7,13 +7,11 @@ import { PlayButton } from "./playButton";
 import { LoopButton } from "./loopButton";
 import StopButton from "./stopButton";
 
-import useAudioRecorder from "../../hooks/useAudioRecorder";
 import { useEndTime, useTimerCard } from "../../contexts/TimerCards";
 
 export default function TimerCard(props) {
   const { onDelete, timerCardId, className } = props;
   const [editTitle, setEditTitle] = useState(() => false);
-  const { record, stopRecording } = useAudioRecorder();
   const { timerCardData, runningTimer, actions } = useTimerCard(timerCardId);
   const endTimes = useEndTime(timerCardId, 5);
 
@@ -28,8 +26,11 @@ export default function TimerCard(props) {
   return (
     <div className={`bg-white rounded-lg ${className}`}>
       <div className="flex justify-between align-items-center">
-        <div className="text-center font-medium cursor-pointer fancy-scrollbar mr-2">
-          <div onClick={() => setEditTitle(true)}>
+        <div className="text-center font-medium cursor-pointer fancy-scrollbar mr-2 w-full">
+          <div
+            className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full"
+            onClick={() => setEditTitle(true)}
+          >
             {editTitle ? (
               <form
                 onSubmit={(event) => {

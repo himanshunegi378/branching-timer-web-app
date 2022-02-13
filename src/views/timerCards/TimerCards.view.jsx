@@ -1,9 +1,8 @@
-import React, { useEffect } from "react";
+import React from "react";
 import style from "./timerCards.module.scss";
 import { v4 } from "uuid";
 import { useCreateTimerCard } from "../../contexts/TimerCards";
 import TimerCard from "../../component/timerCard/TimerCard";
-import { Link } from "react-router-dom";
 
 export function TimerCards(props) {
   const { allTimerCardsId, createTimerCard, deleteTimerCard } =
@@ -87,7 +86,7 @@ export function TimerCards(props) {
                 xmlnsXlink="http://www.w3.org/1999/xlink"
                 aria-hidden="true"
                 role="img"
-                class="w-5"
+                className="w-5"
                 preserveAspectRatio="xMidYMid meet"
                 viewBox="0 0 24 24"
               >
