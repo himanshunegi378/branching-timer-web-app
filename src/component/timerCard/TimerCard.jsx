@@ -28,7 +28,7 @@ export default function TimerCard(props) {
       <div className="flex justify-between align-items-center">
         <div className="text-center font-medium cursor-pointer fancy-scrollbar mr-2 w-full">
           <div
-            className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full"
+            className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full text-left"
             onClick={() => setEditTitle(true)}
           >
             {editTitle ? (
