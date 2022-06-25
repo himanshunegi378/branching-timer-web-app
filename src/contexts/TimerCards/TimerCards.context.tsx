@@ -1,5 +1,6 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { TimerCardLocalStorage } from "../../lib/timerCardStorage/TimerCardLocalStorage";
+import { TimerCardLocalStorageFactory } from "../../lib/timerCardStorageFactory/TimerCardLocalStorageFactory";
 import { timerCardIDsStorage } from "./storage";
 import { TimerCard } from "./TimerCard";
 export const TimeCardsContext = React.createContext<{
@@ -12,7 +13,11 @@ export const TimeCardsContext = React.createContext<{
   timerCardsId: [],
 });
 const setupNewTimerCard = (id: string) => {
-  const timerCard = new TimerCard(id, new TimerCardLocalStorage());
+  const timerCardStorageFactory = new TimerCardLocalStorageFactory();
+  const timerCard = new TimerCard(
+    id,
+    timerCardStorageFactory.createTimerCardStorage()
+  );
   return timerCard;
 };
 export function TimerCardsProvider(props: PropsWithChildren<{}>) {
