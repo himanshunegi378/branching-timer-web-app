@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
+import { TimerCardLocalStorage } from "../../lib/timerCardStorage/TimerCardLocalStorage";
 import { timerCardIDsStorage } from "./storage";
 import { TimerCard } from "./TimerCard";
-import { useCallback } from "react";
 export const TimeCardsContext = React.createContext<{
   Timercards: Record<string, TimerCard>;
   actions: any;
@@ -11,15 +11,13 @@ export const TimeCardsContext = React.createContext<{
   actions: {},
   timerCardsId: [],
 });
-
+const setupNewTimerCard = (id: string) => {
+  const timerCard = new TimerCard(id, new TimerCardLocalStorage());
+  return timerCard;
+};
 export function TimerCardsProvider(props: PropsWithChildren<{}>) {
   const TimerCardsRef = useRef<Record<string, TimerCard>>({});
   const [timerCardsId, setTimerCardsId] = useState<string[]>([]);
-
-  const setupNewTimerCard = useCallback((id: string) => {
-    const timerCard = new TimerCard(id);
-    return timerCard;
-  }, []);
 
   useEffect(() => {
     //on web page load get timercard data from storage and initalize tiemrcards
@@ -36,7 +34,7 @@ export function TimerCardsProvider(props: PropsWithChildren<{}>) {
       setTimerCardsId(timerCardsId);
     };
     onPageOpen();
-  }, [setupNewTimerCard]);
+  }, []);
 
   useEffect(() => {
     //save timercards data to storage on page close
@@ -67,10 +65,6 @@ export function TimerCardsProvider(props: PropsWithChildren<{}>) {
     delete TimerCardsRef.current[timerCardId];
     setTimerCardsId((ids) => ids.filter((id) => id !== timerCardId));
   };
-
-  // const addAudio = (timerId: string, audioBlob: Blob[]) => {
-  //     const audioId = addAudio()
-  // }
 
   return (
     <TimeCardsContext.Provider

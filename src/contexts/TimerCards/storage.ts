@@ -12,15 +12,3 @@ export const timerCardIDsStorage = {
         return localStorage.removeItem(`timerCardIds`)
     }
 }
-
-export const timerCardStorage = {
-    save: (timerCardId: string, timerCardData: TimerCard) => {
-        return localStorage.setItem(`timerCard_${timerCardId}`, timerCardData)
-    },
-    load: (timerCardId: string) => {
-        return localStorage.getItem<TimerCard>(`timerCard_${timerCardId}`)
-    },
-    delete: (timerCardId: string) => {
-        return localStorage.removeItem(`timerCard_${timerCardId}`)
-    }
-}
