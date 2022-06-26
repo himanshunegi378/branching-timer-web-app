@@ -16,6 +16,7 @@
         "@types/immutable": "^3.8.7",
         "@types/localforage": "0.0.34",
         "@types/sass": "^1.16.0",
+        "axios": "^0.27.2",
         "bootstrap": "^4.5.0",
         "classnames": "^2.2.6",
         "hover.css": "^2.3.2",
