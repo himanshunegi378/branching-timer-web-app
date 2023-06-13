@@ -3,11 +3,11 @@ import Timer from "../timer/Timer";
 import close from "./close.svg";
 import style from "./style.module.scss";
 
-import { PlayButton } from "./playButton";
-import { LoopButton } from "./loopButton";
-import StopButton from "./stopButton";
-
 import { useEndTime, useTimerCard } from "../../contexts/TimerCards";
+import { PlayButton } from "../molecules/PlayButton/PlayButton.component";
+import StopButton from "../molecules/StopButton/StopButton.component";
+import LoopButton from "../molecules/LoopButton/LoopButton.component";
+import { CloseButton } from "../molecules/CloseButton/CloseButton.component";
 
 export default function TimerCard(props) {
   const { onDelete, timerCardId, className } = props;
@@ -62,16 +62,7 @@ export default function TimerCard(props) {
             )}
           </div>
         </div>
-
-        <button
-          test="closeButton"
-          className="select-none outline-none rounded-full transition duration-150 hover:elevation-2 transform hover:scale-110"
-          onClick={() => {
-            onDelete(timerCardId);
-          }}
-        >
-          <img className="h-6 w-auto" src={close} alt="" />
-        </button>
+        <CloseButton onClick={() => onDelete(timerCardId)} />
       </div>
       <div className="flex flex-col min-h-0">
         <div className="text-7xl font-mono tracking-tighter font-medium text-center select-none ">

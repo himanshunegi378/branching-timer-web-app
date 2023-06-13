@@ -1,11 +1,12 @@
 import React from "react"
+import { PlayButtonProps } from "./PlayButton.types"
 
-function PlayButton(props) {
+function PlayButton(props: PlayButtonProps) {
     const { isPlaying = false, onChange = () => {} } = props
 
     return (
         <div
-            test="playButton"
+            test-id="playButton"
             className="cursor-pointer"
             onClick={() => {
                 onChange(!isPlaying)
@@ -67,5 +68,4 @@ function PlayButton(props) {
     )
 }
 
-export default PlayButton
 export { PlayButton }

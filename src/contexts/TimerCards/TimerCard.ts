@@ -84,6 +84,7 @@ export class TimerCard extends EventEmitter {
     const audioId = timerData?.options.audioId;
     if (audioId) {
       const audioBlob = await audioStorage.load(audioId);
+      //@ts-ignore
       this.audioPlayer.play(URL.createObjectURL(audioBlob));
     } else {
       // if speech syntesis is available use that else use default sound

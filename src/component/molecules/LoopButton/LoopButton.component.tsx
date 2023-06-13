@@ -1,9 +1,11 @@
 import React from "react";
+import { LoopButtonProps } from "./LoopButton.styles";
 
-function LoopButton(props) {
+function LoopButton(props: LoopButtonProps) {
   const { looping = false, onChange = () => {} } = props;
   return (
-    <div className='cursor-pointer'
+    <div
+      className="cursor-pointer"
       onClick={() => {
         onChange(!looping);
       }}
