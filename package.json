@@ -55,6 +55,7 @@
         "deploy": "gh-pages -d build",
         "start": "craco start",
         "build": "craco build",
+        "css:watch": "npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch",
         "test": "craco test ",
         "coverage": "craco test --coverage",
         "eject": "react-scripts eject"
