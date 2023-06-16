@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Timer from "../timer/Timer";
-import close from "./close.svg";
 import style from "./style.module.scss";
 
 import { useEndTime, useTimerCard } from "../../contexts/TimerCards";
@@ -8,6 +6,7 @@ import { PlayButton } from "../molecules/PlayButton/PlayButton.component";
 import StopButton from "../molecules/StopButton/StopButton.component";
 import LoopButton from "../molecules/LoopButton/LoopButton.component";
 import { CloseButton } from "../molecules/CloseButton/CloseButton.component";
+import { Timer } from "../organisms/Timer/Timer.component";
 
 export default function TimerCard(props) {
   const { onDelete, timerCardId, className } = props;

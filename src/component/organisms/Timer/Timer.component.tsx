@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
-import close from "./close.svg";
+import { useEffect, useState } from "react";
+import { TimerProps } from "./Timer.types";
 import style from "./style.module.scss";
-function Timer(props) {
+import { CloseButton } from "../../molecules/CloseButton/CloseButton.component";
+
+export const Timer = (props: TimerProps) => {
   const { onNameChange, onTimeChange, onDelete, id, name, time, active } =
     props;
 
@@ -11,8 +13,8 @@ function Timer(props) {
 
   useEffect(() => {
     if (!time) return;
-    const minutes = parseInt(time / 60);
-    const seconds = parseInt(time % 60);
+    const minutes = time / 60;
+    const seconds = time % 60;
     setMins(minutes);
     setSecs(seconds);
   }, [time]);
@@ -29,17 +31,20 @@ function Timer(props) {
         className={`${style.title} w-full rounded-t-lg  border border-b-0 border-gray-300 px-1 `}
       >
         <div className={` flex flex-row justify-between items-center`}>
-          <div 
-          className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full"
-          onClick={() => setEditTitle(true)}>
+          <div
+            className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full"
+            onClick={() => setEditTitle(true)}
+          >
             {editTitle ? (
               <form
                 onSubmit={(event) => {
                   event.preventDefault();
                   setEditTitle(false);
+                  //@ts-ignore
                   onNameChange(event.currentTarget.title.value);
                 }}
                 onBlur={(event) => {
+                  //@ts-ignore
                   onNameChange(event.currentTarget.title.value);
                   setEditTitle(false);
                 }}
@@ -57,16 +62,7 @@ function Timer(props) {
             )}
           </div>
 
-          <div>
-            <button
-              className="select-none flex items-center rounded-full transition duration-150 hover:elevation-2 transform hover:scale-110"
-              onClick={() => {
-                onDelete(id);
-              }}
-            >
-              <img className="h-4 w-auto" src={close} alt="" />
-            </button>
-          </div>
+          <CloseButton size="sm" onClick={() => onDelete(id)} />
         </div>
       </div>
 
@@ -97,7 +93,7 @@ function Timer(props) {
             style={{ width: "3em" }}
             type="number"
             placeholder="m"
-            onChange={(e) => setMins(e.target.value)}
+            onChange={(e) => setMins(parseInt(e.target.value))}
             value={mins}
           />
           <span className="mx-1">:</span>
@@ -106,13 +102,11 @@ function Timer(props) {
             style={{ width: "3em" }}
             type="number"
             placeholder="s"
-            onChange={(e) => setSecs(e.target.value)}
+            onChange={(e) => setSecs(parseInt(e.target.value))}
             value={secs}
           />
         </form>
       </div>
     </div>
   );
-}
-
-export default Timer;
+};
