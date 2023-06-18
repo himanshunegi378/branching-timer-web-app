@@ -43,7 +43,69 @@ export function TimerCards(props) {
         </div>
       </section>
       <div className="bg-gray-100">
-        <section id="footer" className="container mx-auto px-2 md:px-4 py-4">
+        <div class="container mx-auto px-4 py-8">
+          <h1 class="text-5xl font-bold">TimerCards</h1>
+          <h2 class="text-2xl font-bold mb-2 text-gray-500">
+            A Versatile Timer App for Efficient Time Management
+          </h2>
+
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-2">What is TimerCards?</h2>
+            <p class="text-gray-700 leading-loose">
+              TimerCards is a powerful and user-friendly app designed to enhance
+              your productivity and time management skills. With TimerCards, you
+              can easily create and customize cards consisting of sequential
+              timers to streamline your daily tasks and activities.
+            </p>
+          </div>
+
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-2">What can I do with it?</h2>
+            <p class="text-gray-700 leading-loose">
+              TimerCards offers a wide range of possibilities. Some examples
+              include:
+            </p>
+            <ul class="list-disc list-inside text-gray-700 leading-loose">
+              <li>
+                Creating a Pomodoro timer with two timers: 25 minutes of focused
+                work followed by a 5-minute break
+              </li>
+              <li>
+                Setting up a water drinking card with a 30-minute timer to
+                remind you to stay hydrated
+              </li>
+              <li>Creating a workout card to track your exercise routines</li>
+            </ul>
+          </div>
+
+          <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-2">
+              How can TimerCards help with time management?
+            </h2>
+            <p class="text-gray-700 leading-loose">
+              TimerCards enables you to organize your time effectively and stay
+              on track. By utilizing the app's sequential timers, you can
+              allocate specific durations to different tasks, ensuring a
+              structured approach to your day. Whether you need to focus, take
+              breaks, or manage your daily activities, TimerCards has you
+              covered.
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-2xl font-bold mb-2">
+              Why should I choose TimerCards?
+            </h2>
+            <p class="text-gray-700 leading-loose">
+              TimerCards stands out with its intuitive interface, customizable
+              timer cards, and seamless functionality. The app is designed to
+              provide a hassle-free experience, helping you optimize your
+              productivity and achieve your goals. Take control of your time
+              with TimerCards today!
+            </p>
+          </div>
+        </div>
+        {/* <section id="footer" className="container mx-auto px-2 md:px-4 py-4">
           <h1 className="text-5xl font-bold text-center mb-4">TimerCards</h1>
           <div className="mb-4">
             <h5 className="font-bold text-2xl">What is TimerCards?</h5>
@@ -73,7 +135,7 @@ export function TimerCards(props) {
               </a>
             </p>
           </div>
-        </section>
+        </section> */}
         <section className="mb-4">
           <div className="flex flex-wrap justify-center gap-2">
             <a
