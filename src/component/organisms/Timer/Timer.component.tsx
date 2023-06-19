@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { TimerProps } from "./Timer.types";
 import style from "./style.module.scss";
 import { CloseButton } from "../../molecules/CloseButton/CloseButton.component";
+import { TripleDashMenu } from "../../atoms/TripleDashMenu";
 
 export const Timer = (props: TimerProps) => {
   const { onNameChange, onTimeChange, onDelete, id, name, time, active } =
@@ -30,7 +31,7 @@ export const Timer = (props: TimerProps) => {
       <div
         className={`${style.title} w-full rounded-t-lg  border border-b-0 border-gray-300 px-1 `}
       >
-        <div className={` flex flex-row justify-between items-center`}>
+        <div className={` flex flex-row justify-between items-center gap-1`}>
           <div
             className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full"
             onClick={() => setEditTitle(true)}
@@ -61,6 +62,7 @@ export const Timer = (props: TimerProps) => {
               name
             )}
           </div>
+          <TripleDashMenu />
 
           <CloseButton size="sm" onClick={() => onDelete(id)} />
         </div>
