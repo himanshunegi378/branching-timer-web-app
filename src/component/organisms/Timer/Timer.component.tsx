@@ -3,6 +3,7 @@ import { TimerProps } from "./Timer.types";
 import style from "./style.module.scss";
 import { CloseButton } from "../../molecules/CloseButton/CloseButton.component";
 import { TripleDashMenu } from "../../atoms/TripleDashMenu";
+import { Menu, MenuItem } from "../../molecules/Menu";
 
 export const Timer = (props: TimerProps) => {
   const { onNameChange, onTimeChange, onDelete, id, name, time, active } =
@@ -11,7 +12,7 @@ export const Timer = (props: TimerProps) => {
   const [mins, setMins] = useState(0);
   const [secs, setSecs] = useState(0);
   const [editTitle, setEditTitle] = useState(() => false);
-
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   useEffect(() => {
     if (!time) return;
     const minutes = time / 60;
@@ -62,8 +63,16 @@ export const Timer = (props: TimerProps) => {
               name
             )}
           </div>
-          <TripleDashMenu />
-
+          {/* Will be used in future */}
+          {/* <TripleDashMenu onClick={(e) => setAnchorEl(e.currentTarget)} />
+          <Menu
+            isOpen={!!anchorEl}
+            anchorEl={anchorEl}
+            onClose={() => setAnchorEl(null)}
+          >
+            <MenuItem onClick={() => onDelete(id)}>Delete</MenuItem>
+            <MenuItem onClick={() => setEditTitle(true)}>Edit</MenuItem>
+          </Menu> */}
           <CloseButton size="sm" onClick={() => onDelete(id)} />
         </div>
       </div>

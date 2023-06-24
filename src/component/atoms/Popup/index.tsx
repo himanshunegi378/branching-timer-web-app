@@ -1,12 +1,6 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
 import { createPopper } from "@popperjs/core";
-
-type PopupProps = {
-  isOpen: boolean;
-  anchorEl: HTMLElement | null;
-  children: React.ReactNode;
-  onClose: () => void;
-};
+import { useLayoutEffect, useRef } from "react";
+import { PopupProps } from "./PopupProps";
 
 export const Popup = ({ isOpen, anchorEl, children, onClose }: PopupProps) => {
   const id = useRef(
@@ -56,7 +50,8 @@ export const Popup = ({ isOpen, anchorEl, children, onClose }: PopupProps) => {
   return (
     <div
       ref={popupRef}
-      className={`fixed bg-white shadow-lg rounded-lg p-2 ${additionClassNames}`}
+      className={`fixed ${additionClassNames}`}
+      style={{ zIndex: 1000 }}
       id={id.current}
       role="tooltip"
       aria-hidden="true"
