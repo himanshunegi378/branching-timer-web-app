@@ -1,3 +1,4 @@
+import "./App.scss";
 import React, { Fragment, useEffect } from "react";
 // import style from "./App.module.scss"
 import { Switch, Route } from "react-router-dom";

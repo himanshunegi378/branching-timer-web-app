@@ -3,6 +3,7 @@ import style from "./timerCards.module.scss";
 import { v4 } from "uuid";
 import { useCreateTimerCard } from "../../contexts/TimerCards";
 import TimerCard from "../../component/timerCard/TimerCard";
+import { Button } from "../../component/atoms/Button/Button.atom";
 
 export function TimerCards(props) {
   const { allTimerCardsId, createTimerCard, deleteTimerCard } =
@@ -29,15 +30,13 @@ export function TimerCards(props) {
               );
             })}
             <div className={style.item}>
-              <button
-                test="addTimerCardButton"
-                className="select-none bg-blue-600 text-white px-4 py-2 rounded-full"
+              <Button
                 onClick={() => {
                   createTimerCard(v4());
                 }}
               >
                 Add Timer Card
-              </button>
+              </Button>
             </div>
           </div>
         </div>

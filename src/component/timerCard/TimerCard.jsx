@@ -7,6 +7,7 @@ import StopButton from "../molecules/StopButton/StopButton.component";
 import LoopButton from "../molecules/LoopButton/LoopButton.component";
 import { CloseButton } from "../molecules/CloseButton/CloseButton.component";
 import { Timer } from "../organisms/Timer/Timer.component";
+import { Button } from "../atoms/Button/Button.atom";
 
 export default function TimerCard(props) {
   const { onDelete, timerCardId, className } = props;
@@ -130,15 +131,16 @@ export default function TimerCard(props) {
           })}
         </div>
         <div className="flex justify-center mt-4">
-          <button
-            test="addButton"
-            className={style.add_button}
+          <Button
+            size="md"
+            variant="outline"
+            color="primary"
             onClick={() => {
               actions.addTimer({ name: "unnamed", time: 60 });
             }}
           >
-            Add Timer
-          </button>
+            Add
+          </Button>
         </div>
       </div>
     </div>
