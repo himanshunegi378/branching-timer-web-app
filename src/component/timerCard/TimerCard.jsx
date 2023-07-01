@@ -24,9 +24,9 @@ export default function TimerCard(props) {
 
   if (!timerCardData) return <div></div>;
   return (
-    <div className={`bg-white rounded-lg ${className}`}>
+    <div className={`bg-white rounded-lg flex flex-col overflow-auto p-4 elevation-2 w-64 ${className}`}>
       <div className="flex justify-between align-items-center">
-        <div className="text-center font-medium cursor-pointer fancy-scrollbar mr-2 w-full">
+        <div className="text-center font-medium cursor-pointer fancy-scrollbar mr-2 w-full min-w-0">
           <div
             className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full text-left"
             onClick={() => setEditTitle(true)}
@@ -103,7 +103,7 @@ export default function TimerCard(props) {
             />
           </div>
         </div>
-        <div className="overflow-auto fancy-scrollbar px-1  ">
+        <div className="overflow-auto fancy-scrollbar px-1 flex-1">
           {timerCardData?.timerGroup?.timers.map((timer) => {
             if (!timer) return null;
             return (

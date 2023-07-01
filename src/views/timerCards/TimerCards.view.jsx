@@ -1,9 +1,9 @@
 import React from "react";
-import style from "./timerCards.module.scss";
 import { v4 } from "uuid";
 import { useCreateTimerCard } from "../../contexts/TimerCards";
 import TimerCard from "../../component/timerCard/TimerCard";
 import { Button } from "../../component/atoms/Button/Button.atom";
+import { TrelloItem, TrelloLayout } from "../../component/templates/TrelloLayout";
 
 export function TimerCards(props) {
   const { allTimerCardsId, createTimerCard, deleteTimerCard } =
@@ -11,35 +11,32 @@ export function TimerCards(props) {
 
   return (
     <div>
-      <section className={style.container}>
-        <div className={style.body}>
-          <div
-            className={` ${style.hs} fancy-scrollbar`}
-            style={{ alignItems: "flex-start" }}
-          >
-            {allTimerCardsId.map((timerCardId) => {
-              return (
+      <section className="h-screen p-4">
+        <TrelloLayout>
+          {allTimerCardsId.map((timerCardId) => {
+            return (
+              <TrelloItem key={timerCardId}>
                 <TimerCard
-                  className={style.item}
-                  key={timerCardId}
+                  // className={style.item}
                   timerCardId={timerCardId}
                   onDelete={(id) => {
                     deleteTimerCard(id);
                   }}
                 />
-              );
-            })}
-            <div className={style.item}>
-              <Button
-                onClick={() => {
-                  createTimerCard(v4());
-                }}
-              >
-                Add Timer Card
-              </Button>
-            </div>
-          </div>
-        </div>
+              </TrelloItem>
+            );
+          })}
+          <TrelloItem>
+            <Button
+              className="whitespace-nowrap"
+              onClick={() => {
+                createTimerCard(v4());
+              }}
+            >
+              Add Timer Card
+            </Button>
+          </TrelloItem>
+        </TrelloLayout>
       </section>
       <div className="bg-gray-100">
         <div class="container mx-auto px-4 py-8">
