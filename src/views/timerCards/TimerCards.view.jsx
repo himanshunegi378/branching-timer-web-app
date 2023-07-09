@@ -3,7 +3,12 @@ import { v4 } from "uuid";
 import { useCreateTimerCard } from "../../contexts/TimerCards";
 import TimerCard from "../../component/timerCard/TimerCard";
 import { Button } from "../../component/atoms/Button/Button.atom";
-import { TrelloItem, TrelloLayout } from "../../component/templates/TrelloLayout";
+import {
+  TrelloItem,
+  TrelloLayout,
+} from "../../component/templates/TrelloLayout";
+import { TimerCardTasks } from "../../component/templates/TimerCardTasks";
+import { TimerCardData } from "../../HOC/TimerCardData";
 
 export function TimerCards(props) {
   const { allTimerCardsId, createTimerCard, deleteTimerCard } =
@@ -16,13 +21,20 @@ export function TimerCards(props) {
           {allTimerCardsId.map((timerCardId) => {
             return (
               <TrelloItem key={timerCardId}>
-                <TimerCard
+                <TimerCardData
+                  id={timerCardId}
+                  render={(timerCardData) => {
+                    if (!timerCardData) return null;
+                    return <TimerCardTasks timerCardData={timerCardData} />;
+                  }}
+                />
+                {/* <TimerCard
                   // className={style.item}
                   timerCardId={timerCardId}
                   onDelete={(id) => {
                     deleteTimerCard(id);
                   }}
-                />
+                /> */}
               </TrelloItem>
             );
           })}
