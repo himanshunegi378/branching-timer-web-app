@@ -1,8 +1,8 @@
-import { TimerCard } from "../../../contexts/TimerCards/TimerCards.types";
-import { Timer } from "../../organisms/Timer/Timer.component";
-import { TrelloItem, TrelloLayout } from "../TrelloLayout";
-import { Task } from "./TimerCardTask.types";
-import { TimerTasks } from "./TimerTask";
+import { TimerCard } from '../../../contexts/TimerCards/TimerCards.types';
+import { Timer } from '../../organisms/Timer/Timer.component';
+import { TrelloItem, TrelloLayout } from '../TrelloLayout';
+import { Task } from './TimerCardTask.types';
+import { TimerTasks } from './TimerTask';
 
 const generateRandomTask = (count: number) => {
   const tasks: Array<Task> = [];
@@ -22,12 +22,12 @@ export const TimerCardTasks = ({
   timerCardData: TimerCard;
 }) => {
   return (
-    <TrelloLayout className="">
+    <TrelloLayout className=''>
       {timerCardData.timerGroup.timers.map((timer) => (
-        <TrelloItem className="" key={timer.id}>
+        <TrelloItem className='' key={timer.id}>
           <div
             key={timer.id}
-            className="bg-gray-200 p-2 rounded-md shadow-md flex flex-col space-y-2"
+            className='bg-gray-200 p-2 rounded-md shadow-md flex flex-col space-y-2'
           >
             <Timer
               active={false}

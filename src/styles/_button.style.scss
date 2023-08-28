@@ -1,16 +1,16 @@
-$button-primary-color: #4C51BF;
-$button-primary-hover-color: #3C3F9E;
-$button-primary-active-color: #2E327F;
-$button-primary-text-color: #FFFFFF;
-$button-primary-text-hover-color: #FFFFFF;
-$button-primary-text-active-color: #FFFFFF;
+$button-primary-color: #4c51bf;
+$button-primary-hover-color: #3c3f9e;
+$button-primary-active-color: #2e327f;
+$button-primary-text-color: #ffffff;
+$button-primary-text-hover-color: #ffffff;
+$button-primary-text-active-color: #ffffff;
 
-$button-secondary-color: #9B2C2C;
-$button-secondary-hover-color: #7F2424;
-$button-secondary-active-color: #5B0E0E;
-$button-secondary-text-color: #FFFFFF;
-$button-secondary-text-hover-color: #FFFFFF;
-$button-secondary-text-active-color: #FFFFFF;
+$button-secondary-color: #9b2c2c;
+$button-secondary-hover-color: #7f2424;
+$button-secondary-active-color: #5b0e0e;
+$button-secondary-text-color: #ffffff;
+$button-secondary-text-hover-color: #ffffff;
+$button-secondary-text-active-color: #ffffff;
 
 .button {
   display: inline-flex;
@@ -19,7 +19,9 @@ $button-secondary-text-active-color: #FFFFFF;
   border-radius: 0.25rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.3s,
+    color 0.3s;
   outline: none;
 
   &.primary {

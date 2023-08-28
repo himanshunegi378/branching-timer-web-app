@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { TimerProps } from "./Timer.types";
-import style from "./style.module.scss";
-import { CloseButton } from "../../molecules/CloseButton/CloseButton.component";
-import { TripleDashMenu } from "../../atoms/TripleDashMenu";
-import { Menu, MenuItem } from "../../molecules/Menu";
+import { useEffect, useState } from 'react';
+import { TimerProps } from './Timer.types';
+import style from './style.module.scss';
+import { CloseButton } from '../../molecules/CloseButton/CloseButton.component';
+// import { TripleDashMenu } from "../../atoms/TripleDashMenu";
+// import { Menu, MenuItem } from "../../molecules/Menu";
 
 export const Timer = (props: TimerProps) => {
   const { onNameChange, onTimeChange, onDelete, id, name, time, active } =
@@ -12,7 +12,7 @@ export const Timer = (props: TimerProps) => {
   const [mins, setMins] = useState(0);
   const [secs, setSecs] = useState(0);
   const [editTitle, setEditTitle] = useState(() => false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   useEffect(() => {
     if (!time) return;
     const minutes = time / 60;
@@ -26,7 +26,7 @@ export const Timer = (props: TimerProps) => {
       id={props.id}
       // className="my-1 px-2 pt-2 border rounded-lg border-gray-300"
       className={`my-1 rounded-lg ${style.timer} ${
-        active ? style.timer__active : ""
+        active ? style.timer__active : ''
       }`}
     >
       <div
@@ -34,7 +34,7 @@ export const Timer = (props: TimerProps) => {
       >
         <div className={` flex flex-row justify-between items-center gap-1`}>
           <div
-            className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full"
+            className='whitespace-nowrap overflow-hidden overflow-ellipsis w-full'
             onClick={() => setEditTitle(true)}
           >
             {editTitle ? (
@@ -53,10 +53,10 @@ export const Timer = (props: TimerProps) => {
               >
                 <input
                   autoFocus
-                  autoComplete={"off"}
-                  type="text"
+                  autoComplete={'off'}
+                  type='text'
                   defaultValue={name}
-                  name="title"
+                  name='title'
                 />
               </form>
             ) : (
@@ -73,11 +73,11 @@ export const Timer = (props: TimerProps) => {
             <MenuItem onClick={() => onDelete(id)}>Delete</MenuItem>
             <MenuItem onClick={() => setEditTitle(true)}>Edit</MenuItem>
           </Menu> */}
-          <CloseButton size="sm" onClick={() => onDelete(id)} />
+          <CloseButton size='sm' onClick={() => onDelete(id)} />
         </div>
       </div>
 
-      <div className="border border-t-0 rounded-b-lg  border-gray-300">
+      <div className='border border-t-0 rounded-b-lg  border-gray-300'>
         {/* <div className={messageBgColor}>{TimerDetail.message}</div> */}
         <form
           onSubmit={(event) => {
@@ -97,22 +97,22 @@ export const Timer = (props: TimerProps) => {
             if (seconds) time += seconds;
             onTimeChange(time);
           }}
-          className="text-center py-2"
+          className='text-center py-2'
         >
           <input
-            name="mins"
-            style={{ width: "3em" }}
-            type="number"
-            placeholder="m"
+            name='mins'
+            style={{ width: '3em' }}
+            type='number'
+            placeholder='m'
             onChange={(e) => setMins(parseInt(e.target.value))}
             value={mins}
           />
-          <span className="mx-1">:</span>
+          <span className='mx-1'>:</span>
           <input
-            name="secs"
-            style={{ width: "3em" }}
-            type="number"
-            placeholder="s"
+            name='secs'
+            style={{ width: '3em' }}
+            type='number'
+            placeholder='s'
             onChange={(e) => setSecs(parseInt(e.target.value))}
             value={secs}
           />

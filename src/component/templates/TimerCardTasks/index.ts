@@ -1,3 +1,3 @@
-import { TimerCardTasks } from "./TimerCardTasks";
+import { TimerCardTasks } from './TimerCardTasks';
 
 export { TimerCardTasks };

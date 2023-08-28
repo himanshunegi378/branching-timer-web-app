@@ -1,4 +1,4 @@
-import { TimerCard } from "../../contexts/TimerCards/TimerCards.types";
+import { TimerCard } from '../../contexts/TimerCards/TimerCards.types';
 
 export interface ITimerCardStorage {
   save: (timerCardData: TimerCard) => Promise<Boolean>;

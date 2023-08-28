@@ -1,6 +1,6 @@
-import { createPopper } from "@popperjs/core";
-import { useLayoutEffect, useRef } from "react";
-import { PopupProps } from "./PopupProps";
+import { createPopper } from '@popperjs/core';
+import { useLayoutEffect, useRef } from 'react';
+import { PopupProps } from './PopupProps';
 
 export const Popup = ({ isOpen, anchorEl, children, onClose }: PopupProps) => {
   const id = useRef(
@@ -25,11 +25,11 @@ export const Popup = ({ isOpen, anchorEl, children, onClose }: PopupProps) => {
 
     if (isOpen && anchorEl && popupRef.current) {
       const popper = createPopper(anchorEl, popupRef.current, {
-        placement: "bottom-start",
-        strategy: "fixed",
+        placement: 'bottom-start',
+        strategy: 'fixed',
         modifiers: [
           {
-            name: "offset",
+            name: 'offset',
             options: {
               offset: [0, 8],
             },
@@ -37,24 +37,24 @@ export const Popup = ({ isOpen, anchorEl, children, onClose }: PopupProps) => {
         ],
       });
 
-      document.addEventListener("mousedown", handleOutsideClick);
+      document.addEventListener('mousedown', handleOutsideClick);
 
       return () => {
         popper.destroy();
-        document.removeEventListener("mousedown", handleOutsideClick);
+        document.removeEventListener('mousedown', handleOutsideClick);
       };
     }
   }, [anchorEl, isOpen]);
 
-  const additionClassNames = isOpen ? "" : "invisible pointer-events-none";
+  const additionClassNames = isOpen ? '' : 'invisible pointer-events-none';
   return (
     <div
       ref={popupRef}
       className={`fixed ${additionClassNames}`}
       style={{ zIndex: 1000 }}
       id={id.current}
-      role="tooltip"
-      aria-hidden="true"
+      role='tooltip'
+      aria-hidden='true'
       tabIndex={-1}
     >
       {children}

@@ -1,5 +1,4 @@
-import React, { MouseEvent } from "react";
-import { pixelToRem } from "../../../utils/pixelToRem";
+import React, { MouseEvent } from 'react';
 
 interface TripleDashMenuProps {
   size?: number;
@@ -15,15 +14,15 @@ export const TripleDashMenu = ({
   const containerSize = `${size}px`;
   const dashStyle = {
     height: `${thickness}px`,
-    width: "100%",
-    backgroundColor: "#999",
-    borderRadius: "9999px",
+    width: '100%',
+    backgroundColor: '#999',
+    borderRadius: '9999px',
   };
 
-    const lineClass = "w-full";
+  const lineClass = 'w-full';
   return (
     <button
-      className="flex flex-col items-center justify-between"
+      className='flex flex-col items-center justify-between'
       style={{ width: containerSize, height: containerSize }}
       onClick={onClick}
     >

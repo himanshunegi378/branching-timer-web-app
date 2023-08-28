@@ -1,6 +1,6 @@
-import { MouseEvent } from "react";
+import { MouseEvent } from 'react';
 
 export type CloseButtonProps = {
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
-  size?: "sm" | "md" | "lg";
+  size?: 'sm' | 'md' | 'lg';
 };

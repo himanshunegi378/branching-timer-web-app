@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { TimerCard } from "../TimerCard";
-import { TimeCardsContext } from "../TimerCards.context";
-import { TimerCard as TimerCardType } from "../TimerCards.types";
+import React, { useEffect, useState } from 'react';
+import { TimerCard } from '../TimerCard';
+import { TimeCardsContext } from '../TimerCards.context';
+import { TimerCard as TimerCardType } from '../TimerCards.types';
 // import { useRunningTimer } from "./useRunningTimer"
 
 /**
@@ -13,7 +13,7 @@ export function useTimerCard(timerCardId: string) {
   const { Timercards } = React.useContext(TimeCardsContext);
   const [timerCardData, setTimerCardData] = useState<TimerCardType>();
   const [runningTimer, setRunningTimer] = useState({
-    id: "",
+    id: '',
     remainingTime: 0,
   });
   const [TimerCard, setTimerCard] = useState<TimerCard | null>(null);
@@ -35,13 +35,13 @@ export function useTimerCard(timerCardId: string) {
       setRunningTimer(runningTimer);
     };
 
-    TimerCard.on("timer_data", updateTimerCardData);
-    TimerCard.on("running_timer", updateRunningTimer);
+    TimerCard.on('timer_data', updateTimerCardData);
+    TimerCard.on('running_timer', updateRunningTimer);
 
-    TimerCard.emit("new_connection");
+    TimerCard.emit('new_connection');
     return () => {
-      TimerCard.off("timer_data", updateTimerCardData);
-      TimerCard.off("running_timer", updateRunningTimer);
+      TimerCard.off('timer_data', updateTimerCardData);
+      TimerCard.off('running_timer', updateRunningTimer);
     };
   }, [TimerCard]);
 

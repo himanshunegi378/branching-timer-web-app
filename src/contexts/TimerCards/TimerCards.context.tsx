@@ -1,9 +1,9 @@
-import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
-import { TimerCardLocalStorage } from "../../lib/timerCardStorage/TimerCardLocalStorage";
-import { TimerCardServerStorage } from "../../lib/timerCardStorage/TimerCardServerStorage";
-import { TimerCardLocalStorageFactory } from "../../lib/timerCardStorageFactory/TimerCardLocalStorageFactory";
-import { timerCardIDsStorage } from "./storage";
-import { TimerCard } from "./TimerCard";
+import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import { TimerCardLocalStorage } from '../../lib/timerCardStorage/TimerCardLocalStorage';
+// import { TimerCardServerStorage } from "../../lib/timerCardStorage/TimerCardServerStorage";
+// import { TimerCardLocalStorageFactory } from "../../lib/timerCardStorageFactory/TimerCardLocalStorageFactory";
+import { timerCardIDsStorage } from './storage';
+import { TimerCard } from './TimerCard';
 export const TimeCardsContext = React.createContext<{
   Timercards: Record<string, TimerCard>;
   actions: any;
@@ -51,9 +51,9 @@ export function TimerCardsProvider(props: PropsWithChildren<{}>) {
         TimerCardsRef.current[id].save();
       });
     };
-    window.addEventListener("beforeunload", onPageClose);
+    window.addEventListener('beforeunload', onPageClose);
     return () => {
-      window.removeEventListener("beforeunload", onPageClose);
+      window.removeEventListener('beforeunload', onPageClose);
     };
   }, [timerCardsId]);
 

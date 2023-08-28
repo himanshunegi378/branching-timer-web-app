@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren } from 'react';
 
 type MenuItemProps = {
   onClick: () => void;
@@ -10,7 +10,7 @@ export const MenuItem = ({
 }: PropsWithChildren<MenuItemProps>) => {
   return (
     <button
-      className="w-full py-2 px-4 text-left text-gray-700 hover:bg-gray-100"
+      className='w-full py-2 px-4 text-left text-gray-700 hover:bg-gray-100'
       onClick={onClick}
     >
       {children}

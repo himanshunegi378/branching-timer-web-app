@@ -1,6 +1,6 @@
-import { TimerCard } from "../../contexts/TimerCards/TimerCards.types";
-import { localStorage } from "../../utils/localStorage";
-import { ITimerCardStorage } from "./ITimerCardStotrage";
+import { TimerCard } from '../../contexts/TimerCards/TimerCards.types';
+import { localStorage } from '../../utils/localStorage';
+import { ITimerCardStorage } from './ITimerCardStotrage';
 
 export class TimerCardLocalStorage implements ITimerCardStorage {
   save = async (timerCardData: TimerCard) => {

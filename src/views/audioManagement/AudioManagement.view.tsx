@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
-import { useFilePicker } from "use-file-picker";
-import { v4 } from "uuid";
-import { AudioItem } from "./components/AudioItem";
+import { useEffect, useState } from 'react';
+import { useFilePicker } from 'use-file-picker';
+import { v4 } from 'uuid';
+import { AudioItem } from './components/AudioItem';
 
 export function AudioManagementView() {
   const [openAudioSelector, { plainFiles: files, loading }] = useFilePicker({
-    accept: "audio/*",
+    accept: 'audio/*',
   });
   const [audioFiles, setAudioFiles] = useState<
     {
@@ -24,10 +24,10 @@ export function AudioManagementView() {
     <div>
       <div>
         <button
-          className="border-2 border-gray-500 rounded-lg p-2"
+          className='border-2 border-gray-500 rounded-lg p-2'
           onClick={openAudioSelector}
         >
-          {loading ? "Loading..." : "Select Audio"}
+          {loading ? 'Loading...' : 'Select Audio'}
         </button>
       </div>
       <div>

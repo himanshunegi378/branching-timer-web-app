@@ -1,3 +1,3 @@
-import { storageApi } from "./storage";
+import { storageApi } from './storage';
 
 export { storageApi as timerCardStorageApi };

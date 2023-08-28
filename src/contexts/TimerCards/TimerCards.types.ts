@@ -22,7 +22,7 @@ export type TimerCard = {
   id: string;
   timerGroup: TimerGroup;
   looping: Boolean;
-  status: "playing" | "paused" | "stopped";
+  status: 'playing' | 'paused' | 'stopped';
   currentTimer?: { id: string; remainingTime: number; totalTime: number };
 };
 
@@ -30,19 +30,19 @@ export type TimerCard = {
  * Timercard reducer relate types
  */
 export type ActionType =
-  | "INIT"
-  | "SETUP_EMPTY_TIMER"
-  | "ADD_TIMER"
-  | "REMOVE_TIMER"
-  | "EDIT_TIMER"
-  | "ATTACH_AUDIO"
-  | "PAUSE"
-  | "PLAY"
-  | "STOP"
-  | "TIMER_FINISHED"
-  | "TOGGLE_LOOP"
-  | "RENAME_TIMERCARD"
-  | "REMOVE_TIMERCARD";
+  | 'INIT'
+  | 'SETUP_EMPTY_TIMER'
+  | 'ADD_TIMER'
+  | 'REMOVE_TIMER'
+  | 'EDIT_TIMER'
+  | 'ATTACH_AUDIO'
+  | 'PAUSE'
+  | 'PLAY'
+  | 'STOP'
+  | 'TIMER_FINISHED'
+  | 'TOGGLE_LOOP'
+  | 'RENAME_TIMERCARD'
+  | 'REMOVE_TIMERCARD';
 
 export type Action = {
   type: ActionType;

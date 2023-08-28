@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from "react";
-import style from "./style.module.scss";
+import React, { useEffect, useState } from 'react';
 
-import { useEndTime, useTimerCard } from "../../contexts/TimerCards";
-import { PlayButton } from "../molecules/PlayButton/PlayButton.component";
-import StopButton from "../molecules/StopButton/StopButton.component";
-import LoopButton from "../molecules/LoopButton/LoopButton.component";
-import { CloseButton } from "../molecules/CloseButton/CloseButton.component";
-import { Timer } from "../organisms/Timer/Timer.component";
-import { Button } from "../atoms/Button/Button.atom";
+import { useEndTime, useTimerCard } from '../../contexts/TimerCards';
+import { PlayButton } from '../molecules/PlayButton/PlayButton.component';
+import StopButton from '../molecules/StopButton/StopButton.component';
+import LoopButton from '../molecules/LoopButton/LoopButton.component';
+import { CloseButton } from '../molecules/CloseButton/CloseButton.component';
+import { Timer } from '../organisms/Timer/Timer.component';
+import { Button } from '../atoms/Button/Button.atom';
 
 export default function TimerCard(props) {
   const { onDelete, timerCardId, className } = props;
@@ -24,11 +23,13 @@ export default function TimerCard(props) {
 
   if (!timerCardData) return <div></div>;
   return (
-    <div className={`bg-white rounded-lg flex flex-col overflow-auto p-4 elevation-2 w-64 ${className}`}>
-      <div className="flex justify-between align-items-center">
-        <div className="text-center font-medium cursor-pointer fancy-scrollbar mr-2 w-full min-w-0">
+    <div
+      className={`bg-white rounded-lg flex flex-col overflow-auto p-4 elevation-2 w-64 ${className}`}
+    >
+      <div className='flex justify-between align-items-center'>
+        <div className='text-center font-medium cursor-pointer fancy-scrollbar mr-2 w-full min-w-0'>
           <div
-            className="whitespace-nowrap overflow-hidden overflow-ellipsis w-full text-left"
+            className='whitespace-nowrap overflow-hidden overflow-ellipsis w-full text-left'
             onClick={() => setEditTitle(true)}
           >
             {editTitle ? (
@@ -52,8 +53,8 @@ export default function TimerCard(props) {
               >
                 <input
                   autoFocus
-                  type="text"
-                  name="title"
+                  type='text'
+                  name='title'
                   defaultValue={timerCardData.timerGroup.name}
                 />
               </form>
@@ -64,21 +65,21 @@ export default function TimerCard(props) {
         </div>
         <CloseButton onClick={() => onDelete(timerCardId)} />
       </div>
-      <div className="flex flex-col min-h-0">
-        <div className="text-7xl font-mono tracking-tighter font-medium text-center select-none ">
+      <div className='flex flex-col min-h-0'>
+        <div className='text-7xl font-mono tracking-tighter font-medium text-center select-none '>
           {parseInt(runningTimer.remainingTime / 60) <= 9
-            ? "0" + parseInt(runningTimer.remainingTime / 60)
+            ? '0' + parseInt(runningTimer.remainingTime / 60)
             : parseInt(runningTimer.remainingTime / 60)}
           :
           {runningTimer.remainingTime % 60 <= 9
-            ? "0" + (runningTimer.remainingTime % 60)
+            ? '0' + (runningTimer.remainingTime % 60)
             : runningTimer.remainingTime % 60}
         </div>
         <hr />
-        <div className="flex mt-2">
-          <div className=" mx-2 h-8 w-auto my-1">
+        <div className='flex mt-2'>
+          <div className=' mx-2 h-8 w-auto my-1'>
             <PlayButton
-              isPlaying={timerCardData?.status === "playing"}
+              isPlaying={timerCardData?.status === 'playing'}
               onChange={(state) => {
                 if (state) {
                   actions.playCard();
@@ -89,12 +90,12 @@ export default function TimerCard(props) {
             />
           </div>
           <StopButton
-            isStopped={timerCardData?.status === "stopped"}
+            isStopped={timerCardData?.status === 'stopped'}
             onChange={(isStopped) => {
               if (isStopped) actions.stopCard();
             }}
           />
-          <div className="px-0 user-select-none ml-auto">
+          <div className='px-0 user-select-none ml-auto'>
             <LoopButton
               looping={timerCardData?.looping}
               onChange={() => {
@@ -103,7 +104,7 @@ export default function TimerCard(props) {
             />
           </div>
         </div>
-        <div className="overflow-auto fancy-scrollbar px-1 flex-1">
+        <div className='overflow-auto fancy-scrollbar px-1 flex-1'>
           {timerCardData?.timerGroup?.timers.map((timer) => {
             if (!timer) return null;
             return (
@@ -130,13 +131,13 @@ export default function TimerCard(props) {
             );
           })}
         </div>
-        <div className="flex justify-center mt-4">
+        <div className='flex justify-center mt-4'>
           <Button
-            size="md"
-            variant="outline"
-            color="primary"
+            size='md'
+            variant='outline'
+            color='primary'
             onClick={() => {
-              actions.addTimer({ name: "unnamed", time: 60 });
+              actions.addTimer({ name: 'unnamed', time: 60 });
             }}
           >
             Add

@@ -1,5 +1,5 @@
-import { useTimerCard } from "../contexts/TimerCards";
-import { TimerCard } from "../contexts/TimerCards/TimerCards.types";
+import { useTimerCard } from '../contexts/TimerCards';
+import { TimerCard } from '../contexts/TimerCards/TimerCards.types';
 
 export const TimerCardData = ({
   id,

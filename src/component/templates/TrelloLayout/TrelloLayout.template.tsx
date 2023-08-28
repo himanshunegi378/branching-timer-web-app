@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren } from 'react';
 
 export const TrelloLayout = ({
   children,
@@ -6,5 +6,3 @@ export const TrelloLayout = ({
 }: PropsWithChildren<{ className: string }>) => {
   return <div className={`flex gap-8 h-full ${className}`}>{children}</div>;
 };
-
-

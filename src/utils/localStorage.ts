@@ -1,17 +1,17 @@
-import localforage from "localforage"
-localforage.setDriver([localforage.INDEXEDDB, localforage.LOCALSTORAGE])
+import localforage from 'localforage';
+localforage.setDriver([localforage.INDEXEDDB, localforage.LOCALSTORAGE]);
 const getItem = async <T>(key: string): Promise<T | null> => {
-    return localforage.getItem(key)
-}
+  return localforage.getItem(key);
+};
 
 const setItem = (key: string, data: { [key: string]: any }) => {
-    return localforage.setItem(key, data)
-}
+  return localforage.setItem(key, data);
+};
 
 const removeItem = (key: string) => {
-    return localforage.removeItem(key)
-}
+  return localforage.removeItem(key);
+};
 
-const ls = { getItem, setItem, removeItem }
+const ls = { getItem, setItem, removeItem };
 
-export { ls as localStorage }
+export { ls as localStorage };

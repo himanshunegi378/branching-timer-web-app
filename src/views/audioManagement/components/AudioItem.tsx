@@ -1,11 +1,11 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlay,
   faPause,
   faClose,
   faStop,
-} from "@fortawesome/free-solid-svg-icons";
-import { useEffect, useRef, useState } from "react";
+} from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useRef, useState } from 'react';
 
 type AudioItemProps = {
   audioFile: File;
@@ -35,8 +35,8 @@ export function AudioItem({ audioFile, onRemove }: AudioItemProps) {
 
   return (
     <>
-      <div className="flex justify-start p-2">
-        <div className="flex items-center mr-2">
+      <div className='flex justify-start p-2'>
+        <div className='flex items-center mr-2'>
           <button
             // className="border-2 border-gray-500 rounded-lg p-2"
             onClick={() => setPlaying(!playing)}
@@ -49,7 +49,7 @@ export function AudioItem({ audioFile, onRemove }: AudioItemProps) {
           </button>
         </div>
         {playing && (
-          <div className="mr-2">
+          <div className='mr-2'>
             <button
               onClick={() => {
                 setPlaying(false);
@@ -64,7 +64,7 @@ export function AudioItem({ audioFile, onRemove }: AudioItemProps) {
           </div>
         )}
         <div>{audioFile.name}</div>
-        <div className="ml-2">
+        <div className='ml-2'>
           <button
             // className="border-2 border-gray-500 rounded-lg p-2"
             onClick={() => onRemove(audioFile)}
@@ -73,7 +73,7 @@ export function AudioItem({ audioFile, onRemove }: AudioItemProps) {
           </button>
         </div>
       </div>
-      <audio className="hidden" ref={audioRef} controls autoPlay={false} />
+      <audio className='hidden' ref={audioRef} controls autoPlay={false} />
     </>
   );
 }

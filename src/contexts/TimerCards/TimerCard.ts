@@ -1,15 +1,15 @@
-import EventEmitter from "events";
-import produce from "immer";
-import { v4 } from "uuid";
-import CountdownTimer from "../../lib/countdownTimer";
-import { SoundPlayer } from "../../lib/soundPlayer/SoundPlayer";
-import showNotification from "../../utils/notification";
-import { Timer, TimerCard as TimerCardType } from "./TimerCards.types";
+import EventEmitter from 'events';
+import produce from 'immer';
+import { v4 } from 'uuid';
+import CountdownTimer from '../../lib/countdownTimer';
+import { SoundPlayer } from '../../lib/soundPlayer/SoundPlayer';
+import showNotification from '../../utils/notification';
+import { Timer, TimerCard as TimerCardType } from './TimerCards.types';
 //@ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import defaultSound from "./alarm.mp3";
-import { audioStorage } from "../../lib/audio-storage/AudioStorage";
-import { ITimerCardStorage } from "../../lib/timerCardStorage/ITimerCardStotrage";
+import defaultSound from './alarm.mp3';
+import { audioStorage } from '../../lib/audio-storage/AudioStorage';
+import { ITimerCardStorage } from '../../lib/timerCardStorage/ITimerCardStotrage';
 
 type runningTimerType = {
   id: string;
@@ -28,26 +28,26 @@ export class TimerCard extends EventEmitter {
     this.timerCardId = timerCardId;
     this.timerCardData = {
       id: this.timerCardId,
-      timerGroup: { id: v4(), name: "unnamed", timers: [] },
+      timerGroup: { id: v4(), name: 'unnamed', timers: [] },
       looping: false,
-      status: "stopped",
+      status: 'stopped',
       currentTimer: undefined,
     };
     this.load();
     this.audioPlayer = new SoundPlayer();
     this.runningTimer = {
-      id: "",
+      id: '',
       remainingTime: 0,
     };
     this.countDownTimer = new CountdownTimer();
-    this.on("new_connection", () => {
+    this.on('new_connection', () => {
       this.emitTimerCardData();
       this.emitRunningTimer();
     });
-    this.on("_play", () => {
+    this.on('_play', () => {
       this.playCard();
     });
-    this.on("_stop", () => {
+    this.on('_stop', () => {
       this.stopCard();
     });
   }
@@ -62,11 +62,11 @@ export class TimerCard extends EventEmitter {
 
   //will be ivoked on anychange to timercardata
   private emitTimerCardData() {
-    this.emit("timer_data", this.timerCardData);
+    this.emit('timer_data', this.timerCardData);
   }
   //will be invoked on any change to runningTimer data
   private emitRunningTimer() {
-    this.emit("running_timer", { ...this.runningTimer });
+    this.emit('running_timer', { ...this.runningTimer });
   }
 
   private updateCardData(cb: (draftTimerCard: TimerCardType) => void) {
@@ -88,7 +88,7 @@ export class TimerCard extends EventEmitter {
       this.audioPlayer.play(URL.createObjectURL(audioBlob));
     } else {
       // if speech syntesis is available use that else use default sound
-      if ("speechSynthesis" in window) {
+      if ('speechSynthesis' in window) {
         speechSynthesis.speak(
           new SpeechSynthesisUtterance(
             `${timerData?.name} timer. finished playing`
@@ -100,7 +100,7 @@ export class TimerCard extends EventEmitter {
     }
   }
 
-  addTimer(timerData: Omit<Timer, "id" | "options">) {
+  addTimer(timerData: Omit<Timer, 'id' | 'options'>) {
     const { name, time } = timerData;
     this.updateCardData((draftTimerCardData) => {
       draftTimerCardData.timerGroup.timers.push({
@@ -127,7 +127,7 @@ export class TimerCard extends EventEmitter {
     });
   }
 
-  editTimer(timerId: string, options: Omit<Timer, "id" | "options">) {
+  editTimer(timerId: string, options: Omit<Timer, 'id' | 'options'>) {
     this.updateCardData((draftCardData) => {
       const timers = draftCardData.timerGroup.timers.map((timer) => {
         if (timer.id !== timerId) return timer;
@@ -196,7 +196,7 @@ export class TimerCard extends EventEmitter {
             totalTime: nextTimer.time,
           };
         });
-        this.emit("_play");
+        this.emit('_play');
       } else {
         //--if loop is on get the first one else stop timer card
         if (this.timerCardData.looping) {
@@ -208,9 +208,9 @@ export class TimerCard extends EventEmitter {
               totalTime: nextTimer.time,
             };
           });
-          this.emit("_play");
+          this.emit('_play');
         } else {
-          this.emit("_stop");
+          this.emit('_stop');
         }
       }
     } catch (e) {
@@ -221,16 +221,16 @@ export class TimerCard extends EventEmitter {
   playCard = () => {
     if (this.timerCardData.currentTimer) {
       this.updateCardData((draft) => {
-        draft.status = "playing";
+        draft.status = 'playing';
       });
       this.runningTimer.id = this.timerCardData.currentTimer.id;
       this.runningTimer.remainingTime =
         this.timerCardData.currentTimer!.remainingTime;
       this.emitRunningTimer();
-      this.countDownTimer.off("tick");
-      this.countDownTimer.off("finished");
-      this.countDownTimer.on("tick", this.onTimerTick);
-      this.countDownTimer.on("finished", this.onTimerFinished);
+      this.countDownTimer.off('tick');
+      this.countDownTimer.off('finished');
+      this.countDownTimer.on('tick', this.onTimerTick);
+      this.countDownTimer.on('finished', this.onTimerFinished);
       this.countDownTimer.play(this.timerCardData.currentTimer!.remainingTime);
     } else {
       const firstTimer = this.timerCardData.timerGroup.timers[0];
@@ -241,16 +241,16 @@ export class TimerCard extends EventEmitter {
             remainingTime: firstTimer.time,
             totalTime: firstTimer.time,
           };
-          draft.status = "playing";
+          draft.status = 'playing';
         });
         this.runningTimer.id = this.timerCardData.currentTimer!.id;
         this.runningTimer.remainingTime =
           this.timerCardData.currentTimer!.remainingTime;
         this.emitRunningTimer();
-        this.countDownTimer.off("tick");
-        this.countDownTimer.off("finished");
-        this.countDownTimer.on("tick", this.onTimerTick);
-        this.countDownTimer.on("finished", this.onTimerFinished);
+        this.countDownTimer.off('tick');
+        this.countDownTimer.off('finished');
+        this.countDownTimer.on('tick', this.onTimerTick);
+        this.countDownTimer.on('finished', this.onTimerFinished);
         this.countDownTimer.play(
           this.timerCardData.currentTimer!.remainingTime
         );
@@ -261,7 +261,7 @@ export class TimerCard extends EventEmitter {
   pauseCard = () => {
     this.countDownTimer.stop();
     this.updateCardData((draftCardData) => {
-      draftCardData.status = "paused";
+      draftCardData.status = 'paused';
       draftCardData.currentTimer!.remainingTime =
         this.runningTimer.remainingTime;
     });
@@ -269,9 +269,9 @@ export class TimerCard extends EventEmitter {
 
   stopCard = () => {
     this.countDownTimer.stop();
-    this.runningTimer = { id: "", remainingTime: 0 };
+    this.runningTimer = { id: '', remainingTime: 0 };
     this.updateCardData((draftCardData) => {
-      draftCardData.status = "stopped";
+      draftCardData.status = 'stopped';
       draftCardData.currentTimer = undefined;
     });
     this.emitRunningTimer();
@@ -279,8 +279,8 @@ export class TimerCard extends EventEmitter {
 
   async onTimerCardDelete() {
     this.countDownTimer.stop();
-    this.countDownTimer.off("tick");
-    this.countDownTimer.off("finished");
+    this.countDownTimer.off('tick');
+    this.countDownTimer.off('finished');
     await this.deleteStorageData();
     this.removeAllListeners();
   }
@@ -288,8 +288,8 @@ export class TimerCard extends EventEmitter {
     const timerCardData: TimerCardType = JSON.parse(
       JSON.stringify(this.timerCardData)
     );
-    if (timerCardData.status === "playing") {
-      timerCardData.status = "paused";
+    if (timerCardData.status === 'playing') {
+      timerCardData.status = 'paused';
       timerCardData.currentTimer!.remainingTime =
         this.runningTimer.remainingTime;
     }
