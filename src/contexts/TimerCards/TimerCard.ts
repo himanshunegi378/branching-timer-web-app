@@ -4,12 +4,16 @@ import { v4 } from 'uuid';
 import CountdownTimer from '../../lib/countdownTimer';
 import { SoundPlayer } from '../../lib/soundPlayer/SoundPlayer';
 import showNotification from '../../utils/notification';
-import { Timer, TimerCard as TimerCardType } from './TimerCards.types';
+import {
+  Timer as TimerType,
+  TimerCard as TimerCardType,
+} from './TimerCards.types';
 //@ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import defaultSound from './alarm.mp3';
 import { audioStorage } from '../../lib/audio-storage/AudioStorage';
 import { ITimerCardStorage } from '../../lib/timerCardStorage/ITimerCardStotrage';
+import Timer from './Timer';
 
 type runningTimerType = {
   id: string;
@@ -56,6 +60,10 @@ export class TimerCard extends EventEmitter {
     this.storage = v;
   }
 
+  get timer() {
+    return new Timer(this);
+  }
+
   public getTimerData() {
     return this.timerCardData;
   }
@@ -69,7 +77,7 @@ export class TimerCard extends EventEmitter {
     this.emit('running_timer', { ...this.runningTimer });
   }
 
-  private updateCardData(cb: (draftTimerCard: TimerCardType) => void) {
+  public updateCardData(cb: (draftTimerCard: TimerCardType) => void) {
     this.timerCardData = produce(this.timerCardData, cb);
     this.emitTimerCardData();
     this.save();
@@ -100,7 +108,7 @@ export class TimerCard extends EventEmitter {
     }
   }
 
-  addTimer(timerData: Omit<Timer, 'id' | 'options'>) {
+  addTimer(timerData: Omit<TimerType, 'id' | 'options'>) {
     const { name, time } = timerData;
     this.updateCardData((draftTimerCardData) => {
       draftTimerCardData.timerGroup.timers.push({
@@ -108,6 +116,7 @@ export class TimerCard extends EventEmitter {
         name: name,
         time: time,
         options: {},
+        tasks: { data: {}, order: [] },
       });
     });
   }
@@ -127,7 +136,7 @@ export class TimerCard extends EventEmitter {
     });
   }
 
-  editTimer(timerId: string, options: Omit<Timer, 'id' | 'options'>) {
+  editTimer(timerId: string, options: Partial<Omit<TimerType, 'id' | 'options'>>) {
     this.updateCardData((draftCardData) => {
       const timers = draftCardData.timerGroup.timers.map((timer) => {
         if (timer.id !== timerId) return timer;

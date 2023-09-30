@@ -1,13 +1,13 @@
 import { useTimerCard } from '../contexts/TimerCards';
-import { TimerCard } from '../contexts/TimerCards/TimerCards.types';
+import { UseTimerCard } from '../contexts/TimerCards/hooks/useTimerCard';
 
 export const TimerCardData = ({
   id,
   render,
 }: {
   id: string;
-  render: (data?: TimerCard) => JSX.Element;
+  render: (useTimerCard: UseTimerCard) => JSX.Element;
 }) => {
-  const { timerCardData } = useTimerCard(id);
-  return render(timerCardData);
+  const timerCard = useTimerCard(id);
+  return render(timerCard);
 };

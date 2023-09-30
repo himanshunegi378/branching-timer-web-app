@@ -47,3 +47,5 @@ export function useTimerCard(timerCardId: string) {
 
   return { timerCardData, runningTimer, actions: TimerCard };
 }
+
+export type UseTimerCard = ReturnType<typeof useTimerCard>;

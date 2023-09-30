@@ -8,8 +8,8 @@ function PlayButton(props: PlayButtonProps) {
     <div
       test-id='playButton'
       className='cursor-pointer'
-      onClick={() => {
-        onChange(!isPlaying);
+      onClick={(e) => {
+        onChange(!isPlaying, e);
       }}
     >
       {isPlaying ? (

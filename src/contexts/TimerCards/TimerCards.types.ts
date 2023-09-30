@@ -9,7 +9,10 @@ export type Timer = {
   name: string;
   time: number;
   options: { audioId?: string };
-  tasks?: { [id: string]: Task };
+  tasks: { 
+    data: { [key: string]: Task };
+    order: string[];
+   };
 };
 
 export type TimerGroup = {

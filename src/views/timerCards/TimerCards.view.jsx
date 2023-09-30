@@ -9,6 +9,8 @@ import {
 } from '../../component/templates/TrelloLayout';
 import { TimerCardTasks } from '../../component/templates/TimerCardTasks';
 import { TimerCardData } from '../../HOC/TimerCardData';
+import TimerCard from '../../component/timerCard/TimerCard';
+import Modal from '../../component/atoms/Modal';
 console.log('hello');
 export function TimerCards(props) {
   const { allTimerCardsId, createTimerCard, deleteTimerCard } =
@@ -16,25 +18,26 @@ export function TimerCards(props) {
 
   return (
     <div>
+
       <section className='h-screen p-4'>
         <TrelloLayout>
           {allTimerCardsId.map((timerCardId) => {
             return (
               <TrelloItem key={timerCardId}>
-                <TimerCardData
+                {/* <TimerCardData
                   id={timerCardId}
                   render={(timerCardData) => {
                     if (!timerCardData) return null;
                     return <TimerCardTasks timerCardData={timerCardData} />;
                   }}
-                />
-                {/* <TimerCard
+                /> */}
+                <TimerCard
                   // className={style.item}
                   timerCardId={timerCardId}
                   onDelete={(id) => {
                     deleteTimerCard(id);
                   }}
-                /> */}
+                />
               </TrelloItem>
             );
           })}
@@ -49,6 +52,7 @@ export function TimerCards(props) {
             </Button>
           </TrelloItem>
         </TrelloLayout>
+
       </section>
       <div className='bg-gray-100'>
         <div class='container mx-auto px-4 py-8'>

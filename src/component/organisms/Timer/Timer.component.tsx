@@ -1,40 +1,55 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { TimerProps } from './Timer.types';
 import style from './style.module.scss';
 import { CloseButton } from '../../molecules/CloseButton/CloseButton.component';
+import toSeconds from '../../../utils/toSeconds';
 // import { TripleDashMenu } from "../../atoms/TripleDashMenu";
 // import { Menu, MenuItem } from "../../molecules/Menu";
+
+const numberRegex = /^\d+$/;
 
 export const Timer = (props: TimerProps) => {
   const { onNameChange, onTimeChange, onDelete, id, name, time, active } =
     props;
 
-  const [mins, setMins] = useState(0);
-  const [secs, setSecs] = useState(0);
   const [editTitle, setEditTitle] = useState(() => false);
   // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  useEffect(() => {
-    if (!time) return;
-    const minutes = time / 60;
-    const seconds = time % 60;
-    setMins(minutes);
-    setSecs(seconds);
+
+  const [mins, secs] = useMemo(() => {
+    if (!time) return [0, 0];
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return [minutes, seconds];
   }, [time]);
+
+  const handleTimeChange = ({
+    minutes,
+    seconds,
+  }: {
+    minutes: number;
+    seconds: number;
+  }) => {
+    const inSeconds = toSeconds({ minutes, seconds });
+    // console.log(`inSeconds: ${inSeconds}`);
+    onTimeChange(inSeconds);
+  };
 
   return (
     <div
+      onClick={(e) => e.stopPropagation()}
       id={props.id}
+      data-timerId={props.id}
       // className="my-1 px-2 pt-2 border rounded-lg border-gray-300"
-      className={`my-1 rounded-lg ${style.timer} ${
-        active ? style.timer__active : ''
-      }`}
+      className={`my-4 shadow-md hover:shadow-lg transition-shadow duration-200 rounded-lg ${
+        style.timer
+      } ${active ? style.timer__active : ''}`}
     >
       <div
-        className={`${style.title} w-full rounded-t-lg  border border-b-0 border-gray-300 px-1 `}
+        className={`${style.title} w-full rounded-t-lg bg-gradient-to-r from-blue-500 to-blue-400 p-2 py-1 border border-b-0 border-blue-300`}
       >
         <div className={` flex flex-row justify-between items-center gap-1`}>
           <div
-            className='whitespace-nowrap overflow-hidden overflow-ellipsis w-full'
+            className='text-lg font-bold whitespace-nowrap overflow-hidden overflow-ellipsis w-full transition-all duration-200 hover:underline cursor-pointer'
             onClick={() => setEditTitle(true)}
           >
             {editTitle ? (
@@ -57,6 +72,7 @@ export const Timer = (props: TimerProps) => {
                   type='text'
                   defaultValue={name}
                   name='title'
+                  className='rounded-md bg-transparent outline-none p-0'
                 />
               </form>
             ) : (
@@ -77,46 +93,38 @@ export const Timer = (props: TimerProps) => {
         </div>
       </div>
 
-      <div className='border border-t-0 rounded-b-lg  border-gray-300'>
-        {/* <div className={messageBgColor}>{TimerDetail.message}</div> */}
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
-            const minutes = parseInt(event.currentTarget.mins.value);
-            const seconds = parseInt(event.currentTarget.secs.value);
-            let time = 0;
-            if (minutes) time += minutes * 60;
-            if (seconds) time += seconds;
-            onTimeChange(time);
+      <div className='text-center py-2 flex justify-center items-center'>
+        <input
+          name='mins'
+          className='text-center w-12 border-0 border-b-2 focus:ring-0 focus:border-blue-500'
+          type='number'
+          placeholder='MM'
+          onChange={(e) => {
+            let rawMinutes = e.target.value;
+            if (!numberRegex.test(rawMinutes)) {
+              rawMinutes = '0';
+            }
+            const minutes = parseInt(rawMinutes);
+            handleTimeChange({ minutes, seconds: secs });
           }}
-          onBlur={(event) => {
-            const minutes = parseInt(event.currentTarget.mins.value);
-            const seconds = parseInt(event.currentTarget.secs.value);
-            let time = 0;
-            if (minutes) time += minutes * 60;
-            if (seconds) time += seconds;
-            onTimeChange(time);
+          value={mins}
+        />
+        <span className='mx-2 text-lg font-medium'>:</span>
+        <input
+          name='secs'
+          className='text-center w-12 border-0 border-b-2 focus:ring-0 focus:border-blue-500'
+          type='number'
+          placeholder='SS'
+          onChange={(e) => {
+            let rawSeconds = e.target.value;
+            if (!numberRegex.test(rawSeconds)) {
+              rawSeconds = '0';
+            }
+            const seconds = parseInt(rawSeconds);
+            handleTimeChange({ minutes: mins, seconds });
           }}
-          className='text-center py-2'
-        >
-          <input
-            name='mins'
-            style={{ width: '3em' }}
-            type='number'
-            placeholder='m'
-            onChange={(e) => setMins(parseInt(e.target.value))}
-            value={mins}
-          />
-          <span className='mx-1'>:</span>
-          <input
-            name='secs'
-            style={{ width: '3em' }}
-            type='number'
-            placeholder='s'
-            onChange={(e) => setSecs(parseInt(e.target.value))}
-            value={secs}
-          />
-        </form>
+          value={secs}
+        />
       </div>
     </div>
   );

@@ -7,7 +7,7 @@ function StopButton(props: StopButtonProps) {
     <div
       test-id='stopButton'
       className='cursor-pointer'
-      onClick={() => onChange(!isStopped)}
+      onClick={(e) => onChange(!isStopped, e)}
     >
       {isStopped ? (
         <div className='mx-2 h-auto my-1' style={{ width: '2rem' }}>

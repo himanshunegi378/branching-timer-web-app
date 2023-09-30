@@ -6,8 +6,8 @@ function LoopButton(props: LoopButtonProps) {
   return (
     <div
       className='cursor-pointer'
-      onClick={() => {
-        onChange(!looping);
+      onClick={(e) => {
+        onChange(!looping, e);
       }}
     >
       {looping ? (
