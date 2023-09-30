@@ -12,58 +12,62 @@ import { TimerCardData } from '../../HOC/TimerCardData';
 import { TrelloItem } from '../templates/TrelloLayout';
 import { TimerCardTasks } from '../templates/TimerCardTasks';
 import useTimer from '../hooks/useTimer';
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion';
 
 const TimerTitle = ({ currentName, onRename, onDelete }) => {
   const [editTitle, setEditTitle] = useState(false);
 
-  return <div
-    onClick={e => e.stopPropagation()}
-    className='flex justify-between items-center bg-blue-100 p-2 rounded-t-lg'>
-    <div className='text-center font-medium cursor-pointer fancy-scrollbar mr-2 w-full min-w-0'>
-      <div
-        className='whitespace-nowrap overflow-hidden overflow-ellipsis w-full text-left hover:underline cursor-pointer'
-        onClick={() => setEditTitle(true)}
-      >
-        {editTitle ? (
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              const title = event.currentTarget.title.value;
-              if (title) {
-                onRename(title)
-              }
-              setEditTitle(false);
-            }}
-            onBlur={(event) => {
-              event.preventDefault();
-              const title = event.currentTarget.title.value;
-              if (title) {
-                onRename(title)
-              }
-              setEditTitle(false);
-            }}
-          >
-            <input
-              autoFocus
-              type='text'
-              name='title'
-              defaultValue={currentName}
-              className='bg-blue-100 rounded outline-none p-0 m-0 w-full'
-            />
-          </form>
-        ) : (
-          currentName
-        )}
+  return (
+    <div
+      onClick={(e) => e.stopPropagation()}
+      className='flex justify-between items-center bg-blue-100 p-2 rounded-t-lg'
+    >
+      <div className='text-center font-medium cursor-pointer fancy-scrollbar mr-2 w-full min-w-0'>
+        <div
+          className='whitespace-nowrap overflow-hidden overflow-ellipsis w-full text-left hover:underline cursor-pointer'
+          onClick={() => setEditTitle(true)}
+        >
+          {editTitle ? (
+            <form
+              onSubmit={(event) => {
+                event.preventDefault();
+                const title = event.currentTarget.title.value;
+                if (title) {
+                  onRename(title);
+                }
+                setEditTitle(false);
+              }}
+              onBlur={(event) => {
+                event.preventDefault();
+                const title = event.currentTarget.title.value;
+                if (title) {
+                  onRename(title);
+                }
+                setEditTitle(false);
+              }}
+            >
+              <input
+                autoFocus
+                type='text'
+                name='title'
+                defaultValue={currentName}
+                className='bg-blue-100 rounded outline-none p-0 m-0 w-full'
+              />
+            </form>
+          ) : (
+            currentName
+          )}
+        </div>
       </div>
+      <CloseButton
+        onClick={(e) => {
+          e.stopPropagation();
+          onDelete();
+        }}
+      />
     </div>
-    <CloseButton onClick={(e) => {
-      e.stopPropagation();
-      onDelete()
-    }} />
-  </div>
+  );
 };
-
 
 const numberVariants = {
   hidden: { opacity: 0, y: -20 },
@@ -83,9 +87,9 @@ const TimerDisplay = ({ remainingTime }) => {
       {paddedMinutes.split('').map((digit, idx) => (
         <AnimatePresence mode={'popLayout'} key={digit + idx}>
           <motion.span
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+            initial='hidden'
+            animate='visible'
+            exit='exit'
             variants={numberVariants}
             transition={{ duration: 0.3 }}
           >
@@ -97,9 +101,9 @@ const TimerDisplay = ({ remainingTime }) => {
       {paddedSeconds.split('').map((digit, idx) => (
         <AnimatePresence mode={'popLayout'} key={digit + idx}>
           <motion.span
-            initial="hidden"
-            animate="visible"
-            exit="exit"
+            initial='hidden'
+            animate='visible'
+            exit='exit'
             variants={numberVariants}
             transition={{ duration: 0.3 }}
           >
@@ -111,14 +115,21 @@ const TimerDisplay = ({ remainingTime }) => {
   );
 };
 
-const TimerControlButtons = ({ status, onPlay, onPause, onStop, looping, onToggleLoop }) => {
+const TimerControlButtons = ({
+  status,
+  onPlay,
+  onPause,
+  onStop,
+  looping,
+  onToggleLoop,
+}) => {
   return (
     <div className='flex mt-2'>
       <div className=' mx-2 h-8 w-auto my-1'>
         <PlayButton
           isPlaying={status === 'playing'}
           onChange={(state, e) => {
-            e.stopPropagation()
+            e.stopPropagation();
             if (state) {
               onPlay();
             } else {
@@ -158,14 +169,12 @@ const TimerList = ({ timers, timerProps }) => {
   );
 };
 
-
-
-
 export default function TimerCard(props) {
   const { onDelete, timerCardId, className } = props;
   const [editTitle, setEditTitle] = useState(() => false);
   const { timerCardData, runningTimer, actions } = useTimerCard(timerCardId);
-  const [shouldShowTimerTasksModal, setShouldShowTimerTasksModal] = useState(false)
+  const [shouldShowTimerTasksModal, setShouldShowTimerTasksModal] =
+    useState(false);
   const endTimes = useEndTime(timerCardId, 5);
   const timerProps = useTimer(timerCardId);
 
@@ -180,12 +189,14 @@ export default function TimerCard(props) {
   return (
     <>
       <div
-        className={`bg-white shadow-lg rounded-lg flex flex-col overflow-auto pb-2 w-72 ${className} border-blue-300 border`} onClick={() => {
-          setShouldShowTimerTasksModal(true)
+        className={`bg-white shadow-lg rounded-lg flex flex-col overflow-auto pb-2 w-72 ${className} border-blue-300 border`}
+        onClick={() => {
+          setShouldShowTimerTasksModal(true);
         }}
       >
-        <TimerTitle currentName={timerCardData.timerGroup.name}
-          onRename={newTitle => actions.renameTimerCard(newTitle)}
+        <TimerTitle
+          currentName={timerCardData.timerGroup.name}
+          onRename={(newTitle) => actions.renameTimerCard(newTitle)}
           onDelete={() => onDelete(timerCardId)}
         />
         <div className='flex flex-col min-h-0'>
@@ -199,7 +210,10 @@ export default function TimerCard(props) {
             looping={timerCardData?.looping}
             onToggleLoop={() => actions.toggleLoop()}
           />
-          <TimerList timers={timerCardData?.timerGroup?.timers} timerProps={timerProps} />
+          <TimerList
+            timers={timerCardData?.timerGroup?.timers}
+            timerProps={timerProps}
+          />
           <div className='flex justify-center mt-4'>
             <Button
               size='md'
@@ -214,27 +228,25 @@ export default function TimerCard(props) {
             </Button>
           </div>
         </div>
-
       </div>
       <Modal
         isOpen={shouldShowTimerTasksModal}
         onClose={() => {
-          setShouldShowTimerTasksModal(false)
+          setShouldShowTimerTasksModal(false);
         }}
       >
-        {() => <TrelloItem key={timerCardId}>
-          <TimerCardData
-            id={timerCardId}
-            render={(timerCardData) => {
-              if (!timerCardData) return null;
-              return <TimerCardTasks timerCard={timerCardData} />;
-            }}
-          />
-
-        </TrelloItem>}
+        {() => (
+          <TrelloItem key={timerCardId}>
+            <TimerCardData
+              id={timerCardId}
+              render={(timerCardData) => {
+                if (!timerCardData) return null;
+                return <TimerCardTasks timerCard={timerCardData} />;
+              }}
+            />
+          </TrelloItem>
+        )}
       </Modal>
     </>
   );
 }
-
-

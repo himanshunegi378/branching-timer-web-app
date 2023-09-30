@@ -9,15 +9,17 @@ import { SpeechProvider } from './contexts/Speech';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
-root.render( <React.StrictMode>
-  <SpeechProvider>
-    <TimerCardsProvider>
-      <Router>
-        <App />
-      </Router>
-    </TimerCardsProvider>
-  </SpeechProvider>
-</React.StrictMode>,);
+root.render(
+  <React.StrictMode>
+    <SpeechProvider>
+      <TimerCardsProvider>
+        <Router>
+          <App />
+        </Router>
+      </TimerCardsProvider>
+    </SpeechProvider>
+  </React.StrictMode>
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

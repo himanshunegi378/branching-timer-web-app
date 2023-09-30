@@ -18,7 +18,6 @@ export function TimerCards(props) {
 
   return (
     <div>
-
       <section className='h-screen p-4'>
         <TrelloLayout>
           {allTimerCardsId.map((timerCardId) => {
@@ -52,7 +51,6 @@ export function TimerCards(props) {
             </Button>
           </TrelloItem>
         </TrelloLayout>
-
       </section>
       <div className='bg-gray-100'>
         <div class='container mx-auto px-4 py-8'>

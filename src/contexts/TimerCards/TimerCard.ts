@@ -136,7 +136,10 @@ export class TimerCard extends EventEmitter {
     });
   }
 
-  editTimer(timerId: string, options: Partial<Omit<TimerType, 'id' | 'options'>>) {
+  editTimer(
+    timerId: string,
+    options: Partial<Omit<TimerType, 'id' | 'options'>>
+  ) {
     this.updateCardData((draftCardData) => {
       const timers = draftCardData.timerGroup.timers.map((timer) => {
         if (timer.id !== timerId) return timer;
