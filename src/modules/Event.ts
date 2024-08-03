@@ -7,7 +7,6 @@ export class Event {
     this.notifyListeners(event, ...args);
   }
 
-
   on(event: string, listener: ChangeListener): void {
     if (!this.listeners[event]) {
       this.listeners[event] = [];

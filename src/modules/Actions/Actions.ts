@@ -21,7 +21,7 @@ interface ActionQueue {
 class ActionNotFoundError extends Error {
   constructor(key: string) {
     super(`No action is registered under the key "${key}"`);
-    this.name = "ActionNotFoundError";
+    this.name = 'ActionNotFoundError';
   }
 }
 
@@ -35,10 +35,10 @@ class Actions {
     fn: ActionFn,
     metadata: Record<string, any> = {}
   ): void {
-    if (typeof fn === "function") {
+    if (typeof fn === 'function') {
       this.actions[key] = { fn, metadata };
     } else {
-      console.error("The second parameter must be a function");
+      console.error('The second parameter must be a function');
     }
   }
 
@@ -87,7 +87,7 @@ class Actions {
       .map(Number)
       .sort((a, b) => b - a);
     const topPriority = priorities[0];
-    if (typeof topPriority === "number") {
+    if (typeof topPriority === 'number') {
       const priorityQueue = actionQueue[topPriority];
       const queuedAction = priorityQueue.shift();
       if (!queuedAction) return;
@@ -114,6 +114,6 @@ export type ActionType = Actions;
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
-  __init__: ["actions"],
-  actions: ["type", Actions],
+  __init__: ['actions'],
+  actions: ['type', Actions],
 };
