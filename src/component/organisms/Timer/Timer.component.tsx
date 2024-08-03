@@ -3,6 +3,7 @@ import { TimerProps } from './Timer.types';
 import style from './style.module.scss';
 import { CloseButton } from '../../molecules/CloseButton/CloseButton.component';
 import toSeconds from '../../../utils/toSeconds';
+import { motion } from 'framer-motion';
 // import { TripleDashMenu } from "../../atoms/TripleDashMenu";
 // import { Menu, MenuItem } from "../../molecules/Menu";
 
@@ -40,12 +41,12 @@ export const Timer = (props: TimerProps) => {
       id={props.id}
       data-timerId={props.id}
       // className="my-1 px-2 pt-2 border rounded-lg border-gray-300"
-      className={`my-4 shadow-md hover:shadow-lg transition-shadow duration-200 rounded-lg ${
-        style.timer
-      } ${active ? style.timer__active : ''}`}
+      className={`my-4 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white rounded-lg ${style.timer}`}
     >
       <div
-        className={`${style.title} w-full rounded-t-lg bg-gradient-to-r from-blue-500 to-blue-400 p-2 py-1 border border-b-0 border-blue-300`}
+        className={`${style.title} transition duration-300 ease-in-out ${
+          active ? 'bg-gradient-to-r from-blue-500 to-blue-400' : 'bg-blue-200'
+        } w-full rounded-t-lg p-2 py-1 border border-b-0 border-blue-300`}
       >
         <div className={` flex flex-row justify-between items-center gap-1`}>
           <div
@@ -93,7 +94,7 @@ export const Timer = (props: TimerProps) => {
         </div>
       </div>
 
-      <div className='text-center py-2 flex justify-center items-center'>
+      <div className='rounded-b-lg border border-t-0 border-blue-300 text-center py-2 flex justify-center items-center'>
         <input
           name='mins'
           className='text-center w-12 border-0 border-b-2 focus:ring-0 focus:border-blue-500'

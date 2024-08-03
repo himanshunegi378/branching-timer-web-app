@@ -13,6 +13,7 @@ import { TrelloItem } from '../templates/TrelloLayout';
 import { TimerCardTasks } from '../templates/TimerCardTasks';
 import useTimer from '../hooks/useTimer';
 import { AnimatePresence, motion } from 'framer-motion';
+import { ComponentsRenderer } from '../../modules/ComponentRenderer';
 
 const TimerTitle = ({ currentName, onRename, onDelete }) => {
   const [editTitle, setEditTitle] = useState(false);
@@ -173,6 +174,7 @@ export default function TimerCard(props) {
   const { onDelete, timerCardId, className } = props;
   const [editTitle, setEditTitle] = useState(() => false);
   const { timerCardData, runningTimer, actions } = useTimerCard(timerCardId);
+  const injector = actions?.injector;
   const [shouldShowTimerTasksModal, setShouldShowTimerTasksModal] =
     useState(false);
   const endTimes = useEndTime(timerCardId, 5);
@@ -185,7 +187,7 @@ export default function TimerCard(props) {
   //   return () => { };
   // }, [endTimes]);
 
-  if (!timerCardData) return <div></div>;
+  if (!timerCardData || !injector) return <div></div>;
   return (
     <>
       <div
@@ -200,7 +202,7 @@ export default function TimerCard(props) {
           onDelete={() => onDelete(timerCardId)}
         />
         <div className='flex flex-col min-h-0'>
-          <TimerDisplay remainingTime={runningTimer.remainingTime} />
+          <ComponentsRenderer tag='timerDisplay' injector={injector} />
           <hr />
           <TimerControlButtons
             status={timerCardData?.status}
@@ -210,10 +212,9 @@ export default function TimerCard(props) {
             looping={timerCardData?.looping}
             onToggleLoop={() => actions.toggleLoop()}
           />
-          <TimerList
-            timers={timerCardData?.timerGroup?.timers}
-            timerProps={timerProps}
-          />
+          {/* <iframe src='https://raw.githubusercontent.com/himanshunegi378/timerCardsPlugin/main/TimerDisplayPlugin/dist/index.html' title='Timer Display'/> */}
+          <ComponentsRenderer tag='timerList' injector={injector} />
+
           <div className='flex justify-center mt-4'>
             <Button
               size='md'

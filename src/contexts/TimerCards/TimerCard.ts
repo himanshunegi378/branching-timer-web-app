@@ -14,8 +14,9 @@ import defaultSound from './alarm.mp3';
 import { audioStorage } from '../../lib/audio-storage/AudioStorage';
 import { ITimerCardStorage } from '../../lib/timerCardStorage/ITimerCardStotrage';
 import Timer from './Timer';
+import { Plugin } from '../../plugins/Plugin';
 
-type runningTimerType = {
+export type runningTimerType = {
   id: string;
   remainingTime: number;
 };
@@ -25,7 +26,9 @@ export class TimerCard extends EventEmitter {
   countDownTimer: CountdownTimer;
   runningTimer: runningTimerType;
   audioPlayer: SoundPlayer;
+  plugins: Plugin[] = [];
   _storage: ITimerCardStorage;
+  injector: unknown;
   constructor(timerCardId: string, storage: ITimerCardStorage) {
     super();
     this._storage = storage;
@@ -56,8 +59,14 @@ export class TimerCard extends EventEmitter {
     });
   }
 
+  public addPlugin(plugin: Plugin) {
+    this.plugins.push(plugin);
+    plugin.execute({ timerCard: this });
+    this.emit('plugin/added', plugin);
+  }
+
   public set storage(v: ITimerCardStorage) {
-    this.storage = v;
+    this._storage = v;
   }
 
   get timer() {
@@ -84,28 +93,7 @@ export class TimerCard extends EventEmitter {
   }
 
   private async timerFinished(timerId: string) {
-    const cardName = this.timerCardData.timerGroup.name;
-    const timerData = this.timerCardData.timerGroup.timers.find(
-      (timer) => timer.id === timerId
-    );
-    showNotification(`${cardName} => ${timerData?.name} finished`);
-    const audioId = timerData?.options.audioId;
-    if (audioId) {
-      const audioBlob = await audioStorage.load(audioId);
-      //@ts-ignore
-      this.audioPlayer.play(URL.createObjectURL(audioBlob));
-    } else {
-      // if speech syntesis is available use that else use default sound
-      if ('speechSynthesis' in window) {
-        speechSynthesis.speak(
-          new SpeechSynthesisUtterance(
-            `${timerData?.name} timer. finished playing`
-          )
-        );
-      } else {
-        this.audioPlayer.play(defaultSound, 2);
-      }
-    }
+    this.emit('timerFinished', timerId);
   }
 
   addTimer(timerData: Omit<TimerType, 'id' | 'options'>) {
@@ -230,6 +218,7 @@ export class TimerCard extends EventEmitter {
       console.log(this.timerCardData);
     }
   };
+
   playCard = () => {
     if (this.timerCardData.currentTimer) {
       this.updateCardData((draft) => {

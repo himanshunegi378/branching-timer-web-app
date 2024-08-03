@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TimerCard } from '../TimerCard';
+import { TimerCard, runningTimerType } from '../TimerCard';
 import { TimeCardsContext } from '../TimerCards.context';
 import { TimerCard as TimerCardType } from '../TimerCards.types';
 // import { useRunningTimer } from "./useRunningTimer"
@@ -12,7 +12,7 @@ import { TimerCard as TimerCardType } from '../TimerCards.types';
 export function useTimerCard(timerCardId: string) {
   const { Timercards } = React.useContext(TimeCardsContext);
   const [timerCardData, setTimerCardData] = useState<TimerCardType>();
-  const [runningTimer, setRunningTimer] = useState({
+  const [runningTimer, setRunningTimer] = useState<runningTimerType>({
     id: '',
     remainingTime: 0,
   });
@@ -31,7 +31,7 @@ export function useTimerCard(timerCardId: string) {
       setTimerCardData(timerCardData);
     };
 
-    const updateRunningTimer = (runningTimer: any) => {
+    const updateRunningTimer = (runningTimer: runningTimerType) => {
       setRunningTimer(runningTimer);
     };
 

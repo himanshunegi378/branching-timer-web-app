@@ -3,6 +3,8 @@ import { TimerTasksProps } from './TimerCardTask.types';
 import { Task } from '../../../contexts/TimerCards/TimerCards.types';
 import { CloseButton } from '../../molecules/CloseButton/CloseButton.component';
 import { Popup } from '../../atoms/Popup';
+import { TaskView } from './TaskView';
+import { TaskEdit } from './TaskEdit';
 
 /**
  * Check if the content of an HTML element is overflowing its container.
@@ -65,54 +67,20 @@ export const TimerTasks = ({
           className='bg-white p-4 rounded-lg shadow-md border border-blue-200'
         >
           {editingTaskId === task.id ? (
-            <input
-              type='text'
-              value={editedTaskDescription}
-              onChange={(event) => setEditedTaskDescription(event.target.value)}
-              onBlur={(event) => handleSaveTask(task.id)}
-              onKeyDown={(event) => handleKeyDown(task.id, event)}
-              autoFocus
-              className='outline-none border-blue-200 shadow-sm p-2 rounded-md'
-              style={{
-                border: 'none',
-                background: 'none',
-                outline: 'none',
-                fontSize: '1rem',
-                minWidth: 0,
-                width: '100%',
+            <TaskEdit
+              task={task}
+              onEditTask={(editedTask) => {
+                onEditTask(editedTask);
+                setEditingTaskId(null);
               }}
             />
           ) : (
-            <div className='flex justify-between'>
-              <div
-                style={{
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-                className='flex-1 text-base transition-colors duration-200 hover:bg-blue-500 hover:text-white rounded p-1'
-                onClick={() => handleEditTask(task.id, task.description)}
-                onMouseEnter={(e) => {
-                  if (!isContentOverflowing(e.currentTarget)) {
-                    return;
-                  }
-                  setPopupData({
-                    anchor: e.currentTarget,
-                    reactNode: <div> {task.description}</div>,
-                  });
-                }}
-                onMouseLeave={(e) => {
-                  setPopupData({
-                    anchor: null,
-                    reactNode: null,
-                  });
-                }}
-              >
-                {task.description}
-              </div>
-              <span>
-                <CloseButton size='sm' onClick={() => onDelete(task.id)} />
-              </span>
+            <div onClick={() => setEditingTaskId(task.id)}>
+              <TaskView
+                task={task}
+                readOnly={false}
+                onDelete={() => onDelete(task.id)}
+              />
             </div>
           )}
         </div>
