@@ -38,7 +38,7 @@ export class LocalAudioStorage {
   async getAudioData(audioId: string): Promise<AudioData> {
     const [audioBlob, audioMetadata] = await Promise.all([
       this.getAudioBlob(audioId),
-      this.getAudioMetadata(audioId)
+      this.getAudioMetadata(audioId),
     ]);
 
     if (!audioBlob || !audioMetadata) {
@@ -54,7 +54,10 @@ export class LocalAudioStorage {
   // #endregion
 
   // #region Private Helpers
-  private createError(code: AudioStorageError['code'], message: string): AudioStorageError {
+  private createError(
+    code: AudioStorageError['code'],
+    message: string
+  ): AudioStorageError {
     return Object.assign(new Error(message), { code });
   }
 
@@ -64,7 +67,10 @@ export class LocalAudioStorage {
       await localStorage.setItem(testKey, new Blob(['test']));
       await localStorage.removeItem(testKey);
     } catch (error) {
-      throw this.createError('STORAGE_FULL', 'Local storage is full or unavailable');
+      throw this.createError(
+        'STORAGE_FULL',
+        'Local storage is full or unavailable'
+      );
     }
   }
   // #endregion

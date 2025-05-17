@@ -1,5 +1,5 @@
-type PluginType = 'global' | 'local'
+type PluginType = 'global' | 'local';
 
 export default class InternalPlugin {
- readonly type: PluginType = 'global'
+  readonly type: PluginType = 'global';
 }

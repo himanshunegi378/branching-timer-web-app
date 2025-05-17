@@ -154,10 +154,7 @@ const RecordingNameForm: React.FC<RecordingNameFormProps> = ({ onSave }) => {
         />
       </div>
       <div className='flex justify-end'>
-        <Button
-          type='submit'
-          className='w-full'
-        >
+        <Button type='submit' className='w-full'>
           Save
         </Button>
       </div>

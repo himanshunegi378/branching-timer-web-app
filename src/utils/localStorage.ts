@@ -2,8 +2,8 @@ import localforage from 'localforage';
 localforage.setDriver([localforage.INDEXEDDB, localforage.LOCALSTORAGE]);
 localforage.config({
   version: 1,
-  name: 'TimerCardsd'
-})
+  name: 'TimerCardsd',
+});
 const getItem = async <T>(key: string): Promise<T | null> => {
   const data = await localforage.getItem(key);
   console.log(`Getting ${key} from localStorage`, data);

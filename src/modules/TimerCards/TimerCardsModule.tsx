@@ -85,7 +85,9 @@ export default class TimerCardsManager {
   }
 
   private async componentWillUnmount() {
-    const answer = window.confirm('Are you sure you want to delete all timer cards?');
+    const answer = window.confirm(
+      'Are you sure you want to delete all timer cards?'
+    );
     if (!answer) return;
     const timerCardsList = Object.keys(
       this.dataStore.getData('timerCardsStore') || {}
@@ -107,7 +109,11 @@ export default class TimerCardsManager {
       localStorage.getItem('timerCardIds')?.split(',') || [];
     const timerCards = await Promise.all(
       timerCardsList.map((id) => {
-        const timerCard = new TimerCard(id, new TimerCardLocalStorage(), this.eventBus);
+        const timerCard = new TimerCard(
+          id,
+          new TimerCardLocalStorage(),
+          this.eventBus
+        );
         return timerCard;
       })
     );
@@ -120,4 +126,3 @@ export default class TimerCardsManager {
     });
   }
 }
-

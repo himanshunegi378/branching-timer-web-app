@@ -12,8 +12,7 @@ const useDataStoreSelector = <T = any>(
     return get(data, selector) as T;
   }
 
-  return selector(data)
+  return selector(data);
 };
 
 export default useDataStoreSelector;
-

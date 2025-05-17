@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { TimerCard, runningTimerType } from '../../../modules/TimerCards/TimerCard';
+import {
+  TimerCard,
+  runningTimerType,
+} from '../../../modules/TimerCards/TimerCard';
 import { TimeCardsContext } from '../TimerCards.context';
 import { TimerCard as TimerCardType } from '../../../modules/TimerCards/TimerCards.types';
 import { useInjector } from '../../InjectorContext';
@@ -11,7 +14,7 @@ import { useInjector } from '../../InjectorContext';
  * @returns
  */
 export function useTimerCard(timerCardId: string) {
-  const injector = useInjector()
+  const injector = useInjector();
   // @ts-ignore
   const timerCard = injector.get('timerCards').getTimerCard(timerCardId);
   const [timerCardData, setTimerCardData] = useState<TimerCardType>();

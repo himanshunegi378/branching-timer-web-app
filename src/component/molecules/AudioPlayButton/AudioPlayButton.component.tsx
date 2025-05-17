@@ -58,7 +58,10 @@ export function AudioPlayButton({
 
   const handleError = useCallback((error?: Event) => {
     console.error(error);
-    dispatch({ type: 'SET_ERROR', payload: 'An error occurred while playing the audio' });
+    dispatch({
+      type: 'SET_ERROR',
+      payload: 'An error occurred while playing the audio',
+    });
   }, []);
 
   const playAudioCallback = useCallback(async () => {
@@ -120,15 +123,19 @@ export function AudioPlayButton({
 
   return (
     <div className='flex items-center gap-2'>
-      <button 
-        type='button' 
+      <button
+        type='button'
         onClick={toggle}
         disabled={!!error}
         aria-label={isPlaying ? 'Stop' : 'Play'}
       >
-        {isPlaying ? <StopIcon enabled={true} /> : <PlayIcon enabled={!error} />}
+        {isPlaying ? (
+          <StopIcon enabled={true} />
+        ) : (
+          <PlayIcon enabled={!error} />
+        )}
       </button>
-      {error && <span className="text-red-500 text-sm">{error}</span>}
+      {error && <span className='text-red-500 text-sm'>{error}</span>}
     </div>
   );
 }

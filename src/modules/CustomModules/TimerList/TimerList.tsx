@@ -14,10 +14,12 @@ export class TimerList {
   }
 }
 
-const useTimerCardData = (timerCardId:string) => {
+const useTimerCardData = (timerCardId: string) => {
   const injector = useInjector();
   // @ts-ignore
-  const timerCard: TimerCard = injector.get('timerCards').getTimerCard(timerCardId);
+  const timerCard: TimerCard = injector
+    .get('timerCards')
+    .getTimerCard(timerCardId);
   const [timerCardData, setTimerCardData] = useState<TimerCardType>(() => {
     return timerCard.timerCardData;
   });
@@ -91,7 +93,9 @@ const useTimer = ({ timerCardId }: { timerCardId: string }) => {
 const TimerListUI = ({ timerCardId }: { timerCardId: string }) => {
   const injector = useInjector();
   // @ts-ignore
-  const timerCard: TimerCard = injector.get('timerCards').getTimerCard(timerCardId);
+  const timerCard: TimerCard = injector
+    .get('timerCards')
+    .getTimerCard(timerCardId);
   const timerCardData = useTimerCardData(timerCardId);
   const timerProps = useTimer({
     timerCardId: timerCardData.id,

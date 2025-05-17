@@ -67,4 +67,3 @@ const AlarmToneSelectionList = () => {
 };
 
 export default AlarmToneSelectionList;
-

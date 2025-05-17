@@ -7,7 +7,6 @@ import useDataStore from '../../../hooks/useDataStore';
 import { ActionType } from '../../Actions/Actions';
 
 const TimerMenu = (props: any) => {
-
   const injector = useInjector();
   const timerMenuModule = injector.get('timerMenu') as TimerMenuModule;
   const actions: ActionType = injector.get('actions');
@@ -41,7 +40,7 @@ const TimerMenu = (props: any) => {
             key={item.id}
             onClick={() => {
               actions.invoke(item.action, 0, {
-                ...props
+                ...props,
               });
               setAnchorEl(null);
             }}

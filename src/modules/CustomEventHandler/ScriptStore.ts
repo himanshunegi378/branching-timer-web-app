@@ -100,4 +100,3 @@ class ScriptStoreLocalStoragePersist {
 }
 
 export { ScriptStore, ScriptStoreLocalStoragePersist };
-

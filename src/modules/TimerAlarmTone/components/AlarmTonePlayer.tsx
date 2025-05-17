@@ -21,7 +21,7 @@ const AlarmTonePlayer = () => {
       }> = [];
 
       Object.values<TimerCard>(timerCardsStore).forEach((timerCard) => {
-        const handleTimerFinished =async (timerId: string) => {
+        const handleTimerFinished = async (timerId: string) => {
           const alarmId = get(alarmStore, [timerCard.timerCardId, timerId]);
           if (alarmId) {
             const audioData = await audioStoreModule.getAudio(alarmId);

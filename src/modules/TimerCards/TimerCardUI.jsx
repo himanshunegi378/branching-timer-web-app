@@ -66,9 +66,6 @@ const TimerTitle = ({ currentName, onRename, onDelete }) => {
   );
 };
 
-
-
-
 const TimerControlButtons = ({
   status,
   onPlay,
@@ -112,16 +109,12 @@ const TimerControlButtons = ({
   );
 };
 
-
-
 function TimerCardUI(props) {
   const { onDelete, timerCardId, className } = props;
   const { timerCardData, actions } = useTimerCard(timerCardId);
   const [shouldShowTimerTasksModal, setShouldShowTimerTasksModal] =
     useState(false);
   // const endTimes = useEndTime(timerCardId, 5);
-
-
 
   if (!timerCardData) return <div></div>;
   return (
@@ -139,7 +132,7 @@ function TimerCardUI(props) {
         />
         <div className='flex flex-col min-h-0 p-4'>
           <ComponentsRenderer tag='timerDisplay' props={{ timerCardId }} />
-          <hr className="my-4" />
+          <hr className='my-4' />
           <TimerControlButtons
             status={timerCardData?.status}
             onPlay={actions.playCard}
@@ -187,6 +180,4 @@ function TimerCardUI(props) {
   );
 }
 
-
-
-export default TimerCardUI
+export default TimerCardUI;

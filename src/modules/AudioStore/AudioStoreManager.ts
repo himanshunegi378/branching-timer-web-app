@@ -24,7 +24,7 @@ export default class AudioStore {
 
   constructor(
     private readonly eventBus: Event,
-    public readonly dataStore: DataStore<Record<string,AudioData>>
+    public readonly dataStore: DataStore<Record<string, AudioData>>
   ) {
     this.notifications = new AudioStoreNotifications(eventBus);
     this.storageOps = new AudioStorageOperations(dataStore);

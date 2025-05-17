@@ -5,13 +5,19 @@ import { InjectorContext, useInjector } from '../contexts/InjectorContext';
 import useDataStore from '../hooks/useDataStore';
 
 // @ts-ignore
-export const ComponentsRenderer = ({ tag,props }:{
-  tag: string,
-  props?: Record<string, unknown>
+export const ComponentsRenderer = ({
+  tag,
+  props,
+}: {
+  tag: string;
+  props?: Record<string, unknown>;
 }) => {
   const injector = useInjector();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
-  const ComponentsRecord = useDataStore(injector.get('dataStore'), `componentRegistry/${tag}`);
+  const ComponentsRecord = useDataStore(
+    injector.get('dataStore'),
+    `componentRegistry/${tag}`
+  );
   const Components = Object.values(ComponentsRecord);
   // useEffect(() => {
   //   const registerEvent = `componentRegistry/registered/${tag}`;
@@ -43,7 +49,7 @@ export const ComponentsRenderer = ({ tag,props }:{
   // const Components = (
   //   injector.get('componentRegistry') as ComponentRegistry
   // ).getComponents(tag);
-  if(!Array.isArray(Components)) return null;
+  if (!Array.isArray(Components)) return null;
   return (
     <InjectorContext.Provider value={injector}>
       {Components.map((Component, index) => (

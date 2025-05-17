@@ -53,9 +53,13 @@ export default class AudioRecorder {
     // get time elapsed for recording and emit it
     return new Promise<Blob>(async (resolve, reject) => {
       const startTime = Date.now();
-      const debouncedSetData = throttle(this.dataStore.setData.bind(this.dataStore), 300, {
-        leading: true,
-      });
+      const debouncedSetData = throttle(
+        this.dataStore.setData.bind(this.dataStore),
+        300,
+        {
+          leading: true,
+        }
+      );
       try {
         this.mediaStream = await navigator.mediaDevices.getUserMedia({
           audio: true,

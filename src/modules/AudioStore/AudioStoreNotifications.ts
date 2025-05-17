@@ -23,7 +23,6 @@ export class AudioStoreNotifications {
     });
   }
 
-
   notifyAudioRetrieved(audioId: string, audioData: AudioData): void {
     this.eventBus.emit(eventBusEventsKey.AUDIO_GET, {
       ...audioData,

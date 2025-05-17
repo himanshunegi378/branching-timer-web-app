@@ -2,7 +2,11 @@ import produce from 'immer';
 import { WritableDraft } from 'immer/dist/internal';
 import { cloneDeep } from 'lodash';
 
-type ChangeListener<T> = (key: string, newValue: T, oldValue: T | undefined) => void;
+type ChangeListener<T> = (
+  key: string,
+  newValue: T,
+  oldValue: T | undefined
+) => void;
 type ReactListener = () => void;
 
 /**
@@ -15,10 +19,13 @@ export class DataStore<T> {
 
   setData(key: string, value: T): T {
     const oldValue = this.data[key];
-    this.data = produce(this.data, (draft: WritableDraft<Record<string, T>>) => {
-      // @ts-ignore
-      draft[key] = value;
-    });
+    this.data = produce(
+      this.data,
+      (draft: WritableDraft<Record<string, T>>) => {
+        // @ts-ignore
+        draft[key] = value;
+      }
+    );
 
     this.notifyListeners(key, value, oldValue);
     this.emitChange();
@@ -85,7 +92,7 @@ export class DataStore<T> {
   subscribe = (listener: ReactListener): (() => void) => {
     this.reactListeners = [...this.reactListeners, listener];
     return () => {
-      this.reactListeners = this.reactListeners.filter(l => l !== listener);
+      this.reactListeners = this.reactListeners.filter((l) => l !== listener);
     };
   };
 

@@ -1,4 +1,4 @@
-import { TimerCard } from "../../../modules/TimerCards/TimerCard";
+import { TimerCard } from '../../../modules/TimerCards/TimerCard';
 
 export type TimerProps = {
   onNameChange: (name: string) => void;

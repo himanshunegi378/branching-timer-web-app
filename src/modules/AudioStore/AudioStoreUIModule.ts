@@ -47,7 +47,9 @@ export default class AudioStoreUIModule {
    * Returns whether the audio store UI is currently open
    */
   public get isOpen(): boolean {
-    return this.dataStore.getData<boolean>(AudioStoreUIModule.STORE_KEY.IS_OPEN);
+    return this.dataStore.getData<boolean>(
+      AudioStoreUIModule.STORE_KEY.IS_OPEN
+    );
   }
 
   /**
@@ -68,7 +70,7 @@ export default class AudioStoreUIModule {
 
   private initializeModule(): void {
     this.dataStore.setData(AudioStoreUIModule.STORE_KEY.IS_OPEN, false);
-    
+
     this.componentRegistry.register('board', 'audioStore', AudioStoreUI);
     this.navbar.addItem('AudioStore', () => {
       this.actions.invoke('audioStore/open', 0);

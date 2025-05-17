@@ -1,6 +1,7 @@
 # Plugin Development Guide
 
 ## Table of Contents
+
 1. [Plugin Architecture Overview](#plugin-architecture-overview)
 2. [Plugin Structure](#plugin-structure)
 3. [Core Components](#core-components)
@@ -11,6 +12,7 @@
 ## Plugin Architecture Overview
 
 Each plugin in our modular architecture:
+
 - Is self-contained with its own business logic, UI components, and state management
 - Interacts with core services via dependency injection
 - Follows a consistent structure for maintainability
@@ -20,7 +22,7 @@ Each plugin in our modular architecture:
 
 ```typescript
 my-plugin/
-├── 
+├──
 
 index.ts
 
@@ -34,18 +36,20 @@ index.ts
 ## Core Components
 
 ### 1. Plugin Entry Point (index.ts)
+
 ```typescript
 const myPlugin = {
   __init__: ['myPluginService', 'myPluginUI'],
   __depends__: ['eventBus', 'actions', 'navbar', 'componentRegistry'],
   myPluginService: ['type', MyPluginService],
-  myPluginUI: ['type', MyPluginUIModule]
+  myPluginUI: ['type', MyPluginUIModule],
 };
 
 export default myPlugin;
 ```
 
 ### 2. UI Module
+
 ```typescript
 export default class PluginUIModule {
   static $inject = [
@@ -53,7 +57,7 @@ export default class PluginUIModule {
     'actions',
     'navbar',
     'componentRegistry',
-    'dataStore'
+    'dataStore',
   ];
 
   constructor(
@@ -71,6 +75,7 @@ export default class PluginUIModule {
 ```
 
 ### 3. Service Layer
+
 ```typescript
 export default class PluginService {
   static $inject = ['eventBus', 'dataStore'];
@@ -88,17 +93,20 @@ export default class PluginService {
 ## Plugin Registration
 
 1. Define dependencies and initialization:
+
 ```typescript
-__init__: []    // Services to initialize
-__depends__: [] // Core services required
+__init__: []; // Services to initialize
+__depends__: []; // Core services required
 ```
 
 2. Register components:
+
 ```typescript
 this.componentRegistry.register('location', 'componentName', Component);
 ```
 
 3. Register actions:
+
 ```typescript
 this.actions.register('plugin/action', this.handleAction.bind(this));
 ```
@@ -106,16 +114,19 @@ this.actions.register('plugin/action', this.handleAction.bind(this));
 ## Best Practices
 
 1. **State Management**
+
    - Use dataStore for plugin state
    - Prefix keys with plugin name
    - Create typed interfaces for state
 
 2. **Event Communication**
+
    - Use eventBus for cross-plugin communication
    - Define event constants
    - Document event payloads
 
 3. **UI Components**
+
    - Use atomic design pattern
    - Implement proper TypeScript interfaces
    - Use React.FC for functional components
@@ -141,7 +152,7 @@ const myPlugin = {
 // Service implementation
 class PluginService {
   static $inject = ['eventBus', 'dataStore'];
-  
+
   constructor(eventBus: Event, dataStore: DataStore<any>) {
     // Initialize service
   }
@@ -150,7 +161,7 @@ class PluginService {
 // UI Module
 class PluginUIModule {
   static $inject = ['eventBus', 'actions', 'navbar', 'componentRegistry'];
-  
+
   constructor(eventBus: Event, actions: ActionType, navbar: any, registry: any) {
     // Register UI components and actions
   }
