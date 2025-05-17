@@ -1,11 +1,12 @@
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { TimerCardLocalStorage } from '../../lib/timerCardStorage/TimerCardLocalStorage';
 import { timerCardIDsStorage } from './storage';
-import { TimerCard } from './TimerCard';
+import { TimerCard } from '../../modules/TimerCards/TimerCard';
 import { NotificationPlugin } from '../../plugins/NotificationPlugin';
 import { Injector } from 'didi';
 import modules, { ModuleType } from '../../modules';
 import { TimerDisplayPlugin } from '../../plugins/TimerDisplayPlugin';
+import { Event } from '../../modules/Event';
 
 export const TimeCardsContext = React.createContext<{
   Timercards: Record<string, TimerCard>;
@@ -22,13 +23,13 @@ const setupNewTimerCard = (id: string) => {
   //   userName: "Himanshu Singh Negi",
   // });
   const timerCardStorage = new TimerCardLocalStorage();
-  const timerCard = new TimerCard(id, timerCardStorage);
+  const timerCard = new TimerCard(id, timerCardStorage, new Event());
   const injector = new Injector<ModuleType>([
     // @ts-ignore
     ...modules,
-    {
-      timerCard: ['value', timerCard],
-    },
+    // {
+    //   timerCard: ['value', timerCard],
+    // },
   ]);
   timerCard.injector = injector;
   injector.init();

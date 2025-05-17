@@ -1,26 +1,23 @@
 import { memo, useCallback, useEffect, useState } from 'react';
 import { useInjector } from '../../../contexts/InjectorContext';
-import {
-  TimerCard,
-  runningTimerType,
-} from '../../../contexts/TimerCards/TimerCard';
-import { TimerCard as TimerCardType } from '../../../contexts/TimerCards/TimerCards.types';
+import { TimerCard, runningTimerType } from '../../TimerCards/TimerCard';
+import { TimerCard as TimerCardType } from '../../TimerCards/TimerCards.types';
 
 import { TimerProps } from '../../../component/organisms/Timer/Timer.types';
 import { Timer } from '../../../component/organisms/Timer/Timer.component';
 import { ComponentRegistry } from '../../ComponentRegistry';
 
 export class TimerList {
-  timerCard: TimerCard;
-  constructor(timerCard: TimerCard, componentRegistry: ComponentRegistry) {
-    this.timerCard = timerCard;
+  constructor(componentRegistry: ComponentRegistry) {
+    // @ts-ignore
     componentRegistry.register('timerList', 'timerListUI', memo(TimerListUI));
   }
 }
 
-const useTimerCardData = () => {
+const useTimerCardData = (timerCardId:string) => {
   const injector = useInjector();
-  const timerCard: TimerCard = injector.get('timerCard');
+  // @ts-ignore
+  const timerCard: TimerCard = injector.get('timerCards').getTimerCard(timerCardId);
   const [timerCardData, setTimerCardData] = useState<TimerCardType>(() => {
     return timerCard.timerCardData;
   });
@@ -40,10 +37,13 @@ const useTimerCardData = () => {
   return timerCardData;
 };
 
-const useTimer = () => {
+const useTimer = ({ timerCardId }: { timerCardId: string }) => {
   const injector = useInjector();
-  const timerCard: TimerCard = injector.get('timerCard');
-  const timerCardData = useTimerCardData();
+  // @ts-ignore
+  const timerCard: TimerCard = injector
+    .get('timerCards')
+    .getTimerCard(timerCardId);
+  const timerCardData = useTimerCardData(timerCardId);
 
   const [runningTimer, setRunningTimer] = useState<runningTimerType>({
     id: '',
@@ -72,6 +72,7 @@ const useTimer = () => {
         active: runningTimer.id === timerId,
         name: timer?.name ?? '',
         time: timer?.time ?? 0,
+        timerCard: timerCard,
         onDelete: () => {
           timerCard?.removeTimer(timerId);
         },
@@ -87,12 +88,17 @@ const useTimer = () => {
   );
 };
 
-const TimerListUI = () => {
-  const timerCardData = useTimerCardData();
-  const timerProps = useTimer();
+const TimerListUI = ({ timerCardId }: { timerCardId: string }) => {
+  const injector = useInjector();
+  // @ts-ignore
+  const timerCard: TimerCard = injector.get('timerCards').getTimerCard(timerCardId);
+  const timerCardData = useTimerCardData(timerCardId);
+  const timerProps = useTimer({
+    timerCardId: timerCardData.id,
+  });
 
   return (
-    <div className='overflow-auto fancy-scrollbar px-1 flex-1 mt-2 bg-blue-50 p-2 rounded'>
+    <div className='overflow-auto fancy-scrollbar px-1 flex-1 mt-2  p-2 rounded'>
       {timerCardData.timerGroup.timers.map((timer) => {
         if (!timer) return null;
         return <Timer key={timer.id} {...timerProps(timer.id)} />;
@@ -102,4 +108,4 @@ const TimerListUI = () => {
 };
 
 // @ts-ignore
-TimerList.$inject = ['timerCard', 'componentRegistry'];
+TimerList.$inject = ['componentRegistry'];

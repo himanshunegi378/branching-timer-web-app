@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Task } from '../../../contexts/TimerCards/TimerCards.types';
+import { Task } from '../../../modules/TimerCards/TimerCards.types';
 
 export const TaskEdit = ({
   task,

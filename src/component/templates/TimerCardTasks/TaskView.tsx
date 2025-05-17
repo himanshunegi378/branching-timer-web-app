@@ -1,4 +1,4 @@
-import { Task } from '../../../contexts/TimerCards/TimerCards.types';
+import { Task } from '../../../modules/TimerCards/TimerCards.types';
 import { CloseButton } from '../../molecules/CloseButton/CloseButton.component';
 
 // TaskView Component

@@ -10,11 +10,12 @@ import {
 } from './TimerCards.types';
 //@ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import defaultSound from './alarm.mp3';
+import defaultSound from '../../contexts/TimerCards/alarm.mp3';
 import { audioStorage } from '../../lib/audio-storage/AudioStorage';
 import { ITimerCardStorage } from '../../lib/timerCardStorage/ITimerCardStotrage';
 import Timer from './Timer';
 import { Plugin } from '../../plugins/Plugin';
+import { Event } from '../Event';
 
 export type runningTimerType = {
   id: string;
@@ -29,7 +30,11 @@ export class TimerCard extends EventEmitter {
   plugins: Plugin[] = [];
   _storage: ITimerCardStorage;
   injector: unknown;
-  constructor(timerCardId: string, storage: ITimerCardStorage) {
+  constructor(
+    timerCardId: string,
+    storage: ITimerCardStorage,
+    private eventBus: Event
+  ) {
     super();
     this._storage = storage;
     this.timerCardId = timerCardId;
@@ -63,6 +68,11 @@ export class TimerCard extends EventEmitter {
     this.plugins.push(plugin);
     plugin.execute({ timerCard: this });
     this.emit('plugin/added', plugin);
+  }
+
+  emit(event: string, ...args: unknown[]): boolean {
+    this.eventBus.emit(event, ...args);
+    return super.emit(event, ...args);
   }
 
   public set storage(v: ITimerCardStorage) {
@@ -294,7 +304,8 @@ export class TimerCard extends EventEmitter {
       timerCardData.currentTimer!.remainingTime =
         this.runningTimer.remainingTime;
     }
-    this._storage.save(timerCardData);
+    console.log(`timerCardData`, timerCardData);
+    return this._storage.save(timerCardData);
   }
   private async load() {
     const timerCardData = await this._storage.load(this.timerCardId);

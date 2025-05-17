@@ -1,4 +1,4 @@
-import { TimerCard } from '../../contexts/TimerCards/TimerCards.types';
+import { TimerCard } from '../../modules/TimerCards/TimerCards.types';
 import { userType } from '../../types/user.types';
 import axios from 'axios';
 

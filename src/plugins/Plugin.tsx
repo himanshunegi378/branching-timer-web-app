@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { TimerCard } from '../contexts/TimerCards/TimerCard';
+import { TimerCard } from '../modules/TimerCards/TimerCard';
 import { memoize } from 'lodash';
 import React, { ReactNode } from 'react';
 // window.fetch = memoize(window.fetch);
@@ -14,7 +14,6 @@ export class Plugin {
   }
 
   async init() {
-    debugger;
     const manifest = await fetch(`${this.baseUrl}/manifest.json`).then((res) =>
       res.json()
     );
@@ -49,7 +48,6 @@ export class Plugin {
       'pluginInstance',
       this.code,
     ]);
-    debugger;
     func(ctx, this.ui, this);
   }
 }

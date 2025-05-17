@@ -16,6 +16,8 @@ const useTimer = (timerCardId: string) => {
         active: runningTimer.id === timerId,
         name: timer?.name ?? '',
         time: timer?.time ?? 0,
+        timerCard: actions,
+
         onDelete: () => {
           actions?.removeTimer(timerId);
         },

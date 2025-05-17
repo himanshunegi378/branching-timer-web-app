@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { TimerCard, runningTimerType } from '../TimerCard';
+import { TimerCard, runningTimerType } from '../../../modules/TimerCards/TimerCard';
 import { TimeCardsContext } from '../TimerCards.context';
-import { TimerCard as TimerCardType } from '../TimerCards.types';
+import { TimerCard as TimerCardType } from '../../../modules/TimerCards/TimerCards.types';
+import { useInjector } from '../../InjectorContext';
 // import { useRunningTimer } from "./useRunningTimer"
 
 /**
@@ -10,23 +11,17 @@ import { TimerCard as TimerCardType } from '../TimerCards.types';
  * @returns
  */
 export function useTimerCard(timerCardId: string) {
-  const { Timercards } = React.useContext(TimeCardsContext);
+  const injector = useInjector()
+  // @ts-ignore
+  const timerCard = injector.get('timerCards').getTimerCard(timerCardId);
   const [timerCardData, setTimerCardData] = useState<TimerCardType>();
   const [runningTimer, setRunningTimer] = useState<runningTimerType>({
     id: '',
     remainingTime: 0,
   });
-  const [TimerCard, setTimerCard] = useState<TimerCard | null>(null);
 
   useEffect(() => {
-    setTimerCard(Timercards[timerCardId]);
-    return () => {
-      setTimerCard(null);
-    };
-  }, [Timercards, timerCardId]);
-
-  useEffect(() => {
-    if (!TimerCard) return;
+    if (!timerCard) return;
     const updateTimerCardData = (timerCardData: TimerCardType) => {
       setTimerCardData(timerCardData);
     };
@@ -35,17 +30,17 @@ export function useTimerCard(timerCardId: string) {
       setRunningTimer(runningTimer);
     };
 
-    TimerCard.on('timer_data', updateTimerCardData);
-    TimerCard.on('running_timer', updateRunningTimer);
+    timerCard.on('timer_data', updateTimerCardData);
+    timerCard.on('running_timer', updateRunningTimer);
 
-    TimerCard.emit('new_connection');
+    timerCard.emit('new_connection');
     return () => {
-      TimerCard.off('timer_data', updateTimerCardData);
-      TimerCard.off('running_timer', updateRunningTimer);
+      timerCard.off('timer_data', updateTimerCardData);
+      timerCard.off('running_timer', updateRunningTimer);
     };
-  }, [TimerCard]);
+  }, [timerCard]);
 
-  return { timerCardData, runningTimer, actions: TimerCard };
+  return { timerCardData, runningTimer, actions: timerCard };
 }
 
 export type UseTimerCard = ReturnType<typeof useTimerCard>;

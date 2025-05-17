@@ -1,6 +1,6 @@
 import { EventEmitter } from 'stream';
 import { v4 } from 'uuid';
-import { TimerCard as TimerCardType } from './TimerCards.types';
+import { TimerCard as TimerCardType } from '../../modules/TimerCards/TimerCards.types';
 import produce from 'immer';
 
 export class TimerCardStore {

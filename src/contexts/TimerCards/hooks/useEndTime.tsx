@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { TimeCardsContext } from '../TimerCards.context';
-import { TimerCard as TimerCardTypes } from '../TimerCards.types';
+import { TimerCard as TimerCardTypes } from '../../../modules/TimerCards/TimerCards.types';
 
 export function useEndTime(timerCardId: string, cycles: number) {
   const { Timercards } = useContext(TimeCardsContext);

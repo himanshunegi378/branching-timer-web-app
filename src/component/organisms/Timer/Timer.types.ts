@@ -1,3 +1,5 @@
+import { TimerCard } from "../../../modules/TimerCards/TimerCard";
+
 export type TimerProps = {
   onNameChange: (name: string) => void;
   onTimeChange: (time: number) => void;
@@ -6,4 +8,5 @@ export type TimerProps = {
   name: string;
   time: number;
   active: boolean;
+  timerCard: TimerCard;
 };

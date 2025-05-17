@@ -1,7 +1,7 @@
 import React from 'react';
 import { v4 } from 'uuid';
 import { useCreateTimerCard } from '../../contexts/TimerCards';
-// import TimerCard from "../../component/timerCard/TimerCard";
+// import TimerCards from "../../component/timerCard/TimerCards";
 import { Button } from '../../component/atoms/Button/Button.atom';
 import {
   TrelloItem,
@@ -9,7 +9,7 @@ import {
 } from '../../component/templates/TrelloLayout';
 import { TimerCardTasks } from '../../component/templates/TimerCardTasks';
 import { TimerCardData } from '../../HOC/TimerCardData';
-import TimerCard from '../../component/timerCard/TimerCard';
+import TimerCard from '../../modules/TimerCards/TimerCard';
 import Modal from '../../component/atoms/Modal';
 console.log('hello');
 export function TimerCards(props) {
@@ -178,3 +178,6 @@ export function TimerCards(props) {
     </div>
   );
 }
+
+
+

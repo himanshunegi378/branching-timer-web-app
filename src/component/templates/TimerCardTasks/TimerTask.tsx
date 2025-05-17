@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { TimerTasksProps } from './TimerCardTask.types';
-import { Task } from '../../../contexts/TimerCards/TimerCards.types';
+import { Task } from '../../../modules/TimerCards/TimerCards.types';
 import { CloseButton } from '../../molecules/CloseButton/CloseButton.component';
 import { Popup } from '../../atoms/Popup';
 import { TaskView } from './TaskView';

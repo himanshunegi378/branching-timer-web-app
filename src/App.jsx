@@ -3,7 +3,9 @@ import React, { Fragment, useEffect } from 'react';
 // import style from "./App.module.scss"
 import { Switch, Route } from 'react-router-dom';
 import { AudioManagementView } from './views/audioManagement/AudioManagement.view';
-import { TimerCards } from './views/timerCards/TimerCards.view';
+import { ComponentsRenderer } from './modules/ComponentRenderer';
+
+// import { TimerCards } from './views/timerCards/TimerCards.view';
 
 function App(props) {
   useEffect(() => {
@@ -16,7 +18,8 @@ function App(props) {
     <Fragment>
       <Switch>
         <Route exact path='/'>
-          <TimerCards />
+          <ComponentsRenderer tag={'board'} />
+          {/*<TimerCards />*/}
         </Route>
         <Route path='/audio'>
           <AudioManagementView />

@@ -2,9 +2,11 @@ type ChangeListener = (...args: unknown[]) => void;
 
 export class Event {
   private listeners: Record<string, ChangeListener[]> = {};
+  private anyListeners: ChangeListener[] = [];
 
   emit(event: string, ...args: unknown[]): void {
     this.notifyListeners(event, ...args);
+    this.notifyAnyListeners(event, ...args);
   }
 
   on(event: string, listener: ChangeListener): void {
@@ -14,6 +16,10 @@ export class Event {
     this.listeners[event].push(listener);
   }
 
+  onAny(listener: any): void {
+    this.anyListeners.push(listener);
+  }
+
   off(key: string, listener: ChangeListener): void {
     const listeners = this.listeners[key];
     if (listeners) {
@@ -21,6 +27,13 @@ export class Event {
       if (index !== -1) {
         listeners.splice(index, 1);
       }
+    }
+  }
+
+  offAny(listener: ChangeListener): void {
+    const index = this.anyListeners.indexOf(listener);
+    if (index !== -1) {
+      this.anyListeners.splice(index, 1);
     }
   }
 
@@ -35,6 +48,7 @@ export class Event {
     for (const key in this.listeners) {
       delete this.listeners[key];
     }
+    this.anyListeners = [];
   }
 
   private notifyListeners(key: string, ...args: unknown[]): void {
@@ -45,4 +59,12 @@ export class Event {
       }
     }
   }
+
+  private notifyAnyListeners(...args: unknown[]): void {
+    const [eventName, ...rest] = args;
+    for (const listener of this.anyListeners) {
+      listener(eventName, rest);
+    }
+  }
 }
+

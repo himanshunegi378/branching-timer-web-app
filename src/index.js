@@ -6,18 +6,27 @@ import './style.css';
 import { TimerCardsProvider } from './contexts/TimerCards';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { SpeechProvider } from './contexts/Speech';
+import { Injector } from 'didi';
+import modules from './modules';
+import { InjectorContext } from './contexts/InjectorContext';
 
 const container = document.getElementById('root');
 const root = createRoot(container);
+
+const injector = new Injector([...modules]);
+injector.init();
+
 root.render(
   <React.StrictMode>
-    <SpeechProvider>
-      <TimerCardsProvider>
-        <Router>
-          <App />
-        </Router>
-      </TimerCardsProvider>
-    </SpeechProvider>
+    <InjectorContext.Provider value={injector}>
+      <SpeechProvider>
+        <TimerCardsProvider>
+          <Router>
+            <App />
+          </Router>
+        </TimerCardsProvider>
+      </SpeechProvider>
+    </InjectorContext.Provider>
   </React.StrictMode>
 );
 

@@ -1,20 +1,15 @@
-import { useEffect, useMemo, useState } from 'react';
-import { TimerProps } from './Timer.types';
-import style from './style.module.scss';
-import { CloseButton } from '../../molecules/CloseButton/CloseButton.component';
+import { useMemo, useState } from 'react';
+import { ComponentsRenderer } from '../../../modules/ComponentRenderer';
 import toSeconds from '../../../utils/toSeconds';
-import { motion } from 'framer-motion';
-// import { TripleDashMenu } from "../../atoms/TripleDashMenu";
-// import { Menu, MenuItem } from "../../molecules/Menu";
+import { CloseButton } from '../../molecules/CloseButton/CloseButton.component';
+import { TimerProps } from './Timer.types';
 
 const numberRegex = /^\d+$/;
 
 export const Timer = (props: TimerProps) => {
   const { onNameChange, onTimeChange, onDelete, id, name, time, active } =
     props;
-
   const [editTitle, setEditTitle] = useState(() => false);
-  // const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   const [mins, secs] = useMemo(() => {
     if (!time) return [0, 0];
@@ -23,13 +18,20 @@ export const Timer = (props: TimerProps) => {
     return [minutes, seconds];
   }, [time]);
 
-  const handleTimeChange = ({
-    minutes,
-    seconds,
-  }: {
-    minutes: number;
-    seconds: number;
-  }) => {
+  const handleTimeChange = (
+    config: { minutes: number | null; seconds: number | null } | null
+  ): void => {
+    if (!config) return;
+    const { minutes, seconds } = config;
+
+    if (
+      minutes === null ||
+      seconds === null ||
+      !numberRegex.test(`${minutes}`) ||
+      !numberRegex.test(`${seconds}`)
+    )
+      return;
+
     const inSeconds = toSeconds({ minutes, seconds });
     // console.log(`inSeconds: ${inSeconds}`);
     onTimeChange(inSeconds);
@@ -40,17 +42,18 @@ export const Timer = (props: TimerProps) => {
       onClick={(e) => e.stopPropagation()}
       id={props.id}
       data-timerId={props.id}
-      // className="my-1 px-2 pt-2 border rounded-lg border-gray-300"
-      className={`my-4 shadow-md hover:shadow-lg transition-shadow duration-200 bg-white rounded-lg ${style.timer}`}
+      className={`my-6 shadow-lg hover:shadow-xl transition-all duration-300 bg-white rounded-lg ${
+        active ? 'ring-2 ring-blue-500' : ''
+      }`}
     >
       <div
-        className={`${style.title} transition duration-300 ease-in-out ${
-          active ? 'bg-gradient-to-r from-blue-500 to-blue-400' : 'bg-blue-200'
-        } w-full rounded-t-lg p-2 py-1 border border-b-0 border-blue-300`}
+        className={`${
+          active ? 'bg-gradient-to-r from-blue-600 to-blue-400' : 'bg-blue-100'
+        } w-full rounded-t-lg p-3 border-b border-blue-200 transition-colors duration-300`}
       >
-        <div className={` flex flex-row justify-between items-center gap-1`}>
+        <div className='flex flex-row justify-between items-center gap-2'>
           <div
-            className='text-lg font-bold whitespace-nowrap overflow-hidden overflow-ellipsis w-full transition-all duration-200 hover:underline cursor-pointer'
+            className='text-lg font-bold text-gray-800 whitespace-nowrap overflow-hidden overflow-ellipsis w-full transition-all duration-200 hover:text-blue-600 cursor-pointer'
             onClick={() => setEditTitle(true)}
           >
             {editTitle ? (
@@ -58,74 +61,72 @@ export const Timer = (props: TimerProps) => {
                 onSubmit={(event) => {
                   event.preventDefault();
                   setEditTitle(false);
-                  //@ts-ignore
-                  onNameChange(event.currentTarget.title.value);
+                  onNameChange(
+                    (event.currentTarget.elements[0] as HTMLInputElement).value
+                  );
                 }}
                 onBlur={(event) => {
-                  //@ts-ignore
-                  onNameChange(event.currentTarget.title.value);
+                  onNameChange(
+                    (event.currentTarget.elements[0] as HTMLFormElement).value
+                  );
                   setEditTitle(false);
                 }}
               >
                 <input
                   autoFocus
-                  autoComplete={'off'}
+                  autoComplete='off'
                   type='text'
                   defaultValue={name}
                   name='title'
-                  className='rounded-md bg-transparent outline-none p-0'
+                  className='w-full rounded-md bg-white bg-opacity-50 outline-none p-1 focus:ring-2 focus:ring-blue-300'
                 />
               </form>
             ) : (
               name
             )}
           </div>
-          {/* Will be used in future */}
-          {/* <TripleDashMenu onClick={(e) => setAnchorEl(e.currentTarget)} />
-          <Menu
-            isOpen={!!anchorEl}
-            anchorEl={anchorEl}
-            onClose={() => setAnchorEl(null)}
-          >
-            <MenuItem onClick={() => onDelete(id)}>Delete</MenuItem>
-            <MenuItem onClick={() => setEditTitle(true)}>Edit</MenuItem>
-          </Menu> */}
+          <ComponentsRenderer tag='menu' props={{ ...props }} />
           <CloseButton size='sm' onClick={() => onDelete(id)} />
         </div>
       </div>
 
-      <div className='rounded-b-lg border border-t-0 border-blue-300 text-center py-2 flex justify-center items-center'>
-        <input
-          name='mins'
-          className='text-center w-12 border-0 border-b-2 focus:ring-0 focus:border-blue-500'
-          type='number'
-          placeholder='MM'
-          onChange={(e) => {
-            let rawMinutes = e.target.value;
-            if (!numberRegex.test(rawMinutes)) {
-              rawMinutes = '0';
-            }
-            const minutes = parseInt(rawMinutes);
-            handleTimeChange({ minutes, seconds: secs });
-          }}
-          value={mins}
-        />
-        <span className='mx-2 text-lg font-medium'>:</span>
-        <input
-          name='secs'
-          className='text-center w-12 border-0 border-b-2 focus:ring-0 focus:border-blue-500'
-          type='number'
-          placeholder='SS'
-          onChange={(e) => {
-            let rawSeconds = e.target.value;
-            if (!numberRegex.test(rawSeconds)) {
-              rawSeconds = '0';
-            }
-            const seconds = parseInt(rawSeconds);
-            handleTimeChange({ minutes: mins, seconds });
-          }}
-          value={secs}
-        />
+      <div className='rounded-b-lg border-t border-blue-100 text-center py-4 flex justify-center items-center bg-gradient-to-b from-blue-50 to-white'>
+        <div className='flex flex-row items-center'>
+          <input
+            name='mins'
+            className='input-field w-16 text-center bg-transparent border-b-2 border-blue-200 focus:border-blue-500 focus:ring-0 text-2xl font-semibold text-gray-700 transition-all duration-200'
+            type='number'
+            min={0}
+            placeholder='MM'
+            onChange={(e) => {
+              let rawMinutes = e.target.value;
+              if (!numberRegex.test(rawMinutes)) {
+                rawMinutes = '0';
+              }
+              const minutes = parseInt(rawMinutes);
+              handleTimeChange({ minutes, seconds: secs });
+            }}
+            value={mins}
+          />
+        </div>
+        <span className='mx-2 text-2xl font-medium text-gray-600'>:</span>
+        <div className='flex flex-row items-center'>
+          <input
+            name='secs'
+            className='input-field w-16 text-center bg-transparent border-b-2 border-blue-200 focus:border-blue-500 focus:ring-0 text-2xl font-semibold text-gray-700 transition-all duration-200'
+            type='number'
+            placeholder='SS'
+            onChange={(e) => {
+              let rawSeconds = e.target.value;
+              if (!numberRegex.test(rawSeconds)) {
+                rawSeconds = '0';
+              }
+              const seconds = parseInt(rawSeconds);
+              handleTimeChange({ minutes: mins, seconds });
+            }}
+            value={secs}
+          />
+        </div>
       </div>
     </div>
   );

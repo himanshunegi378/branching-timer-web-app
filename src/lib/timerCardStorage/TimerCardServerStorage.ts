@@ -1,5 +1,5 @@
 import { timerCardStorageApi } from '../../api/timerCard';
-import { TimerCard } from '../../contexts/TimerCards/TimerCards.types';
+import { TimerCard } from '../../modules/TimerCards/TimerCards.types';
 import { userType } from '../../types/user.types';
 import { ITimerCardStorage } from './ITimerCardStotrage';
 
@@ -20,7 +20,7 @@ export class TimerCardServerStorage implements ITimerCardStorage {
   };
   load = async (timerCardId: string) => {
     return timerCardStorageApi.load(this.user, timerCardId);
-    // return localStorage.getItem<TimerCard>(`timerCard_${timerCardId}`);
+    // return localStorage.getItem<TimerCards>(`timerCard_${timerCardId}`);
   };
 
   delete = async (timerCardId: string) => {

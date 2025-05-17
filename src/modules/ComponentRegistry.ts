@@ -5,20 +5,39 @@ type Component = React.ComponentType;
 export class ComponentRegistry {
   private components: { [key: string]: Record<string, Component> };
   private eventBus: Event;
+  private dataStore: any;
 
-  constructor(eventBus: Event) {
+  constructor(eventBus: Event, dataStore: any) {
     this.eventBus = eventBus;
+    this.dataStore = dataStore;
     this.components = {};
   }
 
   // Register a component with a specific key
-  register(key: string, id: string, component: Component): void {
+  register(
+    key: string,
+    id: string,
+    component: Component,
+    priority?: number
+  ): void {
     // Initialize the key with an empty array if it doesn't exist
     if (!this.components[key]) {
       this.components[key] = {};
     }
     // Push the new component into the array for the key
     this.components[key][id] = component;
+    // @ts-ignore
+    component.priority = priority ?? 0;
+    // sort the components by priority
+    const components = Object.values(this.components[key]).sort((a, b) => {
+      // @ts-ignore
+      if (typeof a.priority === 'number' && typeof b.priority === 'number') {
+        // @ts-ignore
+        return a.priority - b.priority;
+      }
+      return 0;
+    });
+    this.dataStore.setData(`componentRegistry/${key}`, components);
     this.eventBus.emit(`componentRegistry/registered/${key}`, id, component);
   }
 
@@ -33,7 +52,16 @@ export class ComponentRegistry {
     if (id) {
       return [comps[id]];
     }
-    return Object.values(comps).map((comp) => comp);
+    const allComponents = Object.values(comps).map((comp) => comp);
+    allComponents.sort((a, b) => {
+      // @ts-ignore
+      if (a.priority && b.priority) {
+        // @ts-ignore
+        return a.priority - b.priority;
+      }
+      return 0;
+    });
+    return allComponents;
   }
 
   // Optional: Deregister a specific component by key
@@ -46,6 +74,7 @@ export class ComponentRegistry {
       }
       // Find the index of the component to remove
       delete this.components[key][id];
+      this.dataStore.setData(`componentRegistry/${key}`, this.components[key]);
       this.eventBus.emit(`componentRegistry/deRegistered/${key}`, id);
     } else {
       console.warn(
@@ -56,4 +85,4 @@ export class ComponentRegistry {
 }
 
 // @ts-ignore
-ComponentRegistry.$inject = ['eventBus'];
+ComponentRegistry.$inject = ['eventBus', 'dataStore'];

@@ -1,4 +1,4 @@
-import { TimerCard } from '../../contexts/TimerCards/TimerCards.types';
+import { TimerCard } from '../../modules/TimerCards/TimerCards.types';
 import { localStorage } from '../../utils/localStorage';
 import { ITimerCardStorage } from './ITimerCardStotrage';
 
@@ -8,6 +8,7 @@ export class TimerCardLocalStorage implements ITimerCardStorage {
       localStorage.setItem(`timerCard_${timerCardData.id}`, timerCardData);
       return true;
     } catch (error) {
+      console.error(error);
       return false;
     }
   };

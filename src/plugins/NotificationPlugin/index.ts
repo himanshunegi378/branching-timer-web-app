@@ -1,4 +1,4 @@
-import { TimerCard } from '../../contexts/TimerCards/TimerCard';
+import { TimerCard } from '../../modules/TimerCards/TimerCard';
 import { Plugin } from '../Plugin';
 // @ts-ignore
 

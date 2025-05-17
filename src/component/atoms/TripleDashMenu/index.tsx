@@ -17,6 +17,7 @@ export const TripleDashMenu = ({
     width: '100%',
     backgroundColor: '#999',
     borderRadius: '9999px',
+    transition: 'background-color 0.2s',
   };
 
   const lineClass = 'w-full';
@@ -26,9 +27,36 @@ export const TripleDashMenu = ({
       style={{ width: containerSize, height: containerSize }}
       onClick={onClick}
     >
-      <div className={lineClass} style={dashStyle}></div>
-      <div className={lineClass} style={dashStyle}></div>
-      <div className={lineClass} style={dashStyle}></div>
+      <div
+        className={lineClass}
+        style={dashStyle}
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = '#666';
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.backgroundColor = '#999';
+        }}
+      ></div>
+      <div
+        className={lineClass}
+        style={dashStyle}
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = '#666';
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.backgroundColor = '#999';
+        }}
+      ></div>
+      <div
+        className={lineClass}
+        style={dashStyle}
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = '#666';
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.backgroundColor = '#999';
+        }}
+      ></div>
     </button>
   );
 };
