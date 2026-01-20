@@ -16,7 +16,6 @@
     "@types/immutable": "^3.8.7",
     "@types/localforage": "0.0.34",
     "@types/node": "^20.8.0",
-    "@types/sass": "^1.16.0",
     "axios": "^0.27.2",
     "bootstrap": "^4.5.0",
     "classnames": "^2.2.6",
@@ -51,7 +50,6 @@
     "redux-persist": "^6.0.0",
     "rx": "^4.1.0",
     "rxjs": "^6.5.5",
-    "sass": "^1.32.8",
     "tailwindcss-elevation": "^1.0.1",
     "treantjs": "^1.0.0",
     "use-file-picker": "^1.4.1",
@@ -131,7 +129,7 @@
       "eslint --fix",
       "git add"
     ],
-    "*.{html,css,less,ejs,scss}": [
+    "*.{html,css,less,ejs}": [
       "prettier --write",
       "git add"
     ]

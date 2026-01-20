@@ -1,6 +1,5 @@
-import './App.scss';
 import React, { Fragment, useEffect } from 'react';
-// import style from "./App.module.scss"
+
 import { Switch, Route } from 'react-router-dom';
 import { AudioManagementView } from './views/audioManagement/AudioManagement.view';
 import { TimerCards } from './views/timerCards/TimerCards.view';
