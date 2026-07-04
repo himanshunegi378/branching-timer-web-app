@@ -4,8 +4,9 @@ import { timerCardIDsStorage } from './storage';
 import { TimerCard } from './TimerCard';
 import { NotificationPlugin } from '../../plugins/NotificationPlugin';
 import { Injector } from 'didi';
-import modules, { ModuleType } from '../../modules';
+import modules from '../../modules';
 import { TimerDisplayPlugin } from '../../plugins/TimerDisplayPlugin';
+import { ServiceMap } from '../../types/injector.types';
 
 export const TimeCardsContext = React.createContext<{
   Timercards: Record<string, TimerCard>;
@@ -23,9 +24,8 @@ const setupNewTimerCard = (id: string) => {
   // });
   const timerCardStorage = new TimerCardLocalStorage();
   const timerCard = new TimerCard(id, timerCardStorage);
-  const injector = new Injector<ModuleType>([
-    // @ts-ignore
-    ...modules,
+  const injector = new Injector<ServiceMap>([
+    ...(modules as any),
     {
       timerCard: ['value', timerCard],
     },

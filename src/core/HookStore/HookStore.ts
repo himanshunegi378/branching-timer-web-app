@@ -1,6 +1,7 @@
 import { DataStore } from '../DataStore';
 
 export class HookStore {
+  static $inject = ['dataStore'];
   dataStore: DataStore<unknown>;
   constructor(dataStore: DataStore<unknown>) {
     this.dataStore = dataStore;
@@ -14,6 +15,3 @@ export class HookStore {
     return this.dataStore.getData(`hookStore:${key}`);
   }
 }
-
-// @ts-ignore
-HookStore.$inject = ['dataStore'];

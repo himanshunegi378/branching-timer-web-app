@@ -5,9 +5,10 @@ import {
 } from '../../contexts/TimerCards/TimerCard';
 import { useInjector } from '../../contexts/InjectorContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ComponentRegistry } from '../ComponentRegistry';
+import { ComponentRegistry } from '../../core/ComponentRegistry';
 
 export class TimerDisplay {
+  static $inject = ['componentRegistry'];
   componentRegistry: ComponentRegistry;
   constructor(componentRegistry: ComponentRegistry) {
     this.componentRegistry = componentRegistry;
@@ -17,9 +18,6 @@ export class TimerDisplay {
     this.componentRegistry.register('timerDisplay', '1', memo(comp));
   }
 }
-
-// @ts-ignore
-TimerDisplay.$inject = ['componentRegistry'];
 
 const numberVariants = {
   hidden: { opacity: 0, y: -20 },

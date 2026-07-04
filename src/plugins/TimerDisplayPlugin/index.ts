@@ -1,6 +1,4 @@
 import { Plugin } from '../Plugin';
-// @ts-ignore
-
 export class TimerDisplayPlugin extends Plugin {
   constructor() {
     super(

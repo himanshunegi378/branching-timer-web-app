@@ -13,7 +13,7 @@ import { TrelloItem } from '../templates/TrelloLayout';
 import { TimerCardTasks } from '../templates/TimerCardTasks';
 import useTimer from '../hooks/useTimer';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ComponentsRenderer } from '../../modules/ComponentRenderer';
+import { ComponentsRenderer } from '../../core/ComponentRenderer';
 
 const TimerTitle = ({ currentName, onRename, onDelete }) => {
   const [editTitle, setEditTitle] = useState(false);

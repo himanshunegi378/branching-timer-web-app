@@ -1,7 +1,5 @@
 import { TimerCard } from '../../contexts/TimerCards/TimerCard';
 import { Plugin } from '../Plugin';
-// @ts-ignore
-
 export class NotificationPlugin extends Plugin {
   constructor() {
     super(

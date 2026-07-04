@@ -4,7 +4,6 @@ import {
   useCallback,
   useContext,
 } from 'react';
-//@ts-ignore
 import { useSpeechSynthesis } from 'react-speech-kit';
 
 type speakType = { text: string };

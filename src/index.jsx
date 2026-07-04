@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import './style.css';
+import './index.css';
 import { TimerCardsProvider } from './contexts/TimerCards';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { SpeechProvider } from './contexts/Speech';

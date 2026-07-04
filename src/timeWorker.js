@@ -27,4 +27,4 @@ code = code.substring(code.indexOf('{') + 1, code.lastIndexOf('}'));
 const blob = new Blob([code], { type: 'application/javascript' });
 const timeWorker = URL.createObjectURL(blob);
 
-module.exports = timeWorker;
+export default timeWorker;

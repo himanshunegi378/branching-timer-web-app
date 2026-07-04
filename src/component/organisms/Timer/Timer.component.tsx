@@ -57,12 +57,16 @@ export const Timer = (props: TimerProps) => {
                 onSubmit={(event) => {
                   event.preventDefault();
                   setEditTitle(false);
-                  //@ts-ignore
-                  onNameChange(event.currentTarget.title.value);
+                  const titleInput = event.currentTarget.elements.namedItem('title') as HTMLInputElement;
+                  if (titleInput) {
+                    onNameChange(titleInput.value);
+                  }
                 }}
                 onBlur={(event) => {
-                  //@ts-ignore
-                  onNameChange(event.currentTarget.title.value);
+                  const titleInput = event.currentTarget.elements.namedItem('title') as HTMLInputElement;
+                  if (titleInput) {
+                    onNameChange(titleInput.value);
+                  }
                   setEditTitle(false);
                 }}
               >

@@ -1,9 +1,9 @@
-import { ComponentRegistry } from './ComponentRegistry';
-import { DataStore } from './DataStore';
-import { Event } from './Event';
-import Actions from './Actions/Actions';
-import TimerListModule from './CustomModules/TimerList';
-import TimerDisplayModule from './TimerDisplay';
+import { ComponentRegistry } from '../core/ComponentRegistry';
+import { DataStore } from '../core/DataStore';
+import { Event } from '../core/Event';
+import Actions from '../core/Actions/Actions';
+import TimerListModule from '../features/TimerList';
+import TimerDisplayModule from '../features/TimerDisplay';
 
 const modules = [
   {

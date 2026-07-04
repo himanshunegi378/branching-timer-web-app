@@ -9,7 +9,7 @@ function showNotification(title: string) {
     return createNotfication('TimerCards', {
       body: title,
       vibrate: [200, 100, 200, 100, 200, 100, 200],
-    });
+    } as any);
   }
 
   // Otherwise, we need to ask the user for permission
@@ -20,7 +20,7 @@ function showNotification(title: string) {
         return createNotfication('TimerCards', {
           body: title,
           vibrate: [200, 100, 200, 100, 200, 100, 200],
-        });
+        } as any);
       }
     });
   }

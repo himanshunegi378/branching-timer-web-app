@@ -1,10 +1,8 @@
-import { Injector } from 'didi';
 import { createContext, useContext } from 'react';
-import { ModuleType } from '../modules';
+import { StrictInjector } from '../types/injector.types';
 
-export const InjectorContext = createContext<Injector<ModuleType>>(
-  // @ts-ignore
-  {}
+export const InjectorContext = createContext<StrictInjector>(
+  {} as StrictInjector
 );
 
 export const useInjector = () => {

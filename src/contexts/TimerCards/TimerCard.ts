@@ -8,13 +8,13 @@ import {
   Timer as TimerType,
   TimerCard as TimerCardType,
 } from './TimerCards.types';
-//@ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import defaultSound from './alarm.mp3';
 import { audioStorage } from '../../lib/audio-storage/AudioStorage';
 import { ITimerCardStorage } from '../../lib/timerCardStorage/ITimerCardStotrage';
 import Timer from './Timer';
 import { Plugin } from '../../plugins/Plugin';
+import { StrictInjector } from '../../types/injector.types';
 
 export type runningTimerType = {
   id: string;
@@ -28,7 +28,7 @@ export class TimerCard extends EventEmitter {
   audioPlayer: SoundPlayer;
   plugins: Plugin[] = [];
   _storage: ITimerCardStorage;
-  injector: unknown;
+  injector!: StrictInjector;
   constructor(timerCardId: string, storage: ITimerCardStorage) {
     super();
     this._storage = storage;

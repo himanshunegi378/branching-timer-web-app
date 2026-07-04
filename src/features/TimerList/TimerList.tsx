@@ -1,16 +1,17 @@
 import { memo, useCallback, useEffect, useState } from 'react';
-import { useInjector } from '../../../contexts/InjectorContext';
+import { useInjector } from '../../contexts/InjectorContext';
 import {
   TimerCard,
   runningTimerType,
-} from '../../../contexts/TimerCards/TimerCard';
-import { TimerCard as TimerCardType } from '../../../contexts/TimerCards/TimerCards.types';
+} from '../../contexts/TimerCards/TimerCard';
+import { TimerCard as TimerCardType } from '../../contexts/TimerCards/TimerCards.types';
 
-import { TimerProps } from '../../../component/organisms/Timer/Timer.types';
-import { Timer } from '../../../component/organisms/Timer/Timer.component';
-import { ComponentRegistry } from '../../ComponentRegistry';
+import { TimerProps } from '../../component/organisms/Timer/Timer.types';
+import { Timer } from '../../component/organisms/Timer/Timer.component';
+import { ComponentRegistry } from '../../core/ComponentRegistry';
 
 export class TimerList {
+  static $inject = ['timerCard', 'componentRegistry'];
   timerCard: TimerCard;
   constructor(timerCard: TimerCard, componentRegistry: ComponentRegistry) {
     this.timerCard = timerCard;
@@ -100,6 +101,3 @@ const TimerListUI = () => {
     </div>
   );
 };
-
-// @ts-ignore
-TimerList.$inject = ['timerCard', 'componentRegistry'];
